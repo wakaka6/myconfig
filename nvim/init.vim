@@ -112,6 +112,8 @@ let g:airline_right_sep = ''
 
 " Always show tabs
 set showtabline=2
+" don't show like INSERT more something mode
+set noshowmode
 
 " *****
 " coc.nvim
