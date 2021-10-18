@@ -28,6 +28,11 @@ source ~/.config/nvim/plugins/markdown-preview_config.vim
 source ~/.config/nvim/mappings/markdown-preview_map.vim
 source ~/.config/nvim/mappings/vim-table-mode_map.vim
 
+" ***
+" Maping Config
+" ***
+source ~/.config/nvim/mappings/mapping.vim
+
 
 " ***
 " theme config
@@ -37,10 +42,6 @@ source ~/.config/nvim/themes/airline.vim
 source ~/.config/nvim/themes/dashboard_config.vim
 source ~/.config/nvim/mappings/dashboard_map.vim
 
-" ***
-" Maping Config
-" ***
-source ~/.config/nvim/mappings/mapping.vim
 
 " ***
 " script congig
