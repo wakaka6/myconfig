@@ -32,6 +32,8 @@ source ~/.config/nvim/mappings/undotree_map.vim
 source ~/.config/nvim/plugins/markdown-preview_config.vim
 source ~/.config/nvim/mappings/markdown-preview_map.vim
 source ~/.config/nvim/mappings/vim-table-mode_map.vim
+source ~/.config/nvim/plugins/md-img-paste_config.vim
+source ~/.config/nvim/mappings/md-img-paste_map.vim
 
 " ***
 " Maping Config
