@@ -4,6 +4,11 @@
 source ~/.config/nvim/globals/globals.vim
 
 " ***
+" Maping Config
+" ***
+source ~/.config/nvim/mappings/mapping.vim
+
+" ***
 " Plugin Config
 " ***
 source ~/.config/nvim/plugins/plugins.vim
@@ -37,10 +42,6 @@ source ~/.config/nvim/themes/airline.vim
 source ~/.config/nvim/themes/dashboard_config.vim
 source ~/.config/nvim/mappings/dashboard_map.vim
 
-" ***
-" Maping Config
-" ***
-source ~/.config/nvim/mappings/mapping.vim
 
 " ***
 " script congig
