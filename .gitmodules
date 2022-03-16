@@ -1,0 +1,6 @@
+[submodule "ranger/plugins/fzf-marks"]
+	path = ranger/plugins/fzf-marks
+	url = https://github.com/laggardkernel/ranger-fzf-marks
+[submodule "ranger/plugins/devicons2"]
+	path = ranger/plugins/devicons2
+	url = https://github.com/cdump/ranger-devicons2
