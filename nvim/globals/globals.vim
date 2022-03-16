@@ -6,6 +6,7 @@ set termencoding=utf-8
 set encoding=utf-8
 set tabstop=4
 set shiftwidth=4
+set expandtab  " using space relace tab
 
 " auto search highlight
 syntax enable
