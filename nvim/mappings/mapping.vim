@@ -11,3 +11,9 @@ nnoremap <silent> [b :bprevious<CR>
 nnoremap <silent> ]b :bnext<CR>
 nnoremap <silent> [B :bfirst<CR>
 nnoremap <silent> ]B :blast<CR>
+
+" change vim windows
+nnoremap <silent> <LEADER>h <C-w>h
+nnoremap <silent> <LEADER>j <C-w>j
+nnoremap <silent> <LEADER>k <C-w>k
+nnoremap <silent> <LEADER>l <C-w>l
