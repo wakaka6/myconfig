@@ -34,6 +34,7 @@ call plug#begin(stdpath('data').'/plugged')
 	Plug 'gcmt/wildfire.vim'
 	" 更改包裹的内容
 	Plug 'tpope/vim-surround'
+	Plug 'tpope/vim-repeat'
 
 	" fuzz search file
 	Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
