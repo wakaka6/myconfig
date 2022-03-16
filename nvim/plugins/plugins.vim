@@ -42,4 +42,11 @@ call plug#begin(stdpath('data').'/plugged')
 	" beautiful catalogue
 	Plug 'glepnir/dashboard-nvim'
 
+	" 可以查看文件的历史修改树
+	Plug 'mbbill/undotree'
+
+	" markdown
+	Plug 'iamcco/markdown-preview.nvim', { 'do': { -> mkdp#util#install() }, 'for': 'markdown'}
+	Plug 'dhruvasagar/vim-table-mode'
+
 call plug#end()
