@@ -34,6 +34,10 @@ then
 fi
 
 
+if [ ! -e "$HOME/.config/ranger" ] 
+then
+	ln -s "$curPath/ranger" "$HOME/.config/ranger"
+fi
 
 
 
