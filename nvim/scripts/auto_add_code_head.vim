@@ -11,7 +11,7 @@ func AutoSetCodeTitle()
 	endif
 	
 	if &filetype == 'cpp'
-		call setline(1, "#include<iostream>")
+		call setline(1, "#include <iostream>")
 		call append(line("."), "using namespace std;")
 		call append(line(".")+1, "")
 		call append(line(".")+2, "int main(int argv, char* argc[])")
@@ -22,7 +22,7 @@ func AutoSetCodeTitle()
 		normal! 6GA
 	endif
 	if &filetype == 'c'
-		call setline(1, "#include<stdio.h>")
+		call setline(1, "#include <stdio.h>")
 		call append(line("."), "")
 		call append(line(".")+1, "")
 		call append(line(".")+2, "int main(int argv, char* argc[])")
