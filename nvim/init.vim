@@ -1,3 +1,17 @@
+"
+" Auto Download Plugin
+"
+if empty(glob('~/.config/nvim/autoload/plug.vim')) 
+silent !curl -fLo ~/.config/nvim/autoload/plug.vim --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+
+autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
+
+endif 
+
+
+" ********
+" Global Config
+" ********
 set fileencodings=utf-8,ucs-bom,gb18030,gbk,gb2312,cp936
 set termencoding=utf-8
 set encoding=utf-8
@@ -7,7 +21,6 @@ syntax enable
 set hlsearch
 set incsearch
 set autoindent
-set paste
 set clipboard+=unnamed
 set ruler
 set showcmd
@@ -15,6 +28,11 @@ set foldenable " 允许折叠
 set foldmethod=manual " 手动折叠 
 filetype plugin indent on
 
+set updatetime=100
+
+" **********
+" Plugin Config
+" **********
 call plug#begin(stdpath('data').'/plugged')
 	" Plugin Section
 
@@ -28,8 +46,16 @@ call plug#begin(stdpath('data').'/plugged')
 	Plug 'scrooloose/nerdtree'
 	Plug 'ryanoasis/vim-devicons'
 
-	" automatic completion
-	Plug 'zchee/deoplete-jedi'
+	" Auto Complete
+	Plug 'neoclide/coc.nvim', {'branch': 'release'}
+	
+	" Highlight the symbol and its references when holding the cursor.
+	Plug 'RRethy/vim-illuminate'
+
+	" press Enter automatically select the code block
+	Plug 'gcmt/wildfire.vim'
+	" 更改包裹的内容
+	Plug 'tpope/vim-surround'
 
 call plug#end()
 
@@ -49,15 +75,52 @@ endif
 syntax enable
 colorscheme dracula
 
+" theme config
 let g:airline_theme='light'
 let g:airline_powerline_fonts = 1
 if !exists('g:airline_symbols')
     let g:airline_symbols = {}
 endif
 
-autocmd InsertLeave,CompleteDone * if pumvisible() == 0 | pclose | endif
-inoremap <expr><tab> pumvisible() ? "\<c-n>" : "\<tab>"
 
+
+" *****
+" coc.nvim
+" *****
+let g:coc_global_extensions = ['coc-json', 
+			\ 'coc-vimlsp', 
+			\ 'coc-python', 
+			\ 'coc-clangd', 
+			\ 'coc-sh', 
+			\'coc-translator']
+set shortmess+=c
+inoremap <silent><expr> <TAB>
+      \ pumvisible() ? "\<C-n>" :
+      \ <SID>check_back_space() ? "\<TAB>" :
+      \ coc#refresh()
+inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<C-h>"
+
+" Use `[g` and `]g` to navigate diagnostics
+" Use `:CocDiagnostics` to get all diagnostics of current buffer in location list.
+nmap <silent> <LEADER>- <Plug>(coc-diagnostic-prev)
+nmap <silent> <LEADER>= <Plug>(coc-diagnostic-next)
+
+" GoTo code navigation.
+nmap <silent> gd <Plug>(coc-definition)
+nmap <silent> gy <Plug>(coc-type-definition)
+nmap <silent> gi <Plug>(coc-implementation)
+nmap <silent> gr <Plug>(coc-references)
+
+" Symbol renaming.
+nmap <leader>rn <Plug>(coc-rename)
+
+
+
+
+
+" ***********
+" 自动加入代码头
+" ***********
 autocmd BufNewFile *.cpp,*.[ch],*.sh,*.java,*.py exec ":call AutoSetTitle()" 
 func AutoSetTitle() 
 	if &filetype == 'sh' 
