@@ -9,6 +9,7 @@ autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
 endif 
 
 
+
 " ********
 " Global Config
 " ********
@@ -94,11 +95,12 @@ let g:coc_global_extensions = ['coc-json',
 			\ 'coc-sh', 
 			\'coc-translator']
 set shortmess+=c
-inoremap <silent><expr> <TAB>
-      \ pumvisible() ? "\<C-n>" :
-      \ <SID>check_back_space() ? "\<TAB>" :
-      \ coc#refresh()
-inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<C-h>"
+
+" inoremap <silent><expr> <TAB>
+"       \ pumvisible() ? "\<C-n>" :
+"       \ <SID>check_back_space() ? "\<TAB>" :
+"       \ coc#refresh()
+" inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<C-h>"
 
 " Use `[g` and `]g` to navigate diagnostics
 " Use `:CocDiagnostics` to get all diagnostics of current buffer in location list.
@@ -163,3 +165,4 @@ func AutoSetTitle()
 	
 endfunc 
 
+autocmd BufWritePost $MYVIMRC source $MYVIMRC
