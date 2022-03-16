@@ -22,7 +22,7 @@ then
     ln -s "$curPath/i3/config" "$HOME/.config/i3/config"
 fi
 
-if [ ! -L "$HOME/.config/i3status/config" ] 
+if [ -d "$HOME/.config/i3status" -a ! -L "$HOME/.config/i3status/config" ] 
 then
 	rm -f "$HOME/.config/i3status/config"
 	ln -s "$curPath/i3status/config" "$HOME/.config/i3status/config"
@@ -41,6 +41,11 @@ fi
 
 
 
+if [ ! -L "$HOME/.config/lazygit/config.yml" ] 
+then
+	rm -f "$HOME/.config/lazygit/config.yml"
+    ln -s "$curPath/lazygit/config.yml" "$HOME/.config/lazygit/config.yml"
+fi
 
 
 
