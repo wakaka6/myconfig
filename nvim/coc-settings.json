@@ -1,5 +1,18 @@
 {
-	"coc.preferences.extensionUpdateCheck": "daily",
-	"suggest.noselect": true,
-	"suggest.enablePreselect": false
+    "coc.preferences.extensionUpdateCheck": "daily",
+    "diagnostic.virtualTextPrefix": " ❯❯❯ ",
+
+
+    "languageserver": {
+        "golang": {
+            "command": "gopls",
+            "rootPatterns": ["go.mod"],
+            "filetypes": ["go"],
+            "initializationOptions": {
+                "gocodeCompletionEnabled": true,
+                "diagnosticsEnabled": true,
+                "lintTool": "golint"
+            }
+        }
+    }
 }
