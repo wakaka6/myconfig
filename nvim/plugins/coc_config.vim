@@ -6,5 +6,6 @@ let g:coc_global_extensions = ['coc-json',
 			\ 'coc-python', 
 			\ 'coc-clangd', 
 			\ 'coc-sh', 
-			\'coc-translator']
+			\ 'coc-cmake',
+			\ 'coc-git']
 set shortmess+=c
