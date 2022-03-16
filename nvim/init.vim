@@ -33,6 +33,10 @@ source ~/.config/nvim/plugins/markdown-preview_config.vim
 source ~/.config/nvim/mappings/markdown-preview_map.vim
 source ~/.config/nvim/mappings/vim-table-mode_map.vim
 
+" ***
+" Maping Config
+" ***
+source ~/.config/nvim/mappings/mapping.vim
 
 " ***
 " theme config
