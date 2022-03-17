@@ -38,7 +38,7 @@ gui:
 git:
   paging:
     colorArg: always
-    useConfig: false
+    pager: delta --dark --paging=never --24-bit-color=never --syntax-theme="OneHalfDark"
   commit:
     signOff: false
   merging:
@@ -204,3 +204,26 @@ keybinding:
     init: 'i'
     update: 'u'
     bulkMenu: 'b'
+
+customCommands:
+  - key: '<c-a>'
+    description: 'amend the author of last commit'
+    prompts:
+      - type: 'menu'
+        title: 'Choose amend author method'
+        options:
+          - name: 'default'
+            description: 'use default user amend the author'
+            value: '--reset-author'
+          - name: 'custom'
+            description: 'use custom user amend the author'
+            value: '--author="{{index .PromptResponses 1}} <{{index .PromptResponses 2}}>"'
+      - type: 'input'
+        title: 'Author Name'
+        initialValue: ''
+      - type: 'input'
+        title: 'Email Address'
+        initialValue: ''
+    command: 'git commit --amend {{index .PromptResponses 0}}'
+    context: 'commits'
+    subprocess: true
