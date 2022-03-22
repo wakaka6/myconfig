@@ -7,3 +7,4 @@ mv *.ttf ~/.local/share/fonts/
 ```sh
 fc-cache -vf ~/.local/share/fonts/
 ```
+
