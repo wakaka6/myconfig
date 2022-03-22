@@ -17,3 +17,22 @@ nnoremap <silent> <LEADER>h <C-w>h
 nnoremap <silent> <LEADER>j <C-w>j
 nnoremap <silent> <LEADER>k <C-w>k
 nnoremap <silent> <LEADER>l <C-w>l
+
+
+" Command Mode Cursor Movement
+cnoremap <C-a> <Home>
+cnoremap <C-e> <End>
+cnoremap <C-b> <Left>
+cnoremap <C-f> <Right>
+cnoremap <C-n> <Down>
+cnoremap <C-p> <Up>
+" Insert Mode Cursor Movement
+inoremap <C-a> <Home>
+inoremap <C-e> <End>
+inoremap <C-b> <Left>
+inoremap <C-f> <Right>
+
+" Indentation
+nnoremap < <<
+nnoremap > >>
+

@@ -55,4 +55,7 @@ call plug#begin(stdpath('data').'/plugged')
 	Plug 'dhruvasagar/vim-table-mode'
 	Plug 'ferrine/md-img-paste.vim'
 
+    " utils plugin
+    Plug 'lambdalisue/suda.vim' " do stuff like :sudowrite
+
 call plug#end()
