@@ -2,6 +2,10 @@
     "coc.preferences.extensionUpdateCheck": "daily",
     "diagnostic.virtualTextPrefix": " ❯❯❯ ",
 
+	"suggest.noselect": true,
+	"suggest.enablePreselect": false,
+    "snippets.userSnippetsDirectory": "~/myconfig/nvim/snippets",
+    "snippets.ultisnips.directories": ["~/myconfig/nvim/snippets"],
 
     "languageserver": {
         "golang": {
