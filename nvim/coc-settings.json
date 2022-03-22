@@ -1,5 +1,22 @@
 {
-	"coc.preferences.extensionUpdateCheck": "daily",
+    "coc.preferences.extensionUpdateCheck": "daily",
+    "diagnostic.virtualTextPrefix": " ❯❯❯ ",
+
 	"suggest.noselect": true,
-	"suggest.enablePreselect": false
+	"suggest.enablePreselect": false,
+    "snippets.userSnippetsDirectory": "~/myconfig/nvim/snippets",
+    "snippets.ultisnips.directories": ["~/myconfig/nvim/snippets"],
+
+    "languageserver": {
+        "golang": {
+            "command": "gopls",
+            "rootPatterns": ["go.mod"],
+            "filetypes": ["go"],
+            "initializationOptions": {
+                "gocodeCompletionEnabled": true,
+                "diagnosticsEnabled": true,
+                "lintTool": "golint"
+            }
+        }
+    }
 }

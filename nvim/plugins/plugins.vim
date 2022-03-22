@@ -47,6 +47,9 @@ call plug#begin(stdpath('data').'/plugged')
 	" 可以查看文件的历史修改树
 	Plug 'mbbill/undotree'
 
+    " snippets
+    Plug 'honza/vim-snippets'
+
 	" markdown
 	Plug 'iamcco/markdown-preview.nvim', { 'do': { -> mkdp#util#install() }, 'for': 'markdown'}
 	Plug 'dhruvasagar/vim-table-mode'
