@@ -1,6 +1,9 @@
 #!/bin/bash
 
 curPath=`readlink -f "$(dirname $0)"`
+
+cp -i "$curPath/.xprofile" "$HOME/.xprofile"
+
 if [ ! -e "$HOME/.tmux.conf" ]
 then
 	ln -s "$curPath/.tmux.conf" "$HOME/.tmux.conf"
@@ -11,10 +14,6 @@ then
 	ln -s "$curPath/.vimrc" "$HOME/.vimrc"
 fi
 
-if [ ! -e "$HOME/.xprofile" ]
-then
-ln -s "$curPath/.xprofile" "$HOME/.xprofile"
-fi
 
 if [ ! -L "$HOME/.config/i3/config" ] 
 then
@@ -49,9 +48,20 @@ fi
 
 
 
+if [ ! -d "$HOME/.config/zsh" -a ! -L "$HOME/.config/zsh" ] 
+then
+	rm -fr "$HOME/.config/zsh"
+    ln -s "$curPath/zsh" "$HOME/.config/zsh"
+fi
 
 
+if [ ! -d "$HOME/.oh-my-zsh" ] 
+then
+    sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
+fi
 
+
+cp -i $curPath/zsh/zshrc $curPath/zsh/.zshrc
 
 
 
