@@ -5,7 +5,7 @@ This project stores the configuration files for various software under linux.It 
 ## Quick start
 Clone this project to home directory.Note that this item cannot be deleted from home.
 ```sh
-sudo pacman -Sy git yay
+sudo pacman -Sy git yay python3 curl wget
 git clone --recursive https://github.com/wakaka6/myconfig.git $HOME
 # if on virtual machine, use the following command to clone the repo
 git clone -b vm --recursive https://github.com/wakaka6/myconfig.git $HOME
@@ -46,8 +46,23 @@ About ranger prerequirement
 pacman -S ranger highlight atool w3m poppler mediainfo
 ```
 
+About Neovim prerequirement
+```sh
+sudo pacman -S neovim python-pynvim
+sudo pacman -S python-pip
+pip install pynvim
+pip install jedi
+curl -sL install-node.now.sh/lts | bash
+```
+
+Software
+```sh
+sudo pacman -S flameshot
+sudo pacman -S libreoffice-still
+```
+
 In the end, run this command
 ```sh
-cd ~/myconfig && ./auto_config.sh
+cd ~/myconfig && ./auto_config.sh && reboot
 ```
 
