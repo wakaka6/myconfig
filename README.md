@@ -59,6 +59,7 @@ Software
 ```sh
 sudo pacman -S flameshot
 sudo pacman -S libreoffice-still
+sudo pacman -S goldendict
 ```
 
 In the end, run this command
