@@ -8,7 +8,7 @@ export ZSH="$HOME/.oh-my-zsh"
 # load a random theme each time oh-my-zsh is loaded, in which case,
 # to know which specific one was loaded, run: echo $RANDOM_THEME
 # See https://github.com/ohmyzsh/ohmyzsh/wiki/Themes
-ZSH_THEME="random"
+ZSH_THEME="jovial"
 
 
 # Set list of themes to pick from when loading at random
@@ -67,7 +67,7 @@ ZSH_CUSTOM=$ZSH/custom
 
 # auto-download custom themes
 custom_themes=(
-    spaceship-prompt/spaceship-prompt
+    # spaceship-prompt/spaceship-prompt
     zthxxx/jovial
 )
 
