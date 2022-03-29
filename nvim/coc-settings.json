@@ -13,9 +13,7 @@
             "rootPatterns": ["go.mod"],
             "filetypes": ["go"],
             "initializationOptions": {
-                "gocodeCompletionEnabled": true,
-                "diagnosticsEnabled": true,
-                "lintTool": "golint"
+                "usePlaceholders": true
             }
         }
     }
