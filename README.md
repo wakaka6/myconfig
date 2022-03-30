@@ -59,7 +59,9 @@ Software
 ```sh
 sudo pacman -S flameshot
 sudo pacman -S libreoffice-still
+# translation software
 sudo pacman -S goldendict
+sudo pacman -S translate-shell
 ```
 
 In the end, run this command
