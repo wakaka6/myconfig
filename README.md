@@ -6,9 +6,9 @@ This project stores the configuration files for various software under linux.It 
 Clone this project to home directory.Note that this item cannot be deleted from home.
 ```sh
 sudo pacman -Sy git yay python3 curl wget
-git clone --recursive https://github.com/wakaka6/myconfig.git $HOME
+git clone --recursive https://github.com/wakaka6/myconfig.git $HOME/myconfig
 # if on virtual machine, use the following command to clone the repo
-git clone -b vm --recursive https://github.com/wakaka6/myconfig.git $HOME
+git clone -b vm --recursive https://github.com/wakaka6/myconfig.git $HOME/myconfig
 ```
 
 And then, install prerequirement software
