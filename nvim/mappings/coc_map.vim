@@ -43,9 +43,10 @@ imap <C-l> <Plug>(coc-snippets-expand)
 
 
 " Use <C-j> for select text for visual placeholder of snippet.
-vmap <C-j> <Plug>(coc-snippets-select)
+vnoremap <C-j> <Plug>(coc-snippets-select)
 
-" Use <C-j> for jump to next placeholder. The default of coc.nvim is <C-j>
+" Use <C-j> for jump to next placeholder. The default of coc.nvim is <C-j> on
+" vmode
 let g:coc_snippet_next = '<c-j>'
 
 " Use <C-k> for jump to previous placeholder. The default of coc.nvim is <C-k>
@@ -69,4 +70,4 @@ function! s:check_back_space() abort
   return !col || getline('.')[col - 1]  =~# '\s'
 endfunction
 
-let g:coc_snippet_next = '<tab>'
+let g:coc_snippet_next = '<c-l>'
