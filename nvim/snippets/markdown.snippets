@@ -1,0 +1,171 @@
+# A valid snippet should starts with:
+#
+#		snippet trigger_word [ "description" [ options ] ]
+#
+# and end with:
+#
+#		endsnippet
+#
+# Snippet options:
+#
+#		b - Beginning of line.
+#		i - In-word expansion.
+#		w - Word boundary.
+#		r - Regular expression
+#		e - Custom context snippet
+#		A - Snippet will be triggered automatically, when condition matches.
+#
+# Basic example:
+#
+#		snippet emitter "emitter properties" b
+#		private readonly ${1} = new Emitter<$2>()
+#		public readonly ${1/^_(.*)/$1/}: Event<$2> = this.$1.event
+#		endsnippet
+#
+# Online reference: https://github.com/SirVer/ultisnips/blob/master/doc/UltiSnips.txt
+
+#===
+#=== latex 
+#===
+snippet eq "Block rendering mathematics equations" b
+$$
+${2:equations}
+$$
+${0}
+endsnippet
+
+snippet ar "array environment" b
+\begin{array}{${1:c}}
+	${2:table}
+\end{array}${0}
+endsnippet
+
+
+snippet al "align environment" b
+\begin{aligned}
+	${1:equations}
+\end{aligned}${0}
+endsnippet
+
+snippet cases "enumerate possible cases" b
+\begin{cases}
+	${1:case}
+\end{cases}${0}
+endsnippet
+
+snippet text "wirte text"
+\text{$1}$0
+endsnippet
+
+snippet frac "Fraction" w
+\frac{$1}{$2}$0
+endsnippet
+
+snippet part "d/dx" w
+\frac{\partial ${1:V}}{\partial ${2:x}} $0
+endsnippet
+
+snippet srt "Square Root" wi
+\sqrt{${1:${VISUAL}}}$0
+endsnippet
+
+snippet sum "sum" w
+\sum_{n=${1:1}}^{${2:\infty}} ${3:a_n z^n}
+endsnippet
+
+snippet prod "product" w
+\prod_{${1:n=${2:1}}}^{${3:\infty}} ${4:${VISUAL}} $0
+endsnippet
+
+snippet lim "limit" w
+\lim\limits_{${1:n} \to ${2:\infty}} 
+endsnippet
+
+snippet => "Implies" w
+\implies
+endsnippet
+
+snippet =< "Implied by" w
+\impliedby
+endsnippet
+
+snippet iff "iff" w
+\iff
+endsnippet
+
+snippet == "Equals" w
+&= $1 \\\\
+endsnippet
+
+snippet != "Not Equal" w
+\neq 
+endsnippet
+
+snippet <= "leq" w
+\le 
+endsnippet
+
+snippet >= "geq" w
+\ge 
+endsnippet
+
+snippet eqv "Equivalence" w
+\equiv 
+endsnippet
+
+# Ordinary derivative
+snippet dv "derivative"
+	\\frac{d {$1}}{d {$2}} {$0}
+endsnippet
+
+# Summation
+snippet summ "summation"
+	\\sum_{{$1}} {$0}
+endsnippet
+
+# Shorthand for time derivative
+snippet dot "dot"
+	\\dot{{$1}} {$0}
+endsnippet
+
+# Shorthand for second order time derivative
+snippet ddot "ddot"
+	\\ddot{{$1}} {$0}
+endsnippet
+
+# Vector
+snippet vec "vector"
+	\\vec{{$1}} {$0}
+endsnippet
+
+# Cross product
+snippet \x "cross product"
+	\\times {$0}
+endsnippet
+
+# Dot product
+snippet . "dot product"
+	\\cdot {$0}
+endsnippet
+
+# Integral
+snippet int "integral"
+	\\int_{{$1}}^{{$2}} {$3} \\: d{$4} {$0}
+endsnippet
+
+# Right arrow
+snippet ra "rightarrow"
+	\\rightarrow {$0}
+endsnippet
+
+# Long right arrow
+snippet lra "longrightarrow"
+	\\longrightarrow {$0}
+endsnippet
+
+# Matrix
+snippet mat "smart matrix environment" b
+\\begin{${1:p/b/v/V/B/small}matrix}
+	${0:${VISUAL}}
+\\end{$1matrix}
+endsnippet
