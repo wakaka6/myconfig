@@ -1,5 +1,8 @@
 let g:mapleader="\<Space>"
 
+" unmap ctrl+j as null
+let g:BASH_Ctrl_j = 'off'
+
 map S :w<CR>
 map Q :q<CR>
 
