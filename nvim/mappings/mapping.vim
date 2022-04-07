@@ -36,3 +36,8 @@ inoremap <C-f> <Right>
 nnoremap < <<
 nnoremap > >>
 
+" search
+noremap <LEADER><CR> :nohlsearch<CR>
+
+" Copy to system clipboard
+vnoremap Y "+y
