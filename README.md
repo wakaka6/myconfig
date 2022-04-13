@@ -58,6 +58,7 @@ curl -sL install-node.now.sh/lts | bash
 Software
 ```sh
 sudo pacman -S flameshot
+sudo pacman -S network-manager-applet
 sudo pacman -S libreoffice-still
 # translation software
 sudo pacman -S goldendict
