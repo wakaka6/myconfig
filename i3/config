@@ -192,8 +192,8 @@ bindsym $mod+x [floating] move scratchpad
 bindsym $mod+Shift+x [floating] scratchpad show
 
 # control the voice
-bindsym $mod+F2 exec amixer sset Master 10%-
-bindsym $mod+F3 exec amixer sset Master 10%+
+bindsym $mod+F2 exec amixer sset Master 5%-
+bindsym $mod+F3 exec amixer sset Master 5%+
 bindsym $mod+M exec amixer sset Master 0%
 
 # flameshot
@@ -209,9 +209,10 @@ bindsym F1 exec flameshot gui
 exec_always --no-startup-id $HOME/.config/polybar/launch.sh
 
 exec --no-startup-id vmware-user-suid-wrapper & 
-exec variety
-exec goldendict &
-exec_always fcitx
+exec_always --no-startup-id variety
+exec_always --no-startup-id fcitx
+exec_always --no-startup-id optimus-manager-qt
+exec --no-startup-id goldendict
 
 new_window 1pixel
 gaps inner 10
