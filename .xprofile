@@ -1,6 +1,8 @@
+# typewriting config
 export GTK_IM_MODULE=fcitx
 export QT_IM_MODULE=fcitx
 export XMODIFIERS="@im=fcitx"
+export SDL_IM_MODULE=fcitx
 
 # XDG Paths
 export XDG_CONFIG_HOME=$HOME/.config
@@ -11,6 +13,9 @@ export XDG_DATA_HOME=$HOME/.local/share
 
 # zsh config dir
 export ZDOTDIR=$HOME/.config/zsh
+
+
+
 
 
 
