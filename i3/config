@@ -210,7 +210,7 @@ exec_always --no-startup-id $HOME/.config/polybar/launch.sh
 
 exec --no-startup-id vmware-user-suid-wrapper & 
 exec_always --no-startup-id variety
-exec_always --no-startup-id fcitx
+exec_always --no-startup-id fcitx5 -d
 exec_always --no-startup-id optimus-manager-qt
 exec --no-startup-id goldendict
 
