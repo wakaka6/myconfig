@@ -35,6 +35,12 @@ source ~/.config/nvim/mappings/vim-table-mode_map.vim
 source ~/.config/nvim/plugins/md-img-paste_config.vim
 source ~/.config/nvim/mappings/md-img-paste_map.vim
 
+" which-key config
+source ~/.config/nvim/plugins/vim-which-key_config.vim
+
+" indent-guides config
+" source ~/.config/nvim/plugins/vim-indent-guides_config.vim
+
 " ***
 " Maping Config
 " ***
