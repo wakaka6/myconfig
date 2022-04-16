@@ -31,8 +31,15 @@ call plug#begin(stdpath('data').'/plugged')
 	" Highlight the symbol and its references when holding the cursor.
 	Plug 'RRethy/vim-illuminate'
 
+    " show indent guides
+    " Plug 'nathanaelkane/vim-indent-guides'
+
 	" press Enter automatically select the code block
 	Plug 'gcmt/wildfire.vim'
+
+    " multi-cursor
+    Plug 'mg979/vim-visual-multi', {'branch': 'master'}
+
 	" 更改包裹的内容
 	Plug 'tpope/vim-surround'
 	Plug 'tpope/vim-repeat'
@@ -49,6 +56,10 @@ call plug#begin(stdpath('data').'/plugged')
 
     " snippets
     Plug 'honza/vim-snippets'
+
+    " CheatSheet
+    Plug 'liuchengxu/vim-which-key'
+
 
 	" markdown
 	Plug 'iamcco/markdown-preview.nvim', { 'do': { -> mkdp#util#install() }, 'for': 'markdown'}
