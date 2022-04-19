@@ -37,6 +37,11 @@ bindsym XF86AudioLowerVolume exec --no-startup-id pactl set-sink-volume @DEFAULT
 bindsym XF86AudioMute exec --no-startup-id pactl set-sink-mute @DEFAULT_SINK@ toggle && $refresh_i3status
 bindsym XF86AudioMicMute exec --no-startup-id pactl set-source-mute @DEFAULT_SOURCE@ toggle && $refresh_i3status
 
+# increase screen brightness
+bindsym XF86MonBrightnessUp exec --no-startup-id xbacklight -inc 10
+# decrease screen brightness
+bindsym XF86MonBrightnessDown exec --no-startup-id xbacklight -dec 10
+
 # Use Mouse+$mod to drag floating windows to their wanted position
 floating_modifier $mod
 
@@ -154,7 +159,7 @@ bindsym $mod+Shift+r restart
 bindsym $mod+Shift+e exec "i3-nagbar -t warning -m 'You pressed the exit shortcut. Do you really want to exit i3? This will end your X session.' -B 'Yes, exit i3' 'i3-msg exit'"
 
 # lock screen
-bindsym $mod+Escape exec i3lock -c 000000
+bindsym $mod+Escape exec --no-startup-id $HOME/.config/i3/lock.sh 
 
 # resize window (you can also use the mouse for that)
 mode "resize" {
@@ -195,9 +200,9 @@ bindsym $mod+x [floating] move scratchpad
 bindsym $mod+Shift+x [floating] scratchpad show
 
 # control the voice
-bindsym $mod+F2 exec amixer sset Master 5%-
-bindsym $mod+F3 exec amixer sset Master 5%+
-bindsym $mod+M exec amixer sset Master 0%
+bindsym $mod+F2 exec --no-startup-id amixer sset Master 5%-
+bindsym $mod+F3 exec --no-startup-id amixer sset Master 5%+
+bindsym $mod+M exec --no-startup-id amixer sset Master 0%
 
 # flameshot
 bindsym F1 --release exec --no-startup-id flameshot gui
