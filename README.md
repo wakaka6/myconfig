@@ -23,7 +23,12 @@ yay -S thunar
 
 Beautify
 ```sh
-pacman -S picom feh variety polybar-git arc-gtk-theme papirus-icon-theme adapta-gtk-theme lxappearance
+sudo pacman -S picom feh variety polybar-git arc-gtk-theme papirus-icon-theme adapta-gtk-theme lxappearance arc-icon-theme
+```
+
+Reinforce i3 like bspwm to the spiral tiling 
+```sh
+yay -S autotiling
 ```
 
 Need Font
@@ -60,6 +65,7 @@ Software
 sudo pacman -S flameshot
 sudo pacman -S network-manager-applet
 sudo pacman -S libreoffice-still
+sudo pacman -S dunst # notify
 # translation software
 sudo pacman -S goldendict
 sudo pacman -S translate-shell

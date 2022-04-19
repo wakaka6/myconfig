@@ -55,6 +55,11 @@ then
 fi
 
 
+if [ -d "$HOME/.config/dunst" -a ! -e $HOME/.config/dunst/dunstrc" ] 
+then
+    cp "$curPath/dunst/dunstrc" "$HOME/.config/dunst/dunstrc"
+fi
+
 if [ ! -d "$HOME/.oh-my-zsh" ] 
 then
     sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
