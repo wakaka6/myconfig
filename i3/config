@@ -214,7 +214,7 @@ bindsym F1 --release exec --no-startup-id flameshot gui
 # 		position top
 # 		i3bar_command i3bar --transparency
 # }
-exec_always --no-startup-id picom -b --inactive-dim 0.4
+exec_always --no-startup-id picom -b --inactive-dim 0.02
 exec_always --no-startup-id $HOME/.config/polybar/launch.sh
 
 exec --no-startup-id vmware-user-suid-wrapper & 

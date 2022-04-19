@@ -13,4 +13,4 @@ i3lock -n -c 000000
 # while pgrep -u $UID -x i3lock >/dev/null; do sleep 1; done
 
 # restart picom
-picom -b --inactive-dim 0.4
+picom -b --inactive-dim 0.02
