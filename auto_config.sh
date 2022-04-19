@@ -15,10 +15,10 @@ then
 fi
 
 
-if [ ! -L "$HOME/.config/i3/config" ] 
+if [ ! -L "$HOME/.config/i3" ] 
 then
-	rm -f "$HOME/.config/i3/config"
-    ln -s "$curPath/i3/config" "$HOME/.config/i3/config"
+	rm -fr "$HOME/.config/i3"
+    ln -s "$curPath/i3" "$HOME/.config/i3"
 fi
 
 if [ -d "$HOME/.config/i3status" -a ! -L "$HOME/.config/i3status/config" ] 
@@ -55,7 +55,7 @@ then
 fi
 
 
-if [ -d "$HOME/.config/dunst" -a ! -e $HOME/.config/dunst/dunstrc" ] 
+if [ -d "$HOME/.config/dunst" -a ! -e "$HOME/.config/dunst/dunstrc" ] 
 then
     cp "$curPath/dunst/dunstrc" "$HOME/.config/dunst/dunstrc"
 fi
@@ -66,7 +66,7 @@ then
 fi
 
 
-cp -i $curPath/zsh/zshrc $curPath/zsh/.zshrc
+cp -i "$curPath/zsh/zshrc" "$curPath/zsh/.zshrc"
 
 
 
