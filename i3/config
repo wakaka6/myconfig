@@ -30,7 +30,6 @@ exec --no-startup-id xss-lock --transfer-sleep-lock -- i3lock --nofork
 # and nm-applet is a desktop environment-independent system tray GUI for it.
 exec --no-startup-id nm-applet
 
-exec_always --no-startup-id picom -b --inactive-dim 0.4
 
 # Use pactl to adjust volume in PulseAudio. set $refresh_i3status killall -SIGUSR1 i3status
 bindsym XF86AudioRaiseVolume exec --no-startup-id pactl set-sink-volume @DEFAULT_SINK@ +10% && $refresh_i3status
@@ -201,7 +200,7 @@ bindsym $mod+F3 exec amixer sset Master 5%+
 bindsym $mod+M exec amixer sset Master 0%
 
 # flameshot
-bindsym F1 exec flameshot gui
+bindsym F1 --release exec --no-startup-id flameshot gui
 
 # Start i3bar to display a workspace bar (plus the system information i3status
 # finds out, if available)
@@ -210,13 +209,26 @@ bindsym F1 exec flameshot gui
 # 		position top
 # 		i3bar_command i3bar --transparency
 # }
+exec_always --no-startup-id picom -b --inactive-dim 0.4
 exec_always --no-startup-id $HOME/.config/polybar/launch.sh
+
+# number lock
+exec_always --no-startup-id numlockx on
+
+# 桌面通知
+exec --no-startup-id dunst &
 
 exec_always --no-startup-id variety
 exec_always --no-startup-id fcitx5 -d
 exec_always --no-startup-id optimus-manager-qt
 exec --no-startup-id goldendict
 
+##################
+#  Window config
+##################
+for_window [class="flameshot"] floating enable
 new_window 1pixel
 gaps inner 10
 gaps outer -2
+
+
