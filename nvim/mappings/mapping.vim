@@ -9,6 +9,8 @@ map Q :q<CR>
 " Press space twice to jump to the next '<,.>' and edit it.
 map <silent> <LEADER><LEADER> <ESC>/<,.><CR>:nohlsearch<CR>"_c4l
 
+nnoremap <silent> <LEADER>\| a<,.><ESC>
+
 " toggle buffer
 nnoremap <silent> [b :bprevious<CR>
 nnoremap <silent> ]b :bnext<CR>
@@ -44,3 +46,7 @@ noremap <LEADER><CR> :nohlsearch<CR>
 
 " Copy to system clipboard
 vnoremap Y "+y
+
+" 0切换行头和首个非空白符号
+noremap <expr>0 col('.') == 1 ? '^': '0'
+
