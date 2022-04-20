@@ -17,6 +17,7 @@ bindkey '^H' backward-delete-char
 bindkey '^D' delete-char
 bindkey '^K' kill-line
 bindkey '^U' backward-kill-line
+bindkey '^P' up-line-or-history
 
 function zle-keymap-select {
 	if [[ ${KEYMAP} == vicmd ]] || [[ $1 = 'block' ]]; then
