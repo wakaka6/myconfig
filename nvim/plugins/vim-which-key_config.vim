@@ -22,4 +22,9 @@ let g:which_key_map['f'] = {
       \ 'a' :  [ 'DashboardFindWord', 'Find fuzz word' ]         ,
       \ }
 
+let g:which_key_map['d'] = {
+      \ 'name' : '+debug' ,
+      \ 'c' :  [ '', 'Creat debug file' ]         ,
+      \ }
+
 call which_key#register('<Space>', "g:which_key_map")

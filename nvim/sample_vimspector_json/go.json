@@ -1,0 +1,16 @@
+{
+  "configurations": {
+    "run": {
+      "adapter": "vscode-go",
+      "filetypes": [ "go" ], // optional
+      "configuration": {
+        "request": "launch",
+        "program": "${fileDirname}",
+        "mode": "debug",
+        "dlvToolPath": "$HOME/go/bin/dlv"
+        // example, to disable delve's go version check
+        // "dlvFlags": [ "--check-go-version=false" ]
+      }
+    }
+  }
+}
