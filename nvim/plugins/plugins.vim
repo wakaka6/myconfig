@@ -69,4 +69,7 @@ call plug#begin(stdpath('data').'/plugged')
     " utils plugin
     Plug 'lambdalisue/suda.vim' " do stuff like :sudowrite
 
+    " debuger
+    Plug 'puremourning/vimspector', {'do': './install_gadget.py --enable-c --enable-python --enable-go'}
+
 call plug#end()

@@ -41,6 +41,11 @@ source ~/.config/nvim/plugins/vim-which-key_config.vim
 " indent-guides config
 " source ~/.config/nvim/plugins/vim-indent-guides_config.vim
 
+" debugger
+source ~/.config/nvim/plugins/vim-spector_config.vim
+source ~/.config/nvim/mappings/vim-spector_map.vim
+
+
 " ***
 " Maping Config
 " ***
