@@ -5,7 +5,11 @@
 	"suggest.noselect": true,
 	"suggest.enablePreselect": false,
     "snippets.userSnippetsDirectory": "~/myconfig/nvim/snippets",
-    "snippets.ultisnips.directories": ["~/myconfig/nvim/snippets"],
+    "snippets.ultisnips.directories": [
+        "~/myconfig/nvim/snippets",
+        "UltiSnips",
+        "gosnippets/UltiSnips"
+    ],
 
     "languageserver": {
         "golang": {
