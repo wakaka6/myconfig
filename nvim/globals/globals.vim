@@ -40,6 +40,9 @@ filetype indent on
 filetype plugin on
 filetype plugin indent on
 
+" set the .tex is of type latex filetype , not plaintext or context
+let g:tex_flavor = "latex"
+
 
 " === 
 " === 输入法配置
