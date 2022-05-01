@@ -5,7 +5,7 @@ inoremap <buffer> ,b **** <,.><Esc>F*hi
 inoremap <buffer> ,s ~~~~ <,.><Esc>F~hi
 inoremap <buffer> ,i ** <,.><Esc>F*i
 inoremap <buffer> ,d `` <,.><Esc>F`i
-inoremap <buffer> ,m $$ <,.><Esc>F$i
+" inoremap <buffer> ,m $$ <,.><Esc>F$i
 inoremap <buffer> ,c ```<Enter>```<Enter><Enter><,.><Esc>3kA
 inoremap <buffer> ,l - [ ] 
 " inoremap <buffer> ,p ![](<,.>) <,.><Esc>F[a
