@@ -27,6 +27,9 @@ source ~/.config/nvim/mappings/coc_map.vim
 source ~/.config/nvim/plugins/undotree_config.vim
 source ~/.config/nvim/mappings/undotree_map.vim
 
+" Ultisnipets
+source ~/.config/nvim/plugins/ultisnips_config.vim
+
 
 " markdown config
 source ~/.config/nvim/plugins/markdown-preview_config.vim
