@@ -48,7 +48,7 @@ pacman -S open-vm-tools-desktop
 
 About ranger prerequirement
 ```sh
-pacman -S ranger highlight atool w3m poppler mediainfo ueberzug evince
+pacman -S ranger highlight atool w3m poppler mediainfo ueberzug zathura-pdf-mupdf
 ```
 
 About Neovim prerequirement
