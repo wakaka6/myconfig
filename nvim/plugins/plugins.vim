@@ -55,6 +55,7 @@ call plug#begin(stdpath('data').'/plugged')
 	Plug 'mbbill/undotree'
 
     " snippets
+    Plug 'sirver/ultisnips'
     Plug 'honza/vim-snippets'
 
     " CheatSheet
