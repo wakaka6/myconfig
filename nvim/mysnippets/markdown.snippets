@@ -27,9 +27,20 @@
 #===
 #=== latex 
 #===
+
+
+snippet ,m "inline Math" wA
+$${1}$`!p
+if t[2] and t[2][0] not in [',', '.', '?', '-', ' ']:
+    snip.rv = ' '
+else:
+    snip.rv = ''
+`$2
+endsnippet
+
 snippet eq "Block rendering mathematics equations" b
 $$
-${2:equations}
+${2:${VISUAL}}
 $$
 ${0}
 endsnippet
@@ -169,3 +180,66 @@ snippet mat "smart matrix environment" b
 	${0:${VISUAL}}
 \\end{$1matrix}
 endsnippet
+
+
+# e.g. a1 => a_1
+snippet '([A-Za-z])(\d)' "auto subscript" wr
+`!p snip.rv = match.group(1)`_`!p snip.rv = match.group(2)`
+endsnippet
+
+# e.g. a12 => a_{12}
+snippet '([A-Za-z])_(\d\d)' "auto subscript2" wr
+`!p snip.rv = match.group(1)`_{`!p snip.rv = match.group(2)`}
+endsnippet
+
+###
+### Fraction
+###
+
+
+snippet // "Fraction" i
+\\frac{$1}{$2}$0
+endsnippet
+ 
+
+priority 10
+snippet '((\d+)|(\d*)(\\)?([A-Za-z]+)((\^|_)(\{\d+\}|\d))*)/' "Fraction" wrA
+\\frac{`!p snip.rv = match.group(1)`}{$1}$0
+endsnippet
+
+priority 1000
+snippet '^.*\)/' "() Fraction" wrA
+`!p
+stripped = match.string[:-1]
+depth = 0
+i = len(stripped) - 1
+while True:
+	if stripped[i] == ')': depth += 1
+	if stripped[i] == '(': depth -= 1
+	if depth == 0: break;
+	i -= 1
+snip.rv = stripped[0:i] + "\\frac{" + stripped[i+1:-1] + "}"
+`{$1}$0
+endsnippet 
+
+snippet / "Fraction" i
+\\frac{${VISUAL}}{$1}$0
+endsnippet
+
+# hat => \hat{}
+priority 10
+snippet "hat" "hat" ri
+\hat{$1}$0
+endsnippet
+
+# e.g. ihat => \hat{i}
+priority 100
+snippet "([a-zA-Z])hat" "hat" ri
+\hat{`!p snip.rv=match.group(1)`}
+endsnippet
+
+# e.g. v_1vec => \vec{v_1}
+snippet "(\w+)vec" "Vector postfix" ri
+\vec{`!p snip.rv=match.group(1)`}
+endsnippet 
+
