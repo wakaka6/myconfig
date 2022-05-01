@@ -33,6 +33,11 @@ then
 fi
 
 
+if [ ! -e "$HOME/.config/zathura" ] 
+then
+	ln -s "$curPath/zathura" "$HOME/.config/zathura"
+fi
+
 if [ ! -e "$HOME/.config/ranger" ] 
 then
 	ln -s "$curPath/ranger" "$HOME/.config/ranger"
