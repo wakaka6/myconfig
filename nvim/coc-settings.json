@@ -4,9 +4,9 @@
 
 	"suggest.noselect": true,
 	"suggest.enablePreselect": false,
-    "snippets.userSnippetsDirectory": "~/myconfig/nvim/snippets",
+    "snippets.userSnippetsDirectory": "~/myconfig/nvim/mysnippets",
     "snippets.ultisnips.directories": [
-        "~/myconfig/nvim/snippets",
+        "~/myconfig/nvim/mysnippets",
         "UltiSnips",
         "gosnippets/UltiSnips"
     ],
