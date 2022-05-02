@@ -82,12 +82,15 @@ snippet '^.*\)/' "() Fraction" wrA
 stripped = match.string[:-1]
 depth = 0
 i = len(stripped) - 1
-while True:
+while i >= 0:
 	if stripped[i] == ')': depth += 1
 	if stripped[i] == '(': depth -= 1
 	if depth == 0: break;
 	i -= 1
-snip.rv = stripped[0:i] + "\\frac{" + stripped[i+1:-1] + "}"
+if i == -1: # right braket count > left braket count
+	snip.rv = "\\frac{" + stripped[i+1:-1] + "}"
+else:
+	snip.rv = stripped[0:i] + "\\frac{" + stripped[i+1:-1] + "}"
 `{$1}$0
 endsnippet 
 
@@ -95,6 +98,7 @@ priority 5
 snippet / "Fraction" i
 \\frac{${VISUAL}}{$1}$0
 endsnippet
+
 
 # hat => \hat{}
 priority 10
