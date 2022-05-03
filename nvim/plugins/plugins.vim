@@ -61,6 +61,8 @@ call plug#begin(stdpath('data').'/plugged')
     " CheatSheet
     Plug 'liuchengxu/vim-which-key'
 
+    " auto-pair baracket
+    Plug 'jiangmiao/auto-pairs'
 
 	" markdown
 	Plug 'iamcco/markdown-preview.nvim', { 'do': { -> mkdp#util#install() }, 'for': 'markdown'}
