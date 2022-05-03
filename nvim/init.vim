@@ -30,6 +30,9 @@ source ~/.config/nvim/mappings/undotree_map.vim
 " Ultisnipets
 source ~/.config/nvim/plugins/ultisnips_config.vim
 
+" auto-pair
+source ~/.config/nvim/plugins/auto-pair_config.vim
+
 
 " markdown config
 source ~/.config/nvim/plugins/markdown-preview_config.vim
