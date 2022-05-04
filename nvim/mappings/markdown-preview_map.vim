@@ -1,1 +1,1 @@
-nmap <C-p> <Plug>MarkdownPreviewToggle
+autocmd FileType markdown nmap <C-p> <Plug>MarkdownPreviewToggle

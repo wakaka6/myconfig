@@ -13,41 +13,6 @@ source ~/.config/nvim/mappings/mapping.vim
 " ***
 source ~/.config/nvim/plugins/plugins.vim
 
-" NERDTree Config
-" source ~/.config/nvim/plugins/nerdTree_config.vim
-
-" fzf config
-source ~/.config/nvim/plugins/fzf_config.vim
-
-" coc.nvim
-source ~/.config/nvim/plugins/coc_config.vim
-source ~/.config/nvim/mappings/coc_map.vim
-
-" undotree
-source ~/.config/nvim/plugins/undotree_config.vim
-source ~/.config/nvim/mappings/undotree_map.vim
-
-" Ultisnipets
-source ~/.config/nvim/plugins/ultisnips_config.vim
-
-
-" markdown config
-source ~/.config/nvim/plugins/markdown-preview_config.vim
-source ~/.config/nvim/mappings/markdown-preview_map.vim
-source ~/.config/nvim/mappings/vim-table-mode_map.vim
-source ~/.config/nvim/plugins/md-img-paste_config.vim
-source ~/.config/nvim/mappings/md-img-paste_map.vim
-
-" which-key config
-source ~/.config/nvim/plugins/vim-which-key_config.vim
-
-" indent-guides config
-" source ~/.config/nvim/plugins/vim-indent-guides_config.vim
-
-" debugger
-source ~/.config/nvim/plugins/vim-spector_config.vim
-source ~/.config/nvim/mappings/vim-spector_map.vim
-
 
 " ***
 " Maping Config
