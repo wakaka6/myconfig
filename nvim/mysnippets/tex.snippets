@@ -31,13 +31,13 @@ endsnippet
 
 snippet box "Box"
 `!p snip.rv = '┌' + '─' * (len(t[1]) + 2) + '┐'`
-│ $1 │
+│ ${1:${VISUAL}} │
 `!p snip.rv = '└' + '─' * (len(t[1]) + 2) + '┘'`
 $0
 endsnippet
 
 snippet ,m "inline Math" wA
-$${1}$`!p
+$${1:${VISUAL}}$`!p
 if t[2] and t[2][0] not in [',', '.', '?', '-', ' ']:
     snip.rv = ' '
 else:
@@ -50,6 +50,10 @@ snippet ,c "display Math" wA
 \[
 $1
 .\] $0
+endsnippet
+
+snippet ,t "display Math" iA
+\text{${1:${VISUAL}}}
 endsnippet
 
 # a1 => a_1
