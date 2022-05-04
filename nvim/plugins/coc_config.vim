@@ -9,6 +9,7 @@ let g:coc_global_extensions = ['coc-json',
 			\ 'coc-sh', 
 			\ 'coc-cmake',
 			\ 'coc-git',
+			\ 'coc-ultisnips',
 			\ 'coc-vimtex',
 			\ 'coc-translator',
 			\ 'coc-explorer']
