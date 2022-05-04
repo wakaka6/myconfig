@@ -37,7 +37,7 @@ let g:vimtex_quickfix_open_on_warning = 0
 let g:vimtex_imaps_enabled = 0      
 
 " turn off completion
-let g:vimtex_complete_enabled = 1  
+let g:vimtex_complete_enabled = 0  
 
 " syntax conceal
 let g:vimtex_syntax_enabled   = 1      
