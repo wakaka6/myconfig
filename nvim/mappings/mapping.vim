@@ -53,4 +53,4 @@ vnoremap Y "+y
 noremap <expr>0 col('.') == 1 ? '^': '0'
 
 " 寻找中文
-nnoremap <silent> <LEADER>fz :/\v<[\u4e00-\u9fa5]+><CR>
+nnoremap <silent> <LEADER>fz <ESC>/\v<[\u4e00-\u9fa5]+>/<CR>:nohlsearch<CR>
