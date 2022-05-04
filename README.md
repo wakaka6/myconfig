@@ -58,6 +58,7 @@ sudo pacman -S python-pip
 pip install pynvim
 pip install jedi
 curl -sL install-node.now.sh/lts | bash
+sudo pacman -S xdotool
 ```
 
 Software
