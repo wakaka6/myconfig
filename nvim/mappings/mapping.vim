@@ -46,3 +46,9 @@ noremap <LEADER><CR> :nohlsearch<CR>
 
 " Copy to system clipboard
 vnoremap Y "+y
+
+" 0切换行头和首个非空白符号
+noremap <expr>0 col('.') == 1 ? '^': '0'
+
+" 寻找中文
+nnoremap <silent> <LEADER>fz :/\v<[\u4e00-\u9fa5]+><CR>
