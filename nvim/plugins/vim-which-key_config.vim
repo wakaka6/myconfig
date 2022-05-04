@@ -20,6 +20,7 @@ let g:which_key_map['f'] = {
       \ 'name' : '+find' ,
       \ 'f' :  [ 'DashboardFindFile', 'Find fuzz file' ]         ,
       \ 'a' :  [ 'DashboardFindWord', 'Find fuzz word' ]         ,
+      \ 'z' :  [ '', 'Find zh-CN word' ]         ,
       \ }
 
 let g:which_key_map['d'] = {
