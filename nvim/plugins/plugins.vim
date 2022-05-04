@@ -69,6 +69,10 @@ call plug#begin(stdpath('data').'/plugged')
 	Plug 'dhruvasagar/vim-table-mode'
 	Plug 'ferrine/md-img-paste.vim'
 
+    " latex
+    Plug 'lervag/vimtex'
+
+
     " utils plugin
     Plug 'lambdalisue/suda.vim' " do stuff like :sudowrite
 
@@ -76,3 +80,46 @@ call plug#begin(stdpath('data').'/plugged')
     Plug 'puremourning/vimspector', {'do': './install_gadget.py --enable-c --enable-python --enable-go'}
 
 call plug#end()
+
+
+" NERDTree Config
+" source ~/.config/nvim/plugins/nerdTree_config.vim
+
+" fzf config
+source ~/.config/nvim/plugins/fzf_config.vim
+
+" coc.nvim
+source ~/.config/nvim/plugins/coc_config.vim
+source ~/.config/nvim/mappings/coc_map.vim
+
+" undotree
+source ~/.config/nvim/plugins/undotree_config.vim
+source ~/.config/nvim/mappings/undotree_map.vim
+
+" Ultisnipets
+source ~/.config/nvim/plugins/ultisnips_config.vim
+
+" auto-pair
+source ~/.config/nvim/plugins/auto-pair_config.vim
+
+" latex config
+source ~/.config/nvim/plugins/vimtex_config.vim
+source ~/.config/nvim/mappings/vimtex_map.vim
+
+
+" markdown config
+source ~/.config/nvim/plugins/markdown-preview_config.vim
+source ~/.config/nvim/mappings/markdown-preview_map.vim
+source ~/.config/nvim/mappings/vim-table-mode_map.vim
+source ~/.config/nvim/plugins/md-img-paste_config.vim
+source ~/.config/nvim/mappings/md-img-paste_map.vim
+
+" which-key config
+source ~/.config/nvim/plugins/vim-which-key_config.vim
+
+" indent-guides config
+" source ~/.config/nvim/plugins/vim-indent-guides_config.vim
+
+" debugger
+source ~/.config/nvim/plugins/vim-spector_config.vim
+source ~/.config/nvim/mappings/vim-spector_map.vim
