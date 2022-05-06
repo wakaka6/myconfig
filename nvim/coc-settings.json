@@ -64,7 +64,11 @@
         "golang": {
             "command": "gopls",
             "rootPatterns": [
-                "go.mod"
+                "go.work",
+                "go.mod",
+                ".vim/",
+                ".git/",
+                ".hg/"
             ],
             "filetypes": [
                 "go"

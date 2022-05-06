@@ -8,6 +8,12 @@ autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
 
 endif 
 
+let g:nvim_plugins_installation_completed=1
+if empty(glob($HOME.'/.local/share/nvim/plugged/wildfire.vim/autoload/wildfire.vim'))
+	let g:nvim_plugins_installation_completed=0
+	autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
+endif
+
 " **********
 " Plugin Config
 " **********
@@ -20,19 +26,23 @@ call plug#begin(stdpath('data').'/plugged')
 	Plug 'vim-airline/vim-airline'
 	Plug 'vim-airline/vim-airline-themes'
 	Plug 'ryanoasis/vim-devicons'
+    " Plug 'mg979/vim-xtabline'
 
 	" file explore that press ctrl+b
 	" Plug 'scrooloose/nerdtree'
 
 	" Auto Complete
 	Plug 'neoclide/coc.nvim', {'branch': 'release'}
-    Plug 'fatih/vim-go', { 'do': ':GoUpdateBinaries' }
+    Plug 'fatih/vim-go', { 'do': ':GoUpdateBinaries',  'for': ['go', 'vim-plug'] }
 	
 	" Highlight the symbol and its references when holding the cursor.
 	Plug 'RRethy/vim-illuminate'
+    " show color #ffffff
+    Plug 'rrethy/vim-hexokinase', { 'do': 'make hexokinase' }
 
     " show indent guides
     " Plug 'nathanaelkane/vim-indent-guides'
+    Plug 'Yggdroot/indentLine'
 
 	" press Enter automatically select the code block
 	Plug 'gcmt/wildfire.vim'
@@ -61,13 +71,14 @@ call plug#begin(stdpath('data').'/plugged')
     " CheatSheet
     Plug 'liuchengxu/vim-which-key'
 
-    " auto-pair baracket
+    " auto-pair bracket
     Plug 'jiangmiao/auto-pairs'
 
 	" markdown
 	Plug 'iamcco/markdown-preview.nvim', { 'do': { -> mkdp#util#install() }, 'for': 'markdown'}
 	Plug 'dhruvasagar/vim-table-mode'
 	Plug 'ferrine/md-img-paste.vim'
+    " Plug 'mzlogin/vim-markdown-toc', { 'for': ['gitignore', 'markdown', 'vim-plug'] }
 
     " latex
     Plug 'lervag/vimtex'
@@ -75,51 +86,72 @@ call plug#begin(stdpath('data').'/plugged')
 
     " utils plugin
     Plug 'lambdalisue/suda.vim' " do stuff like :sudowrite
+    Plug 'akinsho/toggleterm.nvim', { 'tag': 'v1.*' } " open terminal on nvim floating window
 
     " debuger
     Plug 'puremourning/vimspector', {'do': './install_gadget.py --enable-c --enable-python --enable-go'}
 
+    " Virtual enhance
+    Plug 'luochen1990/rainbow'
+    Plug 'petertriho/nvim-scrollbar'
+    Plug 'kevinhwang91/nvim-hlslens'
+
 call plug#end()
 
 
-" NERDTree Config
+" ==================================================== NERDTree Config
 " source ~/.config/nvim/plugins/nerdTree_config.vim
 
-" fzf config
+" ==================================================== fzf config
 source ~/.config/nvim/plugins/fzf_config.vim
 
-" coc.nvim
+" ==================================================== coc.nvim
 source ~/.config/nvim/plugins/coc_config.vim
 source ~/.config/nvim/mappings/coc_map.vim
 
-" undotree
+" ==================================================== undotree
 source ~/.config/nvim/plugins/undotree_config.vim
 source ~/.config/nvim/mappings/undotree_map.vim
 
-" Ultisnipets
+" ==================================================== Ultisnipets
 source ~/.config/nvim/plugins/ultisnips_config.vim
 
-" auto-pair
+" ==================================================== auto-pair
 source ~/.config/nvim/plugins/auto-pair_config.vim
 
-" latex config
+" ==================================================== latex config
 source ~/.config/nvim/plugins/vimtex_config.vim
 source ~/.config/nvim/mappings/vimtex_map.vim
 
 
-" markdown config
+" ==================================================== markdown config
 source ~/.config/nvim/plugins/markdown-preview_config.vim
 source ~/.config/nvim/mappings/markdown-preview_map.vim
 source ~/.config/nvim/mappings/vim-table-mode_map.vim
 source ~/.config/nvim/plugins/md-img-paste_config.vim
 source ~/.config/nvim/mappings/md-img-paste_map.vim
 
-" which-key config
+" ==================================================== which-key config
 source ~/.config/nvim/plugins/vim-which-key_config.vim
 
-" indent-guides config
+" ==================================================== indent-guides config
 " source ~/.config/nvim/plugins/vim-indent-guides_config.vim
 
-" debugger
+" ==================================================== debugger
 source ~/.config/nvim/plugins/vim-spector_config.vim
 source ~/.config/nvim/mappings/vim-spector_map.vim
+
+" ==================================================== ranbow bracket
+source ~/.config/nvim/plugins/rainbow_config.vim
+
+" ==================================================== scroll bar and hlslens
+source ~/.config/nvim/plugins/nvim-scrollbar_config.vim
+source ~/.config/nvim/mappings/nvim-hlslens.vim
+
+
+" ==================================================== terminal toggle
+source ~/.config/nvim/plugins/terminaltoggle_config.vim
+source ~/.config/nvim/mappings/terminaltoggle_map.vim
+
+
+
