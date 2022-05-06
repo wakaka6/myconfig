@@ -3,8 +3,8 @@ let g:mapleader="\<Space>"
 " unmap ctrl+j as null
 let g:BASH_Ctrl_j = 'off'
 
-map S :w<CR>
-map Q :q<CR>
+map S <Cmd>w<CR>
+map Q <Cmd>q<CR>
 
 " Press space twice to jump to the next '<,.>' and edit it.
 map <silent> <LEADER><LEADER> <ESC>/<,.><CR>:nohlsearch<CR>"_c4l
@@ -44,7 +44,7 @@ nnoremap < <<
 nnoremap > >>
 
 " search
-noremap <LEADER><CR> :nohlsearch<CR>
+noremap <silent> <LEADER><CR> <Cmd>nohlsearch<CR>
 
 " Copy to system clipboard
 vnoremap Y "+y
