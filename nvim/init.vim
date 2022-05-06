@@ -14,10 +14,6 @@ source ~/.config/nvim/mappings/mapping.vim
 source ~/.config/nvim/plugins/plugins.vim
 
 
-" ***
-" Maping Config
-" ***
-source ~/.config/nvim/mappings/mapping.vim
 
 
 " ***
@@ -36,4 +32,3 @@ source ~/.config/nvim/scripts/convenience.vim
 " 自动加入代码头
 source ~/.config/nvim/scripts/auto_add_code_head.vim
 
-autocmd BufWritePost $MYVIMRC source $MYVIMRC
