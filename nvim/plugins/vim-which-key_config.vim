@@ -28,4 +28,8 @@ let g:which_key_map['d'] = {
       \ 'c' :  [ '', 'Creat debug file' ]         ,
       \ }
 
+let g:which_key_map['c'] = {
+      \ 'name' : '+coc' ,
+      \ }
+
 call which_key#register('<Space>', "g:which_key_map")
