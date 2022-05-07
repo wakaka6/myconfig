@@ -7,7 +7,7 @@ map S <Cmd>w<CR>
 map Q <Cmd>q<CR>
 
 " Press space twice to jump to the next '<,.>' and edit it.
-map <silent> <LEADER><LEADER> <ESC>/<,.><CR>:nohlsearch<CR>"_c4l
+noremap <silent> <LEADER><LEADER> <ESC>/<,.><CR>:nohlsearch<CR>"_c4l
 
 nnoremap <silent> <LEADER>\| a<,.><ESC>
 
