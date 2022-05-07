@@ -1,5 +1,7 @@
 " nnoremap <silent> <f5> :w<CR>:!xelatex %<CR>
 
+set cc=120
+
 inoremap <buffer> ,f <Esc>/<,.><CR>:nohlsearch<CR>"_c4l
 inoremap <buffer> ,w <Esc>/ <,.><CR>:nohlsearch<CR>"_c5l
 inoremap <buffer> ,b \textbf{}<,.><Esc>F{a
