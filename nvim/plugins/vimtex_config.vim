@@ -54,6 +54,6 @@ let g:vimtex_syntax_conceal = {
             \ 'sections': 0,
             \ 'styles': 1,
             \}
-set conceallevel=1
+set conceallevel=2
 let g:tex_conceal='abdmg'
 
