@@ -27,6 +27,8 @@ call plug#begin(stdpath('data').'/plugged')
 	Plug 'vim-airline/vim-airline-themes'
 	Plug 'ryanoasis/vim-devicons'
     " Plug 'mg979/vim-xtabline'
+    Plug 'kyazdani42/nvim-web-devicons'
+    Plug 'akinsho/bufferline.nvim', { 'tag': 'v2.*' }
 
 	" file explore that press ctrl+b
 	" Plug 'scrooloose/nerdtree'
@@ -153,5 +155,7 @@ source ~/.config/nvim/mappings/nvim-hlslens.vim
 source ~/.config/nvim/plugins/terminaltoggle_config.vim
 source ~/.config/nvim/mappings/terminaltoggle_map.vim
 
-
+" ==================================================== buffer Line config
+source ~/.config/nvim/plugins/bufferline_config.vim
+source ~/.config/nvim/mappings/bufferline_map.vim
 
