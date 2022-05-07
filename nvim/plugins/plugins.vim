@@ -81,7 +81,7 @@ call plug#begin(stdpath('data').'/plugged')
     " Plug 'mzlogin/vim-markdown-toc', { 'for': ['gitignore', 'markdown', 'vim-plug'] }
 
     " latex
-    Plug 'lervag/vimtex'
+    " Plug 'lervag/vimtex'
 
 
     " utils plugin
@@ -89,7 +89,7 @@ call plug#begin(stdpath('data').'/plugged')
     Plug 'akinsho/toggleterm.nvim', { 'tag': 'v1.*' } " open terminal on nvim floating window
 
     " debuger
-    Plug 'puremourning/vimspector', {'do': './install_gadget.py --enable-c --enable-python --enable-go'}
+    " Plug 'puremourning/vimspector', {'do': './install_gadget.py --enable-c --enable-python --enable-go'}
 
     " Virtual enhance
     Plug 'luochen1990/rainbow'
@@ -120,8 +120,8 @@ source ~/.config/nvim/plugins/ultisnips_config.vim
 source ~/.config/nvim/plugins/auto-pair_config.vim
 
 " ==================================================== latex config
-source ~/.config/nvim/plugins/vimtex_config.vim
-source ~/.config/nvim/mappings/vimtex_map.vim
+" source ~/.config/nvim/plugins/vimtex_config.vim
+" source ~/.config/nvim/mappings/vimtex_map.vim
 
 
 " ==================================================== markdown config
