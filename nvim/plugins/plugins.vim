@@ -43,7 +43,6 @@ call plug#begin(stdpath('data').'/plugged')
     Plug 'rrethy/vim-hexokinase', { 'do': 'make hexokinase' }
 
     " show indent guides
-    " Plug 'nathanaelkane/vim-indent-guides'
     Plug 'Yggdroot/indentLine'
 
 	" press Enter automatically select the code block
@@ -137,7 +136,7 @@ source ~/.config/nvim/mappings/md-img-paste_map.vim
 source ~/.config/nvim/plugins/vim-which-key_config.vim
 
 " ==================================================== indent-guides config
-" source ~/.config/nvim/plugins/vim-indent-guides_config.vim
+source ~/.config/nvim/plugins/indentline_config.vim
 
 " ==================================================== debugger
 source ~/.config/nvim/plugins/vim-spector_config.vim
