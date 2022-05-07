@@ -204,7 +204,7 @@ bindsym $mod+r mode "resize"
 bindsym $mod+minus move scratchpad
 
 # Show the first scratchpad window
-bindsym $mod+Shift+minus scratchpad show
+bindsym $mod+Shift+minus scratchpad show; floating disable
 
 # move all floating windows to the scratchpad
 bindsym $mod+x [floating] move scratchpad
