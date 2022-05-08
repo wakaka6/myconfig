@@ -121,3 +121,9 @@ snippet "(\w+)vec" "Vector postfix" ri
 \vec{`!p snip.rv=match.group(1)`}
 endsnippet 
 
+
+priority 5
+# Integral
+snippet int "integral"
+\\int_{$1}^{$2} {$3} \\: d{$4} $0
+endsnippet
