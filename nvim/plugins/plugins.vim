@@ -70,7 +70,8 @@ call plug#begin(stdpath('data').'/plugged')
     Plug 'honza/vim-snippets'
 
     " CheatSheet
-    Plug 'liuchengxu/vim-which-key'
+    " Plug 'liuchengxu/vim-which-key'
+    Plug 'folke/which-key.nvim'
 
     " auto-pair bracket
     Plug 'jiangmiao/auto-pairs'
@@ -133,7 +134,8 @@ source ~/.config/nvim/plugins/md-img-paste_config.vim
 source ~/.config/nvim/mappings/md-img-paste_map.vim
 
 " ==================================================== which-key config
-source ~/.config/nvim/plugins/vim-which-key_config.vim
+" source ~/.config/nvim/plugins/vim-which-key_config.vim
+source ~/.config/nvim/plugins/nvim-whichkey_config.vim
 
 " ==================================================== indent-guides config
 source ~/.config/nvim/plugins/indentline_config.vim
