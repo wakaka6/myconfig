@@ -1,26 +1,54 @@
 {
-  "configurations": {
-    "Launch": {
-      "adapter": "vscode-cpptools",
-      "filetypes": [ "cpp", "c", "objc", "rust" ], // optional
-      "configuration": {
-        "request": "launch",
-        "program": "<path to binary>",
-        "args": [ ... ],
-        "cwd": "<working directory>",
-        "environment": [ ... ],
-        "externalConsole": true,
-        "MIMode": "<lldb or gdb>"
-      }
-    },
-    "Attach": {
-      "adapter": "vscode-cpptools",
-      "filetypes": [ "cpp", "c", "objc", "rust" ], // optional
-      "configuration": {
-        "request": "attach",
-        "program": "<path to binary>",
-        "MIMode": "<lldb or gdb>"
-      }
+    "configurations": {
+        "launch": {
+            "adapter": "vscode-cpptools",
+            "filetypes": [
+                "cpp",
+                "c",
+                "objc",
+                "rust"
+            ],
+            "configuration": {
+                "name": "launch",
+                "stopAtEntry": true,
+                "type": "cppdbg",
+                "request": "launch",
+                "program": "${workspaceRoot}/a.out",
+                "args": [],
+                "cwd": "${workspaceRoot}",
+                "environment": [],
+                "externalConsole": true,
+                "MIMode": "gdb",
+                "breakpointers": {
+                    "exception": {
+                        "cpp_throw": "Y",
+                        "cpp_catch": "N"
+                    }
+                }
+            }
+        },
+        "attach": {
+            "adapter": "vscode-cpptools",
+            "filetypes": [
+                "cpp",
+                "c",
+                "objc",
+                "rust"
+            ],
+            "configuration": {
+                "name": "cpp:attach",
+                "stopAtEntry": true,
+                "type": "cppdbg",
+                "request": "attach",
+                "program": "${workspaceRoot}/a.out",
+                "MIMode": "gdb",
+                "breakpointers": {
+                    "exception": {
+                        "cpp_throw": "Y",
+                        "cpp_catch": "N"
+                    }
+                }
+            }
+        }
     }
-  }
 }
