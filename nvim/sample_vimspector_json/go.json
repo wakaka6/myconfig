@@ -1,16 +1,30 @@
 {
-  "configurations": {
-    "run": {
-      "adapter": "vscode-go",
-      "filetypes": [ "go" ], // optional
-      "configuration": {
-        "request": "launch",
-        "program": "${fileDirname}",
-        "mode": "debug",
-        "dlvToolPath": "$HOME/go/bin/dlv"
-        // example, to disable delve's go version check
-        // "dlvFlags": [ "--check-go-version=false" ]
-      }
+    "configurations": {
+        "run-legacy": {
+            "adapter": "vscode-go",
+            "filetypes": [
+                "go"
+            ],
+            "configuration": {
+                "request": "launch",
+                "cwd": "${workspaceRoot}",
+                "program": "${file}",
+                "mode": "debug",
+                "trace": true,
+                "stopOnEntry": true,
+                "dlvToolPath": "$GOPATH/bin/dlv",
+                "dlvLoadConfig": {
+                    "maxArrayValues": 1000,
+                    "maxStringLen": 1000
+                },
+                "env": {
+                    "GO111MODULE": "on"
+                },
+                "args": []
+            },
+            "breakpoints": {
+                "exception": {}
+            }
+        }
     }
-  }
 }
