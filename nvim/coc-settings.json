@@ -78,6 +78,9 @@
             }
         }
     },
+    "python.linting.pylintArgs": [
+        "--disable=E0401"
+    ],
     "explorer.width": 35,
     "explorer.quitOnOpen": true,
     "explorer.sources": [
