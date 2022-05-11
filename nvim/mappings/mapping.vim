@@ -6,6 +6,8 @@ let g:BASH_Ctrl_j = 'off'
 map S <Cmd>w<CR>
 map Q <Cmd>q<CR>
 
+map <C-q> <ESC>
+
 " Press space twice to jump to the next '<,.>' and edit it.
 noremap <silent> <LEADER><LEADER> <ESC>/<,.><CR>:nohlsearch<CR>"_c4l
 
