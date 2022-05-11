@@ -99,9 +99,10 @@ local mappings = {
 
   f = {
     name = 'find' ,
-    f =  { 'DashboardFindFile', 'Find fuzz file' },
-    a =  { 'DashboardFindWord', 'Find fuzz word' },
-    z =  { '', 'Find zh-CN word' },
+    f =  { ':DashboardFindFile<CR>', 'Find fuzz file' },
+    a =  { ':DashboardFindWord<CR>', 'Find fuzz word' },
+    h =  { ':DashboardFindHistory<CR>', 'Find fuzz history' },
+    z =  { [[<ESC>/\v<[\u4e00-\u9fa5]+>/<CR>:nohlsearch<CR>]], 'Find zh-CN word' },
   },
 
 }

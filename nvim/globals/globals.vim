@@ -20,7 +20,8 @@ set ruler
 set showcmd
 
 set foldenable " 允许折叠 
-set foldmethod=manual " 手动折叠 
+set foldmethod=syntax " 手动折叠 
+set foldlevel=100
 
 set updatetime=100
 
