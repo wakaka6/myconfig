@@ -97,6 +97,7 @@ call plug#begin(stdpath('data').'/plugged')
     Plug 'luochen1990/rainbow'
     Plug 'petertriho/nvim-scrollbar'
     Plug 'kevinhwang91/nvim-hlslens'
+    Plug 'lukas-reineke/virt-column.nvim'
 
 call plug#end()
 
@@ -159,4 +160,7 @@ source ~/.config/nvim/mappings/terminaltoggle_map.vim
 " ==================================================== buffer Line config
 source ~/.config/nvim/plugins/bufferline_config.vim
 source ~/.config/nvim/mappings/bufferline_map.vim
+" ==================================================== virt-column.nvim
+source ~/.config/nvim/plugins/virt-column_config.vim
+
 
