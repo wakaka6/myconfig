@@ -12,19 +12,24 @@ noremap <silent> <LEADER><LEADER> <ESC>/<,.><CR>:nohlsearch<CR>"_c4l
 nnoremap <silent> <LEADER>\| a<,.><ESC>
 
 " toggle buffer
-nnoremap <silent> [b :bprevious<CR>
-nnoremap <silent> ]b :bnext<CR>
-nnoremap <silent> <LEADER>[ :bprevious<CR>
-nnoremap <silent> <LEADER>] :bnext<CR>
-nnoremap <silent> [B :bfirst<CR>
-nnoremap <silent> ]B :blast<CR>
+nnoremap <silent> [b            :bprevious<CR>
+nnoremap <silent> ]b            :bnext<CR>
+nnoremap <silent> <LEADER>[     :bprevious<CR>
+nnoremap <silent> <LEADER>]     :bnext<CR>
+nnoremap <silent> [B            :bfirst<CR>
+nnoremap <silent> ]B            :blast<CR>
 
-" change vim windows
+" change better pane move method
 nnoremap <silent> <LEADER>h <C-w>h
 nnoremap <silent> <LEADER>j <C-w>j
 nnoremap <silent> <LEADER>k <C-w>k
 nnoremap <silent> <LEADER>l <C-w>l
 
+" resize pane with ALT+arrow
+nnoremap <silent> <M-Up>    <Cmd>resize -2<CR>
+nnoremap <silent> <M-Down>  <Cmd>resize +2<CR>
+nnoremap <silent> <M-Left>  <Cmd>vertical resize -2<CR>
+nnoremap <silent> <M-Right> <Cmd>vertical resize +2<CR>
 
 " Command Mode Cursor Movement
 cnoremap <C-a> <Home>
