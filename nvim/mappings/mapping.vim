@@ -6,7 +6,12 @@ let g:BASH_Ctrl_j = 'off'
 map S <Cmd>w<CR>
 map Q <Cmd>q<CR>
 
-map <C-q> <ESC>
+" I don't know why the map not work, so i use the imap xmap and smap to
+" replace map.
+inoremap <C-q> <ESC>
+xnoremap <C-q> <ESC>
+snoremap <C-q> <ESC>
+
 
 " Press space twice to jump to the next '<,.>' and edit it.
 noremap <silent> <LEADER><LEADER> <ESC>/<,.><CR>:nohlsearch<CR>"_c4l
