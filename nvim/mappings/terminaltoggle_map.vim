@@ -43,12 +43,12 @@ function _TRANSLATE_EN_TOGGLE()
 end
 vim.api.nvim_set_keymap("n", "te", "<cmd>lua _TRANSLATE_EN_TOGGLE()<CR>", {noremap = true, silent = true})
 
--- Translate Chinese to English with "te" to toggle
-local transZH = Terminal:new({ cmd = "trans -t zh -shell", hidden = true, direction = "horizontal" })
+-- Translate Chinese to English with "tc" to toggle
+local transZH = Terminal:new({ cmd = "trans -t en -shell", hidden = true, direction = "horizontal" })
 function _TRANSLATE_ZH_TOGGLE()
 	transZH:toggle()
 end
-vim.api.nvim_set_keymap("n", "tz", "<cmd>lua _TRANSLATE_ZH_TOGGLE()<CR>", {noremap = true, silent = true})
+vim.api.nvim_set_keymap("n", "tc", "<cmd>lua _TRANSLATE_ZH_TOGGLE()<CR>", {noremap = true, silent = true})
 
 EOF
 endif
