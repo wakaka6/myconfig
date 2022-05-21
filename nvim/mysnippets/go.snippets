@@ -1,0 +1,14 @@
+snippet ifer "handler err" 
+if err != nil {
+	${1}
+}
+${0}
+endsnippet
+
+
+snippet iferr "handler err" 
+if err == ${1:nil} {
+	${2}
+}
+${0}
+endsnippet
