@@ -156,8 +156,8 @@ bufferline.setup {
     },
 
     separator = {
-      guifg = { attribute = "bg", highlight = "DraculaBgLighter" },
-      guibg = { attribute = "bg", highlight = "DraculaBgLighter" },
+      guifg = { attribute = "bg", highlight = "TableLine" },
+      guibg = { attribute = "bg", highlight = "TableLine" },
     },
     separator_selected = {
       guifg = { attribute = "bg", highlight = "Normal" },
