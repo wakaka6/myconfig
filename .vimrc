@@ -85,7 +85,7 @@ func AutoSetTitle()
 	endif
 
 	if &filetype == 'python'
-		call setline(1, "\#!/usr/bin/python")
+		call setline(1, "\#!/usr/bin/env python")
 		call append(1, "\# encoding: utf-8")
 		normal o
 		normal o

@@ -183,12 +183,12 @@ endsnippet
 
 
 # e.g. a1 => a_1
-snippet '([A-Za-z])(\d)' "auto subscript" wrA
+snippet '([A-Za-z])(\d)' "auto subscript" wr
 `!p snip.rv = match.group(1)`_`!p snip.rv = match.group(2)`
 endsnippet
 
 # e.g. a12 => a_{12}
-snippet '([A-Za-z])_(\d\d)' "auto subscript2" wrA
+snippet '([A-Za-z])_(\d\d)' "auto subscript2" wr
 `!p snip.rv = match.group(1)`_{`!p snip.rv = match.group(2)`}
 endsnippet
 
