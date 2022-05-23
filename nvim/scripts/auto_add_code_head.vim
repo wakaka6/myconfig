@@ -5,9 +5,9 @@ autocmd BufNewFile *.cpp,*.[ch],*.sh,*.java,*.py exec ":call AutoSetCodeTitle()"
 func AutoSetCodeTitle() 
 	if &filetype == 'sh' 
 		call setline(1, "\#!/bin/bash") 
-		normal o
-		normal o
 		normal G
+		normal o
+		normal o
 	endif
 	
 	if &filetype == 'cpp'
@@ -37,11 +37,11 @@ func AutoSetCodeTitle()
 	endif
 
 	if &filetype == 'python'
-		call setline(1, "\#!/usr/bin/python")
-		call append(1, "\# encoding: utf-8")
-		normal o
-		normal o
+		call setline(1, "\#!/usr/bin/env python")
+		call append(line(".")+0, "\# encoding: utf-8")
 		normal G
+		normal o
+		normal o
 	endif
 	
 endfunc 
