@@ -44,6 +44,7 @@ mode "$mode_volume_control" {
         bindsym plus exec --no-startup-id amixer sset Master 5%+ && notify-send -t 500 'Volume Plus 5'
         bindsym minus exec --no-startup-id amixer sset Master 5%- && notify-send -t 500 'Volume Minus 5'
         bindsym M exec --no-startup-id amixer sset Master 0% && notify-send -t 500 'Set Volume to 0'
+        bindsym 0 exec --no-startup-id amixer sset Master 0% && notify-send -t 500 'Set Volume to 0'
 
         bindsym Return mode "default"
 		bindsym Escape mode "default"
