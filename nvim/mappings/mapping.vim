@@ -56,7 +56,7 @@ nnoremap < <<
 nnoremap > >>
 
 " search
-noremap <silent> <LEADER><CR> :nohlsearch<CR>
+nnoremap <silent> <LEADER><CR> :<C-u>nohlsearch<CR><C-l>
 
 " Copy to system clipboard
 vnoremap Y "+y
