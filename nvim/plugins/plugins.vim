@@ -78,6 +78,7 @@ call plug#begin(stdpath('data').'/plugged')
 
 	" markdown
 	Plug 'iamcco/markdown-preview.nvim', { 'do': { -> mkdp#util#install() }, 'for': 'markdown'}
+    Plug 'tpope/vim-markdown'
 	Plug 'dhruvasagar/vim-table-mode'
 	Plug 'ferrine/md-img-paste.vim'
     " Plug 'mzlogin/vim-markdown-toc', { 'for': ['gitignore', 'markdown', 'vim-plug'] }
