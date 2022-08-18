@@ -89,7 +89,7 @@ call plug#begin(stdpath('data').'/plugged')
 
     " utils plugin
     Plug 'lambdalisue/suda.vim' " do stuff like :sudowrite
-    Plug 'akinsho/toggleterm.nvim', { 'tag': 'v1.*' } " open terminal on nvim floating window
+    Plug 'akinsho/toggleterm.nvim', { 'tag': 'v2.*' } " open terminal on nvim floating window
 
     " debuger
     Plug 'puremourning/vimspector', {'do': './install_gadget.py --enable-c --enable-python --enable-go'}
