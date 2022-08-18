@@ -49,13 +49,13 @@ body {
     overflow-x: hidden;
 }
 
-#write {
+.markdown-body {
     max-width: 860px;
     margin: 0 auto;
     padding: 20px 30px 160px;
 }
 
-#write p {
+.markdown-body p {
     line-height: 1.8rem;
     word-spacing: .05rem;
     /* color: #3f3f3f; */
@@ -63,7 +63,7 @@ body {
 }
 
 
-/* #write ol li {
+/* .markdown-body ol li {
     padding-left: 0.5rem;
 } */
 
@@ -99,13 +99,13 @@ a {
 /* 链接 */
 
 
-/* #write a {
+/* .markdown-body a {
     border-bottom: 1px solid var(--main-6);
     color: var(--main-6);
     text-decoration: none;
 } */
 
-#write a {
+.markdown-body a {
     border-bottom: 1px solid blue;
     color: blue;
     text-decoration: none;
@@ -114,13 +114,13 @@ a {
 
 /* 目录 */
 
-#write a.md-toc-inner {
+.markdown-body a.md-toc-inner {
     line-height: 1.6;
     white-space: pre-line;
     border-bottom: none;
 }
 
-#write a:hover {
+.markdown-body a:hover {
     border-bottom: 2px solid var(--main-6);
     color: var(--main-7);
 }
@@ -139,27 +139,31 @@ h6 {
 }
 
 
-#write h2 {
-  font-size: 1.3rem;
-  border-bottom: 2px solid rgb(239, 112, 96);
+.markdown-body h2 {
+    font-size: 1.3rem;
+    border-bottom: 2px solid rgb(239, 112, 96);
 }
-#write h2 span {
- display: inline-block;
- font-weight: bold;
- background: rgb(239, 112, 96);
- color: #ffffff;
- padding: 3px 10px 1px;
- border-top-right-radius: 3px;
- border-top-left-radius: 3px;
- margin-right: 3px;
+
+/*
+.markdown-body h2>a:after {
+    display: inline-block;
+    font-weight: bold;
+    background: rgb(239, 112, 96);
+    color: #ffffff;
+    padding: 3px 10px 1px;
+    border-top-right-radius: 3px;
+    border-top-left-radius: 3px;
+    margin-right: 3px;
 }
-#write h2:after {
- display: inline-block;
- content: "";
- vertical-align: bottom;
- border-bottom: 36px solid #efebe9;
- border-right: 20px solid transparent;
+.markdown-body h2:after {
+    display: inline-block;
+    content: "";
+    vertical-align: bottom;
+    border-bottom: 36px solid #efebe9;
+    border-right: 20px solid transparent;
 }
+*/
+
 
 h1:hover a.anchor,
 h2:hover a.anchor,
@@ -235,8 +239,8 @@ h3 {
 
 /* 三级四级标题点击后左边的提示图标 */
 
-#write>h3.md-focus:before,
-#write>h4.md-focus:before {
+.markdown-body>h3.md-focus:before,
+.markdown-body>h4.md-focus:before {
     width: auto;
     height: auto;
     background-color: var(--main-5);
@@ -253,8 +257,8 @@ h4 {
     border-top: 4px solid var(--main-6);
 }
 
-#write h5::before,
-#write h6::before {
+.markdown-body h5::before,
+.markdown-body h6::before {
     position: absolute;
     right: calc(100% + .75em);
     top: 0;
@@ -267,22 +271,22 @@ h4 {
     border: 0;
 }
 
-#write h5 {
+.markdown-body h5 {
     /* margin-left: 2em; */
     font-size: 1rem;
 }
 
-#write h6 {
+.markdown-body h6 {
     /* margin-left: 2.5em; */
     font-size: 1rem;
 }
 
-#write h5::before {
+.markdown-body h5::before {
     content: 'H5';
     top: 0.18rem;
 }
 
-#write h6::before {
+.markdown-body h6::before {
     content: 'H6';
     top: 0.18rem;
 }
@@ -390,6 +394,8 @@ blockquote {
 table {
     padding: 0;
     word-break: initial;
+    border-collapse: collapse;
+    width: 100%;
 }
 
 table tr {
@@ -429,12 +435,12 @@ table tr td:last-child {
     margin-bottom: 0;
 }
 
-#write strong {
+.markdown-body strong {
     padding: 0.1em;
     color: #dc3545;
 }
 
-#write em {
+.markdown-body em {
     padding: 0 2px 0 2px;
     font-style: normal;
     color: #ff3502;
@@ -445,7 +451,7 @@ table tr td:last-child {
 
 /* 数学公式变蓝 */
 
-[md-inline='inline_math'] {
+.markdown-body .katex {
     color: blue;
     font-size: 100%;
 }
@@ -469,7 +475,7 @@ table tr td:last-child {
 
 /* 代码框 */
 
-#write .md-fences {
+.markdown-body pre {
     border: 1px solid #7a7a7a;
     -webkit-font-smoothing: initial;
     margin: 2rem 0 !important;
@@ -482,7 +488,7 @@ table tr td:last-child {
     word-wrap: normal;
 }
 
-#write [mdtype="math_block"] {
+.markdown-body .katex-display {
     font-size: 1.2rem;
 }
 
@@ -503,7 +509,7 @@ table tr td:last-child {
 
 /* 行间代码 */
 
-#write code,
+.markdown-body:not(.hljs) code,
 tt {
     padding: 2px 4px;
     border-radius: 2px;
