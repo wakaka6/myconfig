@@ -121,6 +121,10 @@ snippet "(\w+)vec" "Vector postfix" ri
 \vec{`!p snip.rv=match.group(1)`}
 endsnippet 
 
+# e.g. v_1bar => \bar{v_1}
+snippet "(\w+)bar" "bar" ri
+\bar{`!p snip.rv=match.group(1)`}
+endsnippet 
 
 priority 5
 # Integral
