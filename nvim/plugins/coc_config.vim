@@ -16,6 +16,14 @@ set shortmess+=c
 
 			" \ 'coc-snippets',
 
+" Having longer updatetime (default is 4000 ms = 4 s) leads to noticeable
+" delays and poor user experience.
+set updatetime=300
+
+" Always show the signcolumn, otherwise it would shift the text each time
+" diagnostics appear/become resolved.
+set signcolumn=yes
+
 " delay 300ms start coc
 let g:coc_start_at_startup=0
 function! CocTimerStart(timer)
@@ -39,5 +47,4 @@ augroup hugefile
         \ endif |
         \ unlet size
 augroup END
-
 

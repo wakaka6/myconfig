@@ -6,8 +6,8 @@ inoremap <silent><expr> <c-t> coc#refresh()
 " NOTE: Use command ':verbose imap <tab>' to make sure tab is not mapped by
 " other plugin before putting this into your config.
 inoremap <silent><expr> <TAB>
-      \ pumvisible() ? "\<C-n>" : "\<TAB>" 
-inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<C-h>"
+      \ coc#pum#visible() ? coc#pum#next(1): "\<TAB>" 
+inoremap <expr><S-TAB> coc#pum#visible() ? coc#pum#prev(1) : "\<C-h>"
 
 
 " Use `[g` and `]g` to navigate diagnostics on default
@@ -25,19 +25,27 @@ nmap <silent> gr <Plug>(coc-references)
 nmap <leader>rn <Plug>(coc-rename)
 
 " Use K to show documentation in preview window.
-nnoremap <silent> K <Cmd>call <SID>show_documentation()<CR>
+nnoremap <silent> K <Cmd>call ShowDocumentation()<CR>
 
-function! s:show_documentation()
-  if (index(['vim','help'], &filetype) >= 0)
-    execute 'h '.expand('<cword>')
-  elseif &filetype ==# 'tex'
-    VimtexDocPackage
-  elseif (coc#rpc#ready())
+function! ShowDocumentation()
+  if CocAction('hasProvider', 'hover')
     call CocActionAsync('doHover')
   else
-    execute '!' . &keywordprg . " " . expand('<cword>')
+    call feedkeys('K', 'in')
   endif
 endfunction
+
+" function! s:show_documentation()
+"   if (index(['vim','help'], &filetype) >= 0)
+"     execute 'h '.expand('<cword>')
+"   elseif &filetype ==# 'tex'
+"     VimtexDocPackage
+"   elseif (coc#rpc#ready())
+"     call CocActionAsync('doHover')
+"   else
+"     execute '!' . &keywordprg . " " . expand('<cword>')
+"   endif
+" endfunction
 
 " Applying codeAction to the selected region.
 " Example: `<leader>aap` for current paragraph
