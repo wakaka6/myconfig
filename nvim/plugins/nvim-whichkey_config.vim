@@ -99,10 +99,18 @@ local mappings = {
 
   f = {
     name = 'find' ,
-    f =  { ':DashboardFindFile<CR>', 'Find fuzz file' },
-    a =  { ':DashboardFindWord<CR>', 'Find fuzz word' },
-    h =  { ':DashboardFindHistory<CR>', 'Find fuzz history' },
+    f =  { '<Cmd>Telescope find_files find_command=rg,--hidden,--files<CR>', 'Find fuzz file' },
+    -- w =  { ':Telescope live_grep theme=ivy<CR>', 'Find fuzz word' },
+    w =  { '<Cmd>lua require("telescope").extensions.live_grep_args.live_grep_args(require("telescope.themes").get_ivy())<cr>', 'Find fuzz word' },
+    h = { "<Cmd>Telescope oldfiles<cr>", "Open Recent File" },
+
     z =  { [[<ESC>/\v<[\u4e00-\u9fa5]+>/<CR>:nohlsearch<CR>]], 'Find zh-CN word' },
+  },
+
+  s = {
+    name = 'session', 
+    s = {"<C-u>:SessionSave<CR>", 'Session Save'},
+    l = {"<C-u>:SessionLoad<CR>", 'Session Load'},
   },
 
 }
