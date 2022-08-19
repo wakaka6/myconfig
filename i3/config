@@ -246,13 +246,16 @@ exec --no-startup-id goldendict
 #  Window config
 ##################
 for_window [class="flameshot"] floating enable
-new_window 1pixel
+default_border pixel 2
 
 
 set $gaps_inner_default 10
 set $gaps_outer_default -2
 gaps inner $gaps_inner_default
 gaps outer $gaps_outer_default
+
+hide_edge_borders smart
+
 # Smart gaps (gaps used if only more than one container on the workspace)
 smart_gaps on
 
@@ -303,4 +306,16 @@ mode "$mode_gaps_outer" {
 		bindsym Return mode "default"
 		bindsym Escape mode "default"
 }
+
+##################
+#  themes config
+##################
+# class                 border  bground text    indicator child_border
+client.focused          #F999F8 #6272A4 #F8F8F2 #6272A4   #6272A4
+client.focused_inactive #44475A #44475A #F8F8F2 #44475A   #44475A
+client.unfocused        #282A36 #282A36 #BFBFBF #282A36   #282A36
+client.urgent           #44475A #FF5555 #F8F8F2 #FF5555   #FF5555
+client.placeholder      #282A36 #282A36 #F8F8F2 #282A36   #282A36
+
+client.background       #F8F8F2
 
