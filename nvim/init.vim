@@ -18,7 +18,14 @@ source ~/.config/nvim/plugins/plugins.vim
 " ***
 " theme config
 " ***
-source ~/.config/nvim/themes/airline.vim
+colorscheme dracula
+
+" source ~/.config/nvim/themes/airline.vim
+source ~/.config/nvim/themes/lualine.vim
+
+" source ~/.config/nvim/themes/catppuccin.vim
+source ~/.config/nvim/themes/dracula.vim
+
 " start menu
 source ~/.config/nvim/themes/dashboard_config.vim
 
