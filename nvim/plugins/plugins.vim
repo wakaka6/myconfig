@@ -92,6 +92,10 @@ call plug#begin(stdpath('data').'/plugged')
     " latex
     Plug 'lervag/vimtex'
 
+    " codeql
+    Plug 'MunifTanjim/nui.nvim' " UI Component Library for Neovim.
+    Plug 's1n7ax/nvim-window-picker', { 'tag': 'v1.*' }
+    Plug 'pwntester/codeql.nvim'
 
     " utils plugin
     Plug 'lambdalisue/suda.vim' " do stuff like :sudowrite
@@ -175,7 +179,11 @@ source ~/.config/nvim/mappings/terminaltoggle_map.vim
 " ==================================================== buffer Line config
 source ~/.config/nvim/plugins/bufferline_config.vim
 source ~/.config/nvim/mappings/bufferline_map.vim
+
 " ==================================================== virt-column.nvim
 source ~/.config/nvim/plugins/virt-column_config.vim
 
+
+" ==================================================== codeQL
+source ~/.config/nvim/plugins/codeql_config.vim
 
