@@ -9,7 +9,7 @@ set shiftwidth=4
 set expandtab  " using space relace tab
 set termguicolors
 
-" auto search highlight
+
 syntax enable
 exec "nohlsearch"
 set hlsearch
@@ -29,6 +29,12 @@ set updatetime=100
 " 显示行号
 set number
 set relativenumber
+
+" Always show tabs
+set showtabline=2
+" don't show like INSERT more something mode
+set noshowmode
+" auto search highlight
 
 " 保持屏幕上下总显示5行
 set scrolloff=5

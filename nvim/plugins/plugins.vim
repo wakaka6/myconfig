@@ -21,11 +21,13 @@ call plug#begin(stdpath('data').'/plugged')
 	" Plugin Section
 
 	" theme
-	Plug 'dracula/vim'
-	Plug 'morhetz/gruvbox'
-	Plug 'vim-airline/vim-airline'
-	Plug 'vim-airline/vim-airline-themes'
+	" Plug 'dracula/vim'
+    Plug 'wakaka6/dracula.nvim', {'branch': 'custom'}
+    " Plug 'catppuccin/nvim', {'as': 'catppuccin'}
+	" Plug 'vim-airline/vim-airline'
+	" Plug 'vim-airline/vim-airline-themes'
 	Plug 'ryanoasis/vim-devicons'
+    Plug 'nvim-lualine/lualine.nvim'
     " Plug 'mg979/vim-xtabline'
     Plug 'kyazdani42/nvim-web-devicons'
     Plug 'akinsho/bufferline.nvim', { 'tag': 'v2.*' }
