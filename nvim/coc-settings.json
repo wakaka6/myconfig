@@ -76,6 +76,23 @@
             "initializationOptions": {
                 "usePlaceholders": true
             }
+        },
+        "codeql": {
+            "command": "codeql",
+            "args": [
+                "execute",
+                "language-server",
+                "--check-errors=ON_CHANGE",
+                "--search-path=./:$QL_HOME/bin:$QL_HOME/codeql-repo",
+                "-q"
+            ],
+            "filetypes": [
+                "ql"
+            ],
+            "rootPatterns": [
+                "qlpack.yml"
+            ],
+            "requireRootPattern": true
         }
     },
     "python.linting.pylintArgs": [
