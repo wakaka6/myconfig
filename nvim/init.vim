@@ -21,7 +21,6 @@ source ~/.config/nvim/plugins/plugins.vim
 source ~/.config/nvim/themes/airline.vim
 " start menu
 source ~/.config/nvim/themes/dashboard_config.vim
-source ~/.config/nvim/mappings/dashboard_map.vim
 
 
 " ***
