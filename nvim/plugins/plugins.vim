@@ -64,6 +64,7 @@ call plug#begin(stdpath('data').'/plugged')
     Plug 'nvim-telescope/telescope.nvim', { 'tag': '0.1.0' }
     Plug 'nvim-telescope/telescope-fzf-native.nvim', { 'do': 'make' }
     Plug 'nvim-telescope/telescope-live-grep-args.nvim'
+
 	" beautiful catalogue
 	Plug 'glepnir/dashboard-nvim'
 
@@ -95,6 +96,7 @@ call plug#begin(stdpath('data').'/plugged')
     " utils plugin
     Plug 'lambdalisue/suda.vim' " do stuff like :sudowrite
     Plug 'akinsho/toggleterm.nvim', { 'tag': 'v2.*' } " open terminal on nvim floating window
+    Plug 'rcarriga/nvim-notify' " notify
 
     " debuger
     Plug 'puremourning/vimspector', {'do': './install_gadget.py --enable-c --enable-python --enable-go'}
@@ -117,6 +119,10 @@ source ~/.config/nvim/plugins/fzf_config.vim
 " ==================================================== coc.nvim
 source ~/.config/nvim/plugins/coc_config.vim
 source ~/.config/nvim/mappings/coc_map.vim
+
+" ==================================================== notify
+source ~/.config/nvim/plugins/notify_config.vim
+
 
 " ==================================================== undotree
 source ~/.config/nvim/plugins/undotree_config.vim
@@ -161,6 +167,7 @@ source ~/.config/nvim/mappings/nvim-hlslens.vim
 
 " ==================================================== telescope
 source ~/.config/nvim/plugins/telescope_config.vim
+
 " ==================================================== terminal toggle
 source ~/.config/nvim/plugins/terminaltoggle_config.vim
 source ~/.config/nvim/mappings/terminaltoggle_map.vim
