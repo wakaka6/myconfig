@@ -8,10 +8,13 @@ local status_ok, line = pcall(require, "lualine")
 if not status_ok then
 	return
 end
+
+local colors = require('dracula').colors()
+
 line.setup {
   options = {
     icons_enabled = true,
-    theme = 'dracula',
+    theme = 'dracula-nvim',
     component_separators = { left = '', right = '|'},
     section_separators = { left = '', right = ''},
     disabled_filetypes = {
