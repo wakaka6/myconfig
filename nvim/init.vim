@@ -19,7 +19,6 @@ source ~/.config/nvim/plugins/plugins.vim
 " ***
 " theme config
 " ***
-colorscheme dracula
 
 " source ~/.config/nvim/themes/airline.vim
 source ~/.config/nvim/themes/lualine.vim
@@ -30,6 +29,7 @@ source ~/.config/nvim/themes/dracula.vim
 " start menu
 source ~/.config/nvim/themes/dashboard_config.vim
 
+colorscheme dracula " set the color scheme after the settings are configured.
 
 " ***
 " script congig
