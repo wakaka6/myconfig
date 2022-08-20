@@ -83,7 +83,7 @@ local opts = {
 }
 
 local mappings = {
-  ["u"] = { ":UndotreeToggle<CR>", "undotree" },
+  ["u"] = { "<Cmd>MundoToggle<CR>", "undotree" },
   ["|"] = { "a<,.><ESC>", "Insert mark" },
   ["<leader>"] = { '<ESC>/<,.><CR>:nohlsearch<CR>"_c4l', "Find mark" },
 
