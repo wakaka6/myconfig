@@ -1,4 +1,3 @@
-if g:nvim_plugins_installation_completed == 1
 set termguicolors
 lua << EOF
 local status_ok, bufferline = pcall(require, "bufferline")
@@ -62,7 +61,12 @@ bufferline.setup {
     --     return true
     --   end
     -- end,
-    offsets = { { filetype = "coc-explorer", text = "", padding = 1 } },
+    offsets = { 
+        { filetype = "coc-explorer", text = "EXPLORER", 
+          -- highlight = { fg = '#FFB86C', bg = '#191A21', bold = true, italic = true, }, 
+          highlight = "BufferLineOffsetTable", -- define in wakaka6/Dracula.nvim theme 
+          padding = 1 }, 
+    },
     show_buffer_icons = true,
     show_buffer_close_icons = true,
     show_close_icon = true,
@@ -73,7 +77,7 @@ bufferline.setup {
     separator_style = "thin", --| "slant" | "thick" | "thin" | { 'any', 'any' },
     enforce_regular_tabs = true,
     always_show_bufferline = true,
-    -- sort_by = 'id' | 'extension' | 'relative_directory' | 'directory' | 'tabs' | function(buffer_a, buffer_b)
+    -- sort_by = 'relative_directory', -- 'id' | 'extension' | 'relative_directory' | 'directory' | 'tabs' | function(buffer_a, buffer_b)
     --   -- add custom logic
     --   return buffer_a.modified > buffer_b.modified
     -- end
@@ -81,4 +85,3 @@ bufferline.setup {
   },
 }
 EOF
-endif
