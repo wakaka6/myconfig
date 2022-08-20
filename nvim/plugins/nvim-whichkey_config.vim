@@ -87,6 +87,10 @@ local mappings = {
   ["|"] = { "a<,.><ESC>", "Insert mark" },
   ["<leader>"] = { '<ESC>/<,.><CR>:nohlsearch<CR>"_c4l', "Find mark" },
 
+  -- hop easyemotion
+  w = {"<Cmd>HopWord<CR>", "Easy Emotion by word"},
+  ["/"] = {"<Cmd>HopPattern<CR>", "Easy Emotion by pattern search"},
+
   c = {
     name = 'coc' 
 

@@ -50,6 +50,9 @@ call plug#begin(stdpath('data').'/plugged')
 	" press Enter automatically select the code block
 	Plug 'gcmt/wildfire.vim'
 
+    " Eazy Motion Everywhere
+    Plug 'phaazon/hop.nvim', {'tag': 'v2.*'}
+
     " multi-cursor
     " Plug 'mg979/vim-visual-multi', {'branch': 'master'} 
     "  I use `<operation>gn` with `/` or '?' search to achieve similar results now.
@@ -144,6 +147,10 @@ source ~/.config/nvim/plugins/vim-sandwich_config.vim
 " ==================================================== undotree
 source ~/.config/nvim/plugins/undotree_config.vim
 " source ~/.config/nvim/mappings/undotree_map.vim
+
+" ==================================================== hop
+source ~/.config/nvim/plugins/hop_config.vim
+source ~/.config/nvim/mappings/hop_map.vim
 
 " ==================================================== Ultisnipets
 source ~/.config/nvim/plugins/ultisnips_config.vim
