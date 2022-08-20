@@ -54,8 +54,9 @@ call plug#begin(stdpath('data').'/plugged')
     Plug 'mg979/vim-visual-multi', {'branch': 'master'}
 
 	" 更改包裹的内容
-	Plug 'tpope/vim-surround'
-	Plug 'tpope/vim-repeat'
+	" Plug 'tpope/vim-surround'
+	" Plug 'tpope/vim-repeat'
+    Plug 'machakann/vim-sandwich'
 
 	" fuzz search file
 	Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
@@ -97,12 +98,13 @@ call plug#begin(stdpath('data').'/plugged')
     " codeql
     Plug 'MunifTanjim/nui.nvim' " UI Component Library for Neovim.
     Plug 's1n7ax/nvim-window-picker', { 'tag': 'v1.*' }
-    Plug 'pwntester/codeql.nvim'
+    Plug 'pwntester/codeql.nvim', {'for': 'ql'}
 
     " utils plugin
     Plug 'lambdalisue/suda.vim' " do stuff like :sudowrite
     Plug 'akinsho/toggleterm.nvim', { 'tag': 'v2.*' } " open terminal on nvim floating window
     Plug 'rcarriga/nvim-notify' " notify
+    Plug 'dstein64/vim-startuptime' " Plugin startup speed test
 
     " debuger
     Plug 'puremourning/vimspector', {'do': './install_gadget.py --enable-c --enable-python --enable-go'}
@@ -129,6 +131,8 @@ source ~/.config/nvim/mappings/coc_map.vim
 " ==================================================== notify
 source ~/.config/nvim/plugins/notify_config.vim
 
+" ==================================================== vim-sandwich
+source ~/.config/nvim/plugins/vim-sandwich_config.vim
 
 " ==================================================== undotree
 source ~/.config/nvim/plugins/undotree_config.vim
