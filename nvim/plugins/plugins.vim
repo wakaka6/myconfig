@@ -115,8 +115,13 @@ call plug#begin(stdpath('data').'/plugged')
     Plug 'kevinhwang91/nvim-hlslens'
     Plug 'lukas-reineke/virt-column.nvim'
 
+    " AST enhance use tree-sitter of nvim interface
+    Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
+
 call plug#end()
 
+" ==================================================== nvim-treesitter
+source ~/.config/nvim/plugins/nvim-treesitter_config.vim
 
 " ==================================================== NERDTree Config
 " source ~/.config/nvim/plugins/nerdTree_config.vim
