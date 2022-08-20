@@ -51,7 +51,8 @@ call plug#begin(stdpath('data').'/plugged')
 	Plug 'gcmt/wildfire.vim'
 
     " multi-cursor
-    Plug 'mg979/vim-visual-multi', {'branch': 'master'}
+    " Plug 'mg979/vim-visual-multi', {'branch': 'master'} 
+    "  I use `<operation>gn` with `/` or '?' search to achieve similar results now.
 
 	" 更改包裹的内容
 	" Plug 'tpope/vim-surround'
@@ -72,7 +73,8 @@ call plug#begin(stdpath('data').'/plugged')
 	Plug 'glepnir/dashboard-nvim'
 
 	" 可以查看文件的历史修改树
-	Plug 'mbbill/undotree'
+	" Plug 'mbbill/undotree'
+    Plug 'simnalamburt/vim-mundo'
 
     " snippets
     Plug 'sirver/ultisnips'
@@ -141,7 +143,7 @@ source ~/.config/nvim/plugins/vim-sandwich_config.vim
 
 " ==================================================== undotree
 source ~/.config/nvim/plugins/undotree_config.vim
-source ~/.config/nvim/mappings/undotree_map.vim
+" source ~/.config/nvim/mappings/undotree_map.vim
 
 " ==================================================== Ultisnipets
 source ~/.config/nvim/plugins/ultisnips_config.vim
