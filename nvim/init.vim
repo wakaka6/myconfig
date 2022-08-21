@@ -8,6 +8,14 @@ source ~/.config/nvim/globals/globals.vim
 " ***
 source ~/.config/nvim/mappings/mapping.vim
 
+
+" ***
+" scripts
+" ***
+source ~/.config/nvim/scripts/convenience.vim
+" 自动加入代码头
+source ~/.config/nvim/scripts/auto_add_code_head.vim
+
 " ***
 " Plugin Config
 " ***
@@ -30,10 +38,4 @@ source ~/.config/nvim/themes/dashboard_config.vim
 
 colorscheme dracula " set the color scheme after the settings are configured.
 
-" ***
-" script congig
-" ***
-source ~/.config/nvim/scripts/convenience.vim
-" 自动加入代码头
-source ~/.config/nvim/scripts/auto_add_code_head.vim
 
