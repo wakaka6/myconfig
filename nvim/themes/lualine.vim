@@ -29,7 +29,14 @@ function custom_fname:update_status()
   return data
 end
 
-local ignore_focus = { 'coc-explorer', 'Mundo', 'help', 'vim-plug', } 
+local ignore_focus = { 
+    'coc-explorer', 
+    'Mundo', 
+    'help', 
+    'vim-plug', 
+    'codeql_panel', 
+    'codeql_explorer',
+} 
 
 function is_ignore() 
     for i = 1, #ignore_focus do
