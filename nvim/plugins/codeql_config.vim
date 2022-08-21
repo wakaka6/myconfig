@@ -45,8 +45,8 @@ ql.setup {
   max_ram = 32000,
   format_on_save = true,
   search_path = {
-    "$QL_HOME/bin",
-    "$QL_HOME/codeql-repo",
+    os.getenv('QL_HOME') .. "/bin",
+    -- os.getenv('QL_HOME') .. "/codeql-repo",
     "./codeql",
   },
 }
