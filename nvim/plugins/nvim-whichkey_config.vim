@@ -98,7 +98,7 @@ local mappings = {
 
   d = {
     name = 'debug' ,
-    c =  { '<Cmd>tabe .vimspector.json<CR><Cmd>LoadVimSpectorJsonTemplate<CR>', 'Creat debug file' },
+    -- c =  { '<Cmd>tabe .vimspector.json<CR><Cmd>LoadVimSpectorJsonTemplate<CR>', 'Creat debug file' },
   },
 
   f = {

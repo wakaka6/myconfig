@@ -196,8 +196,8 @@ source ~/.config/nvim/plugins/nvim-whichkey_config.vim
 source ~/.config/nvim/plugins/indent_blankline_config.vim
 
 " ==================================================== debugger
-source ~/.config/nvim/plugins/vim-spector_config.vim
-source ~/.config/nvim/mappings/vim-spector_map.vim
+" source ~/.config/nvim/plugins/vim-spector_config.vim
+" source ~/.config/nvim/mappings/vim-spector_map.vim
 
 " ==================================================== ranbow bracket
 source ~/.config/nvim/plugins/rainbow_config.vim
