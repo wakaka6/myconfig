@@ -44,9 +44,6 @@ call plug#begin(stdpath('data').'/plugged')
     " show color #ffffff
     Plug 'rrethy/vim-hexokinase', { 'do': 'make hexokinase' }
 
-    " show indent guides
-    Plug 'Yggdroot/indentLine'
-
 	" press Enter automatically select the code block
 	Plug 'gcmt/wildfire.vim'
 
@@ -127,6 +124,9 @@ call plug#begin(stdpath('data').'/plugged')
     Plug 'kevinhwang91/nvim-hlslens'
     Plug 'lukas-reineke/virt-column.nvim'
 
+    " Plug 'Yggdroot/indentLine' " show indent guides
+    Plug 'lukas-reineke/indent-blankline.nvim'
+
 
 call plug#end()
 
@@ -175,12 +175,15 @@ source ~/.config/nvim/mappings/vim-table-mode_map.vim
 source ~/.config/nvim/plugins/md-img-paste_config.vim
 source ~/.config/nvim/mappings/md-img-paste_map.vim
 
+source ~/.config/nvim/plugins/goyo_config.vim
+
 " ==================================================== which-key config
 " source ~/.config/nvim/plugins/vim-which-key_config.vim
 source ~/.config/nvim/plugins/nvim-whichkey_config.vim
 
 " ==================================================== indent-guides config
-source ~/.config/nvim/plugins/indentline_config.vim
+" source ~/.config/nvim/plugins/indentline_config.vim
+source ~/.config/nvim/plugins/indent_blankline_config.vim
 
 " ==================================================== debugger
 source ~/.config/nvim/plugins/vim-spector_config.vim
