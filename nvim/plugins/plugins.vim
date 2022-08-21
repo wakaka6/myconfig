@@ -111,6 +111,7 @@ call plug#begin(stdpath('data').'/plugged')
     Plug 'akinsho/toggleterm.nvim', { 'tag': 'v2.*' } " open terminal on nvim floating window
     Plug 'rcarriga/nvim-notify' " notify
     Plug 'dstein64/vim-startuptime' " Plugin startup speed test
+    Plug 'sindrets/winshift.nvim' " Rearrange your windows with ease.
 
     " debuger
     Plug 'puremourning/vimspector', {'do': './install_gadget.py --enable-c --enable-python --enable-go'}
@@ -225,3 +226,6 @@ source ~/.config/nvim/plugins/virt-column_config.vim
 " ==================================================== codeQL
 source ~/.config/nvim/plugins/codeql_config.vim
 
+
+" ==================================================== winshift
+source ~/.config/nvim/plugins/winshift_config.vim

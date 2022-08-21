@@ -134,9 +134,24 @@ local vmappings = {
   },
 }
 
+-- window <C-w>
+local wopts = {
+  mode = "n",
+  prefix = "<C-w>",
+  buffer = nil, -- Global mappings. Specify a buffer number for buffer local mappings
+  silent = true, -- use `silent` when creating keymaps
+  noremap = true, -- use `noremap` when creating keymaps
+  nowait = true, -- use `nowait` when creating keymaps
+}
+local wmappings = {
+    m = { "<Cmd>WinShift<CR>", "Window Shift Mode" },
+  --  X = { "<Cmd>WinShift swap<CR>", "Pick window to swap" },
+}
+
 which_key.setup(setup)
 which_key.register(mappings, opts)
 which_key.register(vmappings, vopts)
+which_key.register(wmappings, wopts)
 EOF
 
 
