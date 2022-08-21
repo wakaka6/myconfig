@@ -8,7 +8,7 @@ command! -bang -nargs=* LoadVimSpectorJsonTemplate call fzf#run({
             \   'down': 20,
             \   'sink': function('<sid>read_template_into_buffer')
             \ })
-noremap <leader>dc :tabe .vimspector.json<CR>:LoadVimSpectorJsonTemplate<CR>
+noremap <leader>dc <Cmd>tabe .vimspector.json<CR><Cmd>LoadVimSpectorJsonTemplate<CR>
 
 nmap <LocalLeader><F11> <Plug>VimspectorUpFrame
 nmap <LocalLeader><F12> <Plug>VimspectorDownFrame

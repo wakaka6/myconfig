@@ -25,7 +25,7 @@ sl.setup({
         Search = {
             text = { "-", "=" },
             priority = 0,
-            color = nil,
+            color = "orange",
             cterm = nil,
             highlight = "Search",
         },
