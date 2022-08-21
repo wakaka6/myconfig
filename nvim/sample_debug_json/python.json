@@ -1,0 +1,40 @@
+{
+    "configurations": [
+        {
+            "name": "Custom Python Launch ",
+            "type": "python",
+            "request": "launch",
+            "program": "${file}",
+            "args": [],
+            "pythonPath": "/usr/bin/python"
+        },
+        {
+            "name": "Custom Python: Attach",
+            "type": "python",
+            "request": "attach",
+            "port": 5678,
+            "host": "localhost",
+            "pathMappings": [
+                {
+                    "localRoot": "${workspaceFolder}",
+                    "remoteRoot": "."
+                }
+            ]
+        },
+        {
+            "name": "Python: Flask",
+            "type": "python",
+            "request": "launch",
+            "module": "flask",
+            "env": {
+                "FLASK_APP": "app.py",
+                "FLASK_ENV": "development"
+            },
+            "args": [
+                "run",
+                "--no-debugger"
+            ],
+            "jinja": true
+        },
+    ]
+}
