@@ -124,6 +124,13 @@ call plug#begin(stdpath('data').'/plugged')
     Plug 'kevinhwang91/nvim-hlslens'
     Plug 'lukas-reineke/virt-column.nvim'
 
+    function! UpdateRemotePlugins(...)
+        " Needed to refresh runtime files
+        let &rtp=&rtp
+        UpdateRemotePlugins
+    endfunction
+    Plug 'gelguy/wilder.nvim', { 'do': function('UpdateRemotePlugins') } " A more adventurous wildmenu
+
     " Plug 'Yggdroot/indentLine' " show indent guides
     Plug 'lukas-reineke/indent-blankline.nvim'
 
@@ -163,10 +170,13 @@ source ~/.config/nvim/plugins/ultisnips_config.vim
 " ==================================================== auto-pair
 source ~/.config/nvim/plugins/auto-pair_config.vim
 
+" ==================================================== wilder
+source ~/.config/nvim/plugins/wilder_config.vim
+
+
 " ==================================================== latex config
 " source ~/.config/nvim/plugins/vimtex_config.vim
 " source ~/.config/nvim/mappings/vimtex_map.vim
-
 
 " ==================================================== markdown config
 source ~/.config/nvim/plugins/markdown-preview_config.vim
