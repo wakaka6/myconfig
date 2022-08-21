@@ -20,8 +20,8 @@ wilder.set_option('pipeline', {
 
 local highlighters = {
   wilder.pcre2_highlighter(),
-  -- wilder.basic_highlighter(),
-  wilder.lua_fzy_highlighter(),
+  wilder.basic_highlighter(),
+  -- wilder.lua_fzy_highlighter(),
 }
 
 local popupmenu_renderer = wilder.popupmenu_renderer(
