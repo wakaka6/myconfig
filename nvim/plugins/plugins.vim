@@ -53,6 +53,7 @@ call plug#begin(stdpath('data').'/plugged')
     " multi-cursor
     " Plug 'mg979/vim-visual-multi', {'branch': 'master'} 
     "  I use `<operation>gn` with `/` or '?' search to achieve similar results now.
+    "  http://vimcasts.org/episodes/operating-on-search-matches-using-gn/
 
 	" 更改包裹的内容
 	" Plug 'tpope/vim-surround'
@@ -113,8 +114,11 @@ call plug#begin(stdpath('data').'/plugged')
     Plug 'dstein64/vim-startuptime' " Plugin startup speed test
     Plug 'sindrets/winshift.nvim' " Rearrange your windows with ease.
 
-    " debuger
+    " debugger
     " Plug 'puremourning/vimspector', {'do': './install_gadget.py --enable-c --enable-python --enable-go'}
+    Plug 'mfussenegger/nvim-dap'
+    Plug 'rcarriga/nvim-dap-ui'
+    Plug 'theHamsta/nvim-dap-virtual-text'
 
     " AST enhance use tree-sitter of nvim interface
     Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
@@ -199,6 +203,7 @@ source ~/.config/nvim/plugins/indent_blankline_config.vim
 " ==================================================== debugger
 " source ~/.config/nvim/plugins/vim-spector_config.vim
 " source ~/.config/nvim/mappings/vim-spector_map.vim
+source ~/.config/nvim/dap/dap_config.vim
 
 " ==================================================== ranbow bracket
 source ~/.config/nvim/plugins/rainbow_config.vim

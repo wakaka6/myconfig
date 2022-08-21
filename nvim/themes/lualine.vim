@@ -37,6 +37,11 @@ local ignore_focus = {
     'toggleterm',
     'codeql_panel', 
     'codeql_explorer',
+    'dapui_watches',
+    'dapui_stacks',
+    'dapui_breakpoints',
+    'dapui_scopes',
+    'dapui_console',
 } 
 
 function is_ignore() 
