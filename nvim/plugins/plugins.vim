@@ -96,6 +96,10 @@ call plug#begin(stdpath('data').'/plugged')
 	Plug 'dhruvasagar/vim-table-mode'
 	Plug 'ferrine/md-img-paste.vim'
     " Plug 'mzlogin/vim-markdown-toc', { 'for': ['gitignore', 'markdown', 'vim-plug'] }
+    
+    " Distraction-free writing in Vim
+    Plug 'junegunn/goyo.vim' 
+    Plug 'junegunn/limelight.vim'
 
     " latex
     " Plug 'lervag/vimtex'
@@ -114,14 +118,15 @@ call plug#begin(stdpath('data').'/plugged')
     " debuger
     " Plug 'puremourning/vimspector', {'do': './install_gadget.py --enable-c --enable-python --enable-go'}
 
+    " AST enhance use tree-sitter of nvim interface
+    Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
+
     " Virtual enhance
     Plug 'luochen1990/rainbow'
     Plug 'petertriho/nvim-scrollbar'
     Plug 'kevinhwang91/nvim-hlslens'
     Plug 'lukas-reineke/virt-column.nvim'
 
-    " AST enhance use tree-sitter of nvim interface
-    Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
 
 call plug#end()
 
