@@ -83,13 +83,13 @@ local opts = {
 }
 
 local mappings = {
-  ["u"] = { "<Cmd>MundoToggle<CR>", "undotree" },
+  ["u"] = { "<cmd>MundoToggle<CR>", "undotree" },
   ["|"] = { "a<,.><ESC>", "Insert mark" },
   ["<leader>"] = { '<ESC>/<,.><CR>:nohlsearch<CR>"_c4l', "Find mark" },
 
   -- hop easyemotion
-  w = {"<Cmd>HopWord<CR>", "Easy Emotion by word"},
-  ["/"] = {"<Cmd>HopPattern<CR>", "Easy Emotion by pattern search"},
+  w = {"<cmd>HopWord<CR>", "Easy Emotion by word"},
+  ["/"] = {"<cmd>HopPattern<CR>", "Easy Emotion by pattern search"},
 
   c = {
     name = 'coc' 
