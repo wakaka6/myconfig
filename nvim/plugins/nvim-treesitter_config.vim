@@ -7,13 +7,13 @@ end
 
 nt.setup {
   -- A list of parser names, or "all"
-  ensure_installed = { "markdown", "latex" },
+  ensure_installed = { "c", "cpp", "go", "python", "lua", "markdown", "latex" },
 
   -- Install parsers synchronously (only applied to `ensure_installed`)
-  sync_install = true,
+  sync_install = false,
 
   -- Automatically install missing parsers when entering buffer
-  auto_install = false,
+  auto_install = true,
 
   -- List of parsers to ignore installing (for "all")
   ignore_install = { "all" },
