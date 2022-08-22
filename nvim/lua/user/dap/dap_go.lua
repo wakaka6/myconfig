@@ -1,8 +1,7 @@
-" ===
-" === Debug golang
-" ===
+-- ===
+-- === Debug golang
+-- ===
 
-lua << EOF
 local dap = require('dap')
 dap.adapters.delve = {
   type = 'server',
@@ -36,6 +35,5 @@ dap.configurations.go = {
     request = "launch",
     mode = "test",
     program = "./${relativeFileDirname}"
-  } 
+  }
 }
-EOF

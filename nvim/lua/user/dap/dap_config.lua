@@ -1,4 +1,3 @@
-lua << EOF
 local status_ok, dap = pcall(require, "dap")
 if not status_ok then
   return
@@ -15,7 +14,7 @@ if not status_ok then
 end
 
 -- ============================= dap icon =====================================
-  local dap_breakpoint = {
+local dap_breakpoint = {
     error = {
       text = "●",
       texthl = "LspDiagnosticsDeafultError",
@@ -46,7 +45,7 @@ end
       linehl = "DiagnosticUnderlineInfo",
       numhl = "LspDiagnosticsDefaultInformation",
     },
-  }
+}
 
 vim.fn.sign_define("DapBreakpoint", dap_breakpoint.error)
 vim.fn.sign_define("DapStopped", dap_breakpoint.stopped)
@@ -116,7 +115,7 @@ dapui.setup({
       elements = {
         "console",
       },
-      size = 30, 
+      size = 30,
       position = "right",
     },
   },
@@ -148,6 +147,10 @@ end
 
 dap.listeners.after.event_initialized["dapui_config"] = function()
   debug_open()
+
+  if vim.bo.filetype == 'python' then
+      dapui.close(3)
+  end
 end
 dap.listeners.before.event_terminated["dapui_config"] = function()
   debug_close()
@@ -159,17 +162,9 @@ dap.listeners.before.disconnect["dapui_config"] = function()
   debug_close()
 end
 
-EOF
 
-" =================== mappping ========================
-nnoremap <silent> <F5> <Cmd>lua require'dap'.continue()<CR>
-nnoremap <silent> <F9> <Cmd>lua require("dap").toggle_breakpoint()<CR>
-nnoremap <silent> <F10> <Cmd>lua require'dap'.step_over()<CR>
-nnoremap <silent> <F11> <Cmd>lua require'dap'.step_into()<CR>
-nnoremap <silent> <F12> <Cmd>lua require'dap'.step_out()<CR>
-
-" =================== adapter ========================
-source ~/.config/nvim/dap/dap_cpp.vim
-source ~/.config/nvim/dap/dap_python.vim
-source ~/.config/nvim/dap/dap_go.vim
+-- =================== adapter ========================
+require('user.dap.dap_cpp')
+require('user.dap.dap_go')
+require('user.dap.dap_python')
 

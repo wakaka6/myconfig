@@ -105,7 +105,7 @@ local mappings = {
     q = { '<Cmd>lua require("dap").terminate()<CR>', 'stop debug' },
     l = {'<Cmd>lua require("dap.ext.vscode").load_launchjs(".dap_launch.json")<CR>', 
         'load launch.json to dap'},
-    b = { '<Cmd>lua require("dap").toggle_breakpoint()<CR>', 'breakpoint' },
+    b = { [[<Cmd>lua require("dap").toggle_breakpoint();require'user.dap.utils'.store_breakpoints()<CR>]], 'breakpoint' },
     B = { "<Cmd>lua require'dap'.set_breakpoint(vim.fn.input('Breakpoint condition: '))<CR>", 
         'condition breakpoint' },
     u = { "<Cmd>lua require'dap'.up()<CR>", "Go up stack frame" },
