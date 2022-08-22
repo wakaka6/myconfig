@@ -13,8 +13,9 @@ source ~/.config/nvim/mappings/mapping.vim
 " scripts
 " ***
 source ~/.config/nvim/scripts/convenience.vim
-" 自动加入代码头
-source ~/.config/nvim/scripts/auto_add_code_head.vim
+
+" auto command
+source ~/.config/nvim/scripts/autocommands.vim
 
 " ***
 " Plugin Config
