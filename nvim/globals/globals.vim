@@ -14,6 +14,7 @@ syntax enable
 exec "nohlsearch"
 set hlsearch
 set incsearch
+set cursorline " highlight current cursor line
 
 set autoindent
 set clipboard+=unnamed
