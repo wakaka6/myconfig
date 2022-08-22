@@ -98,6 +98,7 @@
     "python.linting.pylintArgs": [
         "--disable=E0401"
     ],
+    "sumneko-lua.enableNvimLuaDev": true,
     "explorer.width": 35,
     "explorer.quitOnOpen": true,
     "explorer.sources": [
@@ -118,5 +119,6 @@
         "bing",
         "youdao",
         "haici"
-    ]
+    ],
+    "Lua.telemetry.enable": false
 }
