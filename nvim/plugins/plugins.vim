@@ -203,7 +203,8 @@ source ~/.config/nvim/plugins/indent_blankline_config.vim
 " ==================================================== debugger
 " source ~/.config/nvim/plugins/vim-spector_config.vim
 " source ~/.config/nvim/mappings/vim-spector_map.vim
-source ~/.config/nvim/dap/dap_config.vim
+luafile ~/.config/nvim/lua/user/dap/dap_config.lua
+source ~/.config/nvim/mappings/dap_map.vim
 
 " ==================================================== ranbow bracket
 source ~/.config/nvim/plugins/rainbow_config.vim
