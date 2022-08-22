@@ -34,6 +34,7 @@ local ignore_focus = {
     'Mundo', 
     'help', 
     'vim-plug', 
+    'toggleterm',
     'codeql_panel', 
     'codeql_explorer',
 } 
