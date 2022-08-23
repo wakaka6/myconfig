@@ -119,6 +119,7 @@ call plug#begin(stdpath('data').'/plugged')
     Plug 'mfussenegger/nvim-dap'
     Plug 'rcarriga/nvim-dap-ui'
     Plug 'theHamsta/nvim-dap-virtual-text'
+    Plug 'jbyuki/one-small-step-for-vimkind'
 
     " AST enhance use tree-sitter of nvim interface
     Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}

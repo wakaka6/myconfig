@@ -167,4 +167,5 @@ end
 require('user.dap.dap_cpp')
 require('user.dap.dap_go')
 require('user.dap.dap_python')
+require('user.dap.dap_lua')
 
