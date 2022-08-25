@@ -113,6 +113,7 @@ call plug#begin(stdpath('data').'/plugged')
     Plug 'rcarriga/nvim-notify' " notify
     Plug 'dstein64/vim-startuptime' " Plugin startup speed test
     Plug 'sindrets/winshift.nvim' " Rearrange your windows with ease.
+    Plug 'numToStr/Comment.nvim'
 
     " debugger
     " Plug 'puremourning/vimspector', {'do': './install_gadget.py --enable-c --enable-python --enable-go'}
@@ -206,6 +207,10 @@ source ~/.config/nvim/plugins/indent_blankline_config.vim
 " source ~/.config/nvim/mappings/vim-spector_map.vim
 luafile ~/.config/nvim/lua/user/dap/dap_config.lua
 source ~/.config/nvim/mappings/dap_map.vim
+
+
+" ==================================================== auto comment
+luafile ~/.config/nvim/lua/user/conf/Comment.lua
 
 " ==================================================== ranbow bracket
 source ~/.config/nvim/plugins/rainbow_config.vim
