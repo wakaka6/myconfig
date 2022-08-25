@@ -117,10 +117,10 @@ call plug#begin(stdpath('data').'/plugged')
 
     " debugger
     " Plug 'puremourning/vimspector', {'do': './install_gadget.py --enable-c --enable-python --enable-go'}
-    Plug 'mfussenegger/nvim-dap'
-    Plug 'rcarriga/nvim-dap-ui'
-    Plug 'theHamsta/nvim-dap-virtual-text'
-    Plug 'jbyuki/one-small-step-for-vimkind'
+    " Plug 'mfussenegger/nvim-dap'
+    " Plug 'rcarriga/nvim-dap-ui'
+    " Plug 'theHamsta/nvim-dap-virtual-text'
+    " Plug 'jbyuki/one-small-step-for-vimkind'
 
     " AST enhance use tree-sitter of nvim interface
     Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
@@ -205,8 +205,8 @@ source ~/.config/nvim/plugins/indent_blankline_config.vim
 " ==================================================== debugger
 " source ~/.config/nvim/plugins/vim-spector_config.vim
 " source ~/.config/nvim/mappings/vim-spector_map.vim
-luafile ~/.config/nvim/lua/user/dap/dap_config.lua
-source ~/.config/nvim/mappings/dap_map.vim
+" luafile ~/.config/nvim/lua/user/dap/dap_config.lua
+" source ~/.config/nvim/mappings/dap_map.vim
 
 
 " ==================================================== auto comment
