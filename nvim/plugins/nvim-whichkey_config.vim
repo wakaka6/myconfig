@@ -96,22 +96,22 @@ local mappings = {
 
   },
 
-  d = {
-    name = 'debug',
-    -- c = { '<Cmd>tabe .vimspector.json<CR><Cmd>LoadDebugLaunchJsonTemplate<CR>', 'Creat debug file' },
-    c = { '<Cmd>tabe .dap_launch.json<CR><Cmd>LoadDebugLaunchJsonTemplate<CR>', 'Creat debug file' },
-    e = { '<Cmd>lua require("dapui").eval()<CR>', 'show expression value on hover window' },
-    o = { [[<Cmd>lua require('dap').repl.toggle()<CR>]], 'toggle dap REPL' },
-    q = { '<Cmd>lua require("dap").terminate()<CR>', 'stop debug' },
-    l = {'<Cmd>lua require("dap.ext.vscode").load_launchjs(".dap_launch.json")<CR>', 
-        'load launch.json to dap'},
-    b = { [[<Cmd>lua require("dap").toggle_breakpoint();require'user.dap.utils'.store_breakpoints()<CR>]], 'breakpoint' },
-    B = { "<Cmd>lua require'dap'.set_breakpoint(vim.fn.input('Breakpoint condition: '))<CR>", 
-        'condition breakpoint' },
-    u = { "<Cmd>lua require'dap'.up()<CR>", "Go up stack frame" },
-    d = { "<Cmd>lua require'dap'.down()<CR>", "Go down stack frame"},
-    R = { "<Cmd>lua require'dap'.go_to_cursor()<CR>", "Go to current cursor"},
-  },
+  -- d = {
+  --   name = 'debug',
+  --   -- c = { '<Cmd>tabe .vimspector.json<CR><Cmd>LoadDebugLaunchJsonTemplate<CR>', 'Creat debug file' },
+  --   c = { '<Cmd>tabe .dap_launch.json<CR><Cmd>LoadDebugLaunchJsonTemplate<CR>', 'Creat debug file' },
+  --   e = { '<Cmd>lua require("dapui").eval()<CR>', 'show expression value on hover window' },
+  --   o = { [[<Cmd>lua require('dap').repl.toggle()<CR>]], 'toggle dap REPL' },
+  --   q = { '<Cmd>lua require("dap").terminate()<CR>', 'stop debug' },
+  --   l = {'<Cmd>lua require("dap.ext.vscode").load_launchjs(".dap_launch.json")<CR>', 
+  --       'load launch.json to dap'},
+  --   b = { [[<Cmd>lua require("dap").toggle_breakpoint();require'user.dap.utils'.store_breakpoints()<CR>]], 'breakpoint' },
+  --   B = { "<Cmd>lua require'dap'.set_breakpoint(vim.fn.input('Breakpoint condition: '))<CR>", 
+  --       'condition breakpoint' },
+  --   u = { "<Cmd>lua require'dap'.up()<CR>", "Go up stack frame" },
+  --   d = { "<Cmd>lua require'dap'.down()<CR>", "Go down stack frame"},
+  --   R = { "<Cmd>lua require'dap'.go_to_cursor()<CR>", "Go to current cursor"},
+  -- },
 
   f = {
     name = 'find' ,
