@@ -234,6 +234,9 @@ exec --no-startup-id vmware-user-suid-wrapper &
 # number lock
 exec_always --no-startup-id numlockx on
 
+# make i3 like bspwm tiling
+exec_always --no-startup-id autotiling &
+
 # 桌面通知
 exec --no-startup-id dunst &
 
