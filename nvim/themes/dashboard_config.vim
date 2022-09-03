@@ -46,6 +46,8 @@ db.custom_center = {
       },
     }
 
+db.session_directory = vim.fn.stdpath('cache') .. '/mysessions'
+
 -- fix hightlight
 local highlight = function(group, fg, bg, attr, sp)
 		fg = fg and "guifg=" .. fg or "guifg=NONE"
