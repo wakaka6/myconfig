@@ -15,14 +15,14 @@ ct.setup {
         ---Line-comment toggle keymap
         line = 'gcc',
         ---Block-comment toggle keymap
-        block = 'gkc',
+        block = 'glc',
     },
     ---LHS of operator-pending mappings in NORMAL and VISUAL mode
     opleader = {
         ---Line-comment keymap
         line = 'gc',
         ---Block-comment keymap
-        block = 'gk',
+        block = 'gl',
     },
     ---LHS of extra mappings
     extra = {
