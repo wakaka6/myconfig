@@ -44,7 +44,7 @@ ql.setup {
     context_lines = 3,
   },
   max_ram = 32000,
-  job_timeout = 15000,
+  job_timeout = 20000,
   format_on_save = true,
   search_path = {
     os.getenv('QL_HOME') .. "/bin",
