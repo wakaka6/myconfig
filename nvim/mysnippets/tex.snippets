@@ -36,6 +36,11 @@ snippet box "Box"
 $0
 endsnippet
 
+snippet e.g. "example" b
+\noindent\textbf{[例${1:${VISUAL}}]}
+endsnippet
+
+
 snippet ,m "inline Math" wA
 $${1:${VISUAL}}$`!p
 if t[2] and t[2][0] not in [',', '.', '?', '-', ' ']:
@@ -43,6 +48,13 @@ if t[2] and t[2][0] not in [',', '.', '?', '-', ' ']:
 else:
     snip.rv = ''
 `$2
+endsnippet
+
+
+snippet ar "array environment" b
+\begin{array}{${1:c}}
+	${2:${VISUAL}}
+\end{array}${0}
 endsnippet
 
 
@@ -130,4 +142,9 @@ priority 5
 # Integral
 snippet int "integral"
 \\int_{$1}^{$2} {$3} \\: d{$4} $0
+endsnippet
+
+
+snippet lim "limit" w
+\lim\limits_{${1:n} \to ${2:\infty}} 
 endsnippet
