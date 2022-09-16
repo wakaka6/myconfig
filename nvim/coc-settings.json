@@ -45,6 +45,8 @@
     "diagnostic.virtualTextPrefix": " ❯❯❯ ",
     "coc.preferences.formatOnSaveFiletypes": [
         "javascript",
+        "c",
+        "cpp",
         "typescript",
         "typescriptreact",
         "html",
