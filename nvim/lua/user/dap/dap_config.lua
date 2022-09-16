@@ -162,6 +162,23 @@ dap.listeners.before.disconnect["dapui_config"] = function()
   debug_close()
 end
 
+local repl = require 'dap.repl'
+repl.commands = vim.tbl_extend('force', repl.commands, {
+    -- Add a new alias for the existing .exit command
+    exit = {'exit', '.exit', '.bye'},
+    -- Add your own commands; run `.echo hello world` to invoke
+    -- this function with the text "hello world"
+    custom_commands = {
+        -- ['.echo'] = function(text)
+        --     dap.repl.append(text)
+        -- end,
+        ['.tty'] = function(tty) 
+            dap.repl.append('-exec gef config context.redirect ' .. tty)
+        end,
+        -- Hook up a new command to an existing dap function
+        ['.restart'] = dap.restart,
+    },
+})
 
 -- =================== adapter ========================
 require('user.dap.dap_cpp')
