@@ -119,4 +119,4 @@ endfunction
 " notifications
 " autocmd User CocNvimInit call s:InitCoc()
 autocmd User CocDiagnosticChange call s:DiagnosticNotify()
-autocmd User CocStatusChange call s:StatusNotify()
+" autocmd User CocStatusChange call s:StatusNotify()
