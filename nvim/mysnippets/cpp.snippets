@@ -1,0 +1,14 @@
+snippet guard "include once" 
+#ifndef `!p
+head = f"__{snip.fn.replace('.', '_')}__".upper()
+snip.rv = head
+`
+#define `!p
+snip.rv = head
+`
+
+${1}
+
+#endif /* `!p snip.rv = head` */
+endsnippet
+
