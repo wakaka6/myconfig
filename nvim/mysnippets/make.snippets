@@ -1,0 +1,40 @@
+snippet cpp "auto generator makefile"
+CC = g++
+src = $(wildcard ./src/*.cpp)
+obj = $(patsubst ./src/%.cpp, ./obj/%.o, $(src))
+flag = -Wall
+head_path = ./inc/
+
+ALL: ${1}
+
+$1: $(obj)
+	$(CC) -o $@ $^ $(flag)
+
+$(obj):./obj/%.o:./src/%.cpp
+	$(CC) -c $< -o $@ -I $(head_path) $(flag)
+
+.PHONY: clean ALL
+clean:
+	-rm -rf $(obj) $1
+endsnippet
+
+snippet c "auto generator makefile"
+CC = gcc
+src = $(wildcard ./src/*.c)
+obj = $(patsubst ./src/%.c, ./obj/%.o, $(src))
+flag = -Wall
+head_path = ./inc/
+
+ALL: ${1}
+
+$1: $(obj)
+	$(CC) -o $@ $^ $(flag)
+
+$(obj):./obj/%.o:./src/%.c
+	$(CC) -c $< -o $@ -I $(head_path) $(flag)
+
+.PHONY: clean ALL
+clean:
+	-rm -rf $(obj) $1
+endsnippet
+
