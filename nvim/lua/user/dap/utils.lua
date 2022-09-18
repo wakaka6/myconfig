@@ -117,9 +117,14 @@ end
 
 function M.get_adapter_map()
     local type_to_filetypes = {}
-    local type = vim.fn.input("adapter type: ")
-    local filetypes = utils.split(vim.fn.input("filetypes(use space as seperator): "))
-    type_to_filetypes[type] = filetypes
+    -- local type = vim.fn.input("adapter type: ")
+    -- local filetypes = utils.split(vim.fn.input("filetypes(use space as seperator): "))
+    -- type_to_filetypes[type] = filetypes
+    local cppdbg = { "cpp", "c" }
+    if utils.isInArray(cppdbg, vim.bo.filetype) then
+        type_to_filetypes["cppdbg"] = cppdbg
+    end
+
     return type_to_filetypes
 end
 
