@@ -1,40 +1,64 @@
 snippet cpp "auto generator makefile"
 CC = g++
-src = $(wildcard ./src/*.cpp)
-obj = $(patsubst ./src/%.cpp, ./obj/%.o, $(src))
-flag = -Wall
-head_path = ./inc/
+CFLAGS = -Wall -g
 
-ALL: ${1}
+WORK_DIR  = $(shell pwd)
+SRC_DIR = $(WORK_DIR)/src
+OBJ_DIR = $(WORK_DIR)/obj
+INC_PATH = $(WORK_DIR)/inc
+DST_DIR = $(WORK_DIR)/bin
 
-$1: $(obj)
-	$(CC) -o $@ $^ $(flag)
+SRC = $(wildcard $(SRC_DIR)/*.cpp)
+OBJS = $(patsubst $(SRC_DIR)/%.cpp, $(OBJ_DIR)/%.o, $(SRC))
+TARGET = $(DST_DIR)/${1}
 
-$(obj):./obj/%.o:./src/%.cpp
-	$(CC) -c $< -o $@ -I $(head_path) $(flag)
+
+$(shell [ -d $(OBJ_DIR) ] || mkdir -p $(OBJ_DIR) )
+$(shell [ -d $(DST_DIR) ] || mkdir -p $(DST_DIR) )
+
+ALL: $(TARGET)
+
+$(TARGET): $(OBJS)
+	$(CC) -o $@ $^ $(CFLAG)
+
+$(OBJS):$(OBJ_DIR)/%.o:$(SRC_DIR)/%.cpp
+	$(CC) -c $< -o $@ -I $(INC_PATH) $(CFLAGS)
 
 .PHONY: clean ALL
 clean:
-	-rm -rf $(obj) $1
+	-rm -rf $(DST_DIR) $(OBJ_DIR)
+${0}
 endsnippet
 
 snippet c "auto generator makefile"
 CC = gcc
-src = $(wildcard ./src/*.c)
-obj = $(patsubst ./src/%.c, ./obj/%.o, $(src))
-flag = -Wall
-head_path = ./inc/
+CFLAGS = -Wall -g
 
-ALL: ${1}
+WORK_DIR  = $(shell pwd)
+SRC_DIR = $(WORK_DIR)/src
+OBJ_DIR = $(WORK_DIR)/obj
+INC_PATH = $(WORK_DIR)/inc
+DST_DIR = $(WORK_DIR)/bin
 
-$1: $(obj)
-	$(CC) -o $@ $^ $(flag)
+SRC = $(wildcard $(SRC_DIR)/*.cpp)
+OBJS = $(patsubst $(SRC_DIR)/%.cpp, $(OBJ_DIR)/%.o, $(SRC))
+TARGET = $(DST_DIR)/${1}
 
-$(obj):./obj/%.o:./src/%.c
-	$(CC) -c $< -o $@ -I $(head_path) $(flag)
+
+$(shell [ -d $(OBJ_DIR) ] || mkdir -p $(OBJ_DIR) )
+$(shell [ -d $(DST_DIR) ] || mkdir -p $(DST_DIR) )
+
+ALL: $(TARGET)
+
+$(TARGET): $(OBJS)
+	$(CC) -o $@ $^ $(CFLAGS)
+
+$(OBJS):$(OBJ_DIR)/%.o:$(SRC_DIR)/%.cpp
+	$(CC) -c $< -o $@ -I $(INC_PATH) $(CFLAGS)
 
 .PHONY: clean ALL
 clean:
-	-rm -rf $(obj) $1
+	-rm -rf $(DST_DIR) $(OBJ_DIR)
+${0}
 endsnippet
 
