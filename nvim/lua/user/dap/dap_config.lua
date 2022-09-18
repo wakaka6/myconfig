@@ -172,7 +172,7 @@ repl.commands = vim.tbl_extend('force', repl.commands, {
         -- ['.echo'] = function(text)
         --     dap.repl.append(text)
         -- end,
-        ['.tty'] = function(tty) 
+        ['.tty'] = function(tty)
             dap.repl.append('-exec gef config context.redirect ' .. tty)
         end,
         -- Hook up a new command to an existing dap function

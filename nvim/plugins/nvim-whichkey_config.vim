@@ -103,7 +103,7 @@ local mappings = {
     e = { '<Cmd>lua require("dapui").eval()<CR>', 'show expression value on hover window' },
     o = { [[<Cmd>lua require('dap').repl.toggle()<CR>]], 'toggle dap REPL' },
     q = { '<Cmd>lua require("dap").terminate()<CR>', 'stop debug' },
-    l = {'<Cmd>lua require("dap.ext.vscode").load_launchjs(".dap_launch.json")<CR>', 
+    l = {'<Cmd>lua require("dap.ext.vscode").load_launchjs(".dap_launch.json", require("user.dap.utils").get_adapter_map())<CR>', 
         'load launch.json to dap'},
     b = { [[<Cmd>lua require("dap").toggle_breakpoint();require'user.dap.utils'.store_breakpoints()<CR>]], 'breakpoint' },
     B = { "<Cmd>lua require'dap'.set_breakpoint(vim.fn.input('Breakpoint condition: '))<CR>", 
