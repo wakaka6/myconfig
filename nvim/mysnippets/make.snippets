@@ -40,8 +40,8 @@ OBJ_DIR = $(WORK_DIR)/obj
 INC_PATH = $(WORK_DIR)/inc
 DST_DIR = $(WORK_DIR)/bin
 
-SRC = $(wildcard $(SRC_DIR)/*.cpp)
-OBJS = $(patsubst $(SRC_DIR)/%.cpp, $(OBJ_DIR)/%.o, $(SRC))
+SRC = $(wildcard $(SRC_DIR)/*.c)
+OBJS = $(patsubst $(SRC_DIR)/%.c, $(OBJ_DIR)/%.o, $(SRC))
 TARGET = $(DST_DIR)/${1}
 
 
@@ -53,7 +53,7 @@ ALL: $(TARGET)
 $(TARGET): $(OBJS)
 	$(CC) -o $@ $^ $(CFLAGS)
 
-$(OBJS):$(OBJ_DIR)/%.o:$(SRC_DIR)/%.cpp
+$(OBJS):$(OBJ_DIR)/%.o:$(SRC_DIR)/%.c
 	$(CC) -c $< -o $@ -I $(INC_PATH) $(CFLAGS)
 
 .PHONY: clean ALL
