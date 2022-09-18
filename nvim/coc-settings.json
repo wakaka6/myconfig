@@ -47,6 +47,7 @@
         "javascript",
         "c",
         "cpp",
+        "lua",
         "typescript",
         "typescriptreact",
         "html",
