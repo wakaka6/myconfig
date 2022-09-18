@@ -31,4 +31,13 @@ M.split = function(inputstr, sep)
     return t
 end
 
+M.isInArray = function(array, element)
+    for _, v in pairs(array) do
+        if element == v then
+            return true
+        end
+    end
+    return false
+end
+
 return M
