@@ -110,7 +110,7 @@ local mappings = {
         'condition breakpoint' },
     u = { "<Cmd>lua require'dap'.up()<CR>", "Go up stack frame" },
     d = { "<Cmd>lua require'dap'.down()<CR>", "Go down stack frame"},
-    R = { "<Cmd>lua require'dap'.go_to_cursor()<CR>", "Go to current cursor"},
+    R = { "<Cmd>lua require'dap'.run_to_cursor()<CR>", "Go to current cursor"},
   },
 
   f = {
