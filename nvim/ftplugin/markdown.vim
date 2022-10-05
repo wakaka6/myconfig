@@ -17,3 +17,4 @@ inoremap <buffer> ,4 ####<Space><Enter><,.><Esc>kA
 " inoremap <buffer> ,N --------<Enter>
 
 set cc=120
+set nowrap
