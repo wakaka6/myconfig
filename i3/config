@@ -205,15 +205,27 @@ mode "resize" {
 bindsym $mod+r mode "resize"
 
 # Make the currently focused window a scratchpad
-bindsym $mod+minus move scratchpad
+bindsym $mod+minus exec "i3-input -F 'mark %s' -l 1 -P 'Mark to hide: ';i3-msg 'move scratchpad'"
 
 # Show the first scratchpad window
-bindsym $mod+Shift+minus scratchpad show; floating disable
-
+bindsym $mod+Shift+minus exec "i3-input -F '[con_mark='%s'] scratchpad show' -l 1 -P 'Show: ';i3-msg 'floating disable'"
 # move all floating windows to the scratchpad
 bindsym $mod+x [floating] move scratchpad
 # Show the  all scratchpad to floating windows 
-bindsym $mod+Shift+x [floating] scratchpad show
+bindsym $mod+Shift+x [instance='^(?!translate$)'] scratchpad show
+
+
+#################################
+#  DropDown/Scratchpad windows  #
+#################################
+for_window [instance="translate"] floating enable
+for_window [instance="translate"] sticky enable
+for_window [instance="translate"] mark --replace translate
+for_window [instance="translate"] resize set 850 600
+for_window [instance="translate"] move scratchpad
+for_window [instance="translate"] border pixel 5
+exec --no-startup-id st -n translate -e trans -shell -t zh
+bindsym $mod+t [instance="translate"] scratchpad show; [instance="translate"] move position center
 
 # control the voice
 bindsym $mod+F2 exec --no-startup-id amixer sset Master 5%-
@@ -238,12 +250,12 @@ exec --no-startup-id vmware-user-suid-wrapper &
 exec_always --no-startup-id numlockx on
 
 # make i3 like bspwm tiling
-exec_always --no-startup-id autotiling &
+# exec_always --no-startup-id autotiling &
 
 # 桌面通知
 exec --no-startup-id dunst &
 
-exec_always --no-startup-id variety
+exec --no-startup-id variety
 exec_always --no-startup-id fcitx5 -d
 exec_always --no-startup-id optimus-manager-qt
 exec --no-startup-id goldendict
