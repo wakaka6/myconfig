@@ -224,7 +224,7 @@ for_window [instance="translate"] mark --replace translate
 for_window [instance="translate"] resize set 850 600
 for_window [instance="translate"] move scratchpad
 for_window [instance="translate"] border pixel 5
-exec --no-startup-id st -n translate -e trans -shell -t zh
+exec --no-startup-id st -n translate -e proxychains -q trans -shell -t zh
 bindsym $mod+t [instance="translate"] scratchpad show; [instance="translate"] move position center
 
 # control the voice
@@ -272,7 +272,10 @@ set $gaps_outer_default -2
 gaps inner $gaps_inner_default
 gaps outer $gaps_outer_default
 
-hide_edge_borders smart
+# need i3-gaps
+hide_edge_borders smart_no_gaps
+# use the follows command if install i3
+# hide_edge_borders smart
 
 # Smart gaps (gaps used if only more than one container on the workspace)
 smart_gaps on
