@@ -224,7 +224,7 @@ for_window [instance="translate"] mark --replace translate
 for_window [instance="translate"] resize set 850 600
 for_window [instance="translate"] move scratchpad
 for_window [instance="translate"] border pixel 5
-exec --no-startup-id st -n translate -e trans -shell -t zh
+exec --no-startup-id st -n translate -e proxychains -q trans -shell -t zh
 bindsym $mod+t [instance="translate"] scratchpad show; [instance="translate"] move position center
 
 
@@ -266,12 +266,20 @@ exec --no-startup-id goldendict
 for_window [class="flameshot"] floating enable
 default_border pixel 2
 
+# I don't know why default_border not working after i3-gaps upgrade to v4.21-1
+# use following config to solve it.
+# for_window [class=".*"] border pixel 2
+# for_window [floating] border normal
+
 set $gaps_inner_default 10
 set $gaps_outer_default -2
 gaps inner $gaps_inner_default
 gaps outer $gaps_outer_default
 
-hide_edge_borders smart
+# need i3-gaps
+hide_edge_borders smart_no_gaps
+# use the follows command if install i3
+# hide_edge_borders smart
 
 # Smart gaps (gaps used if only more than one container on the workspace)
 smart_gaps on
