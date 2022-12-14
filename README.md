@@ -33,7 +33,7 @@ Reinforce i3 like bspwm to the spiral tiling
 yay -S autotiling
 ```
 
-Need Font
+Nerd Font
 ```sh
 yay -S ttf-unifont siji-git ttf-font-awesome
 
@@ -63,7 +63,12 @@ curl -sL install-node.now.sh/lts | bash
 sudo pacman -S xdotool
 ```
 
-Software
+A modern alterative to traditional software
+```sh
+sudo pacman -S lsd htop duf
+```
+
+Other Software
 ```sh
 sudo pacman -S flameshot
 sudo pacman -S network-manager-applet
