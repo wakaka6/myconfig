@@ -110,7 +110,7 @@ call plug#begin(stdpath('data').'/plugged')
     " utils plugin
     Plug 'lambdalisue/suda.vim' " do stuff like :sudowrite
     Plug 'akinsho/toggleterm.nvim', { 'tag': 'v2.*' } " open terminal on nvim floating window
-    Plug 'rcarriga/nvim-notify' " notify
+    " Plug 'rcarriga/nvim-notify' " notify
     Plug 'dstein64/vim-startuptime' " Plugin startup speed test
     Plug 'sindrets/winshift.nvim' " Rearrange your windows with ease.
     Plug 'numToStr/Comment.nvim'
@@ -158,7 +158,7 @@ source ~/.config/nvim/plugins/coc_config.vim
 source ~/.config/nvim/mappings/coc_map.vim
 
 " ==================================================== notify
-source ~/.config/nvim/plugins/notify_config.vim
+" source ~/.config/nvim/plugins/notify_config.vim
 
 " ==================================================== vim-sandwich
 source ~/.config/nvim/plugins/vim-sandwich_config.vim
