@@ -5,9 +5,9 @@ autocmd BufNewFile *.cpp,*.[ch],*.sh,*.java,*.py exec ":call AutoSetCodeTitle()"
 func AutoSetCodeTitle() 
 	if &filetype == 'sh' 
 		call setline(1, "\#!/bin/bash") 
+		call append(line("."), "")
 		normal G
-		normal o
-		normal o
+        normal o
 	endif
 	
 	if &filetype == 'cpp'
@@ -16,8 +16,8 @@ func AutoSetCodeTitle()
 		call append(line(".")+1, "")
 		call append(line(".")+2, "int main(int argc, char* argv[])")
 		call append(line(".")+3, "{")
-		call append(line(".")+4, "	")
-		call append(line(".")+5, "	return 0;")
+		call append(line(".")+4, "  ")
+		call append(line(".")+5, "  return 0;")
 		call append(line(".")+6, "}")
 		normal! 6GA
 	endif
@@ -30,8 +30,8 @@ func AutoSetCodeTitle()
 		call append(line(".")+4, "")
 		call append(line(".")+5, "int main(int argc, char* argv[])")
 		call append(line(".")+6, "{")
-		call append(line(".")+7, "	")
-		call append(line(".")+8, "	return 0;")
+		call append(line(".")+7, "  ")
+		call append(line(".")+8, "  return 0;")
 		call append(line(".")+9, "}")
 		normal! 9GA
 	endif
