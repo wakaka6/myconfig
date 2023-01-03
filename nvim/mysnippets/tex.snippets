@@ -12,7 +12,7 @@
 #		i - In-word expansion.
 #		w - Word boundary.
 #		r - Regular expression
-#		e - Custom context snippet
+# #		e - Custom context snippet
 #		A - Snippet will be triggered automatically, when condition matches.
 #
 # Basic example:
@@ -24,6 +24,15 @@
 #
 # Online reference: https://github.com/SirVer/ultisnips/blob/master/doc/UltiSnips.txt
 
+global !p
+def math():
+	return vim.eval('vimtex#syntax#in_mathzone()') == '1'
+def comment(): 
+	return vim.eval('vimtex#syntax#in_comment()') == '1'
+def env(name):
+	[x,y] = vim.eval("vimtex#env#is_inside('" + name + "')") 
+	return x != '0' and y != '0'
+endglobal
 
 snippet today "Date"
 `date +%F`
@@ -36,12 +45,75 @@ snippet box "Box"
 $0
 endsnippet
 
+snippet temple "temple" 
+\documentclass{ctexbook}
+
+\usepackage{amsmath}
+\usepackage{amsfonts} 
+\usepackage{amsthm}
+\usepackage{amssymb}
+\usepackage{newtxmath}
+\usepackage{extarrows}
+\usepackage{esint}
+\usepackage{graphicx}
+\usepackage{extarrows}
+\usepackage{dsfont}
+
+\usepackage{booktabs,tabularx,multirow,longtable,makecell}
+\usepackage{array}
+
+% bookmark
+\usepackage[bookmarksnumbered=true, bookmarksopen=true]{hyperref}
+\usepackage[top=2.5cm,bottom=2.5cm,left=2.5cm,right=2.5cm]{geometry}
+
+\ctexset {
+    chapter = {
+        format = \zihao{3}\heiti\centering, 
+        name = {第,章}, 
+        number = \arabic{chapter},
+        lofskip = {0pt},
+        lotskip = {0pt},
+        beforeskip = {16pt},
+        afterskip = {16pt},
+    },
+    section = {
+        format = \zihao{-3}\heiti\raggedright, 
+    },
+    subsection = {
+        format = \zihao{4}\heiti\raggedright, 
+    },
+    subsubsection = {
+        format = \zihao{-4}\heiti\raggedright,  
+    },
+}
+
+\setcounter{secnumdepth}{3} 
+\setcounter{tocdepth}{2}
+
+\newcommand{\Z}{\mathds{Z}}
+\newcommand{\R}{\mathds{R}}
+\newcommand{\Q}{\mathds{Q}}
+\newcommand{\N}{\mathds{N}}
+
+\begin{document}
+    \clearpage
+    \pagenumbering{Roman}
+    \tableofcontents
+
+    \clearpage
+    \setcounter{page}{1} 
+    \pagenumbering{arabic}
+    \include{${1:chapter1}.tex}
+\end{document}
+endsnippet
+
+
 snippet e.g. "example" b
 \noindent\textbf{[例${1:${VISUAL}}]}
 endsnippet
 
 
-snippet ,m "inline Math" wA
+snippet ,m "inline Math" A
 $${1:${VISUAL}}$`!p
 if t[2] and t[2][0] not in [',', '.', '?', '-', ' ']:
     snip.rv = ' '
@@ -69,30 +141,39 @@ snippet ,t "display Math" iA
 endsnippet
 
 # a1 => a_1
+# context "math()"
 snippet '([A-Za-z])(\d)' "auto subscript" wrA
 `!p snip.rv = match.group(1)`_`!p snip.rv = match.group(2)`
 endsnippet
 
 # a12 => a_{12}
+# context "math()"
 snippet '([A-Za-z])_(\d\d)' "auto subscript2" wrA
 `!p snip.rv = match.group(1)`_{`!p snip.rv = match.group(2)`}
+endsnippet
+
+snippet cvec "column vector" iA
+\begin{pmatrix} ${1:x}_${2:1}\\\\ \vdots\\\\ $1_${2:n} \end{pmatrix}
 endsnippet
 
 ###
 ### Fraction
 ###
 
+# context "math()"
 snippet // "Fraction" iA
 \\frac{$1}{$2}$0
 endsnippet
- 
+
 # e.g. a_2/ => \frac{a_2}{}
+# context "math()"
 snippet '((\d+)|(\d*)(\\)?([A-Za-z]+)((\^|_)(\{\d+\}|\d))*)/' "Fraction" wrA
 \\frac{`!p snip.rv = match.group(1)`}{$1}$0
 endsnippet
 
 # e.g. (1 + 2 + 3) => \frac{1 + 2 + 3}{}
 priority 1000
+# context "math()"
 snippet '^.*\)/' "() Fraction" wrA
 `!p
 stripped = match.string[:-1]
@@ -118,22 +199,26 @@ endsnippet
 
 # hat => \hat{}
 priority 10
+# context "math()"
 snippet "hat" "hat" ri
 \hat{$1}$0
 endsnippet
 
 # e.g. ihat => \hat{i}
 priority 100
+# context "math()"
 snippet "([a-zA-Z])hat" "hat" ri
 \hat{`!p snip.rv=match.group(1)`}
 endsnippet
 
 # e.g. v_1vec => \vec{v_1}
+# context "math()"
 snippet "(\w+)vec" "Vector postfix" ri
 \vec{`!p snip.rv=match.group(1)`}
 endsnippet 
 
 # e.g. v_1bar => \bar{v_1}
+# context "math()"
 snippet "(\w+)bar" "bar" ri
 \bar{`!p snip.rv=match.group(1)`}
 endsnippet 
@@ -147,4 +232,83 @@ endsnippet
 
 snippet lim "limit" w
 \lim\limits_{${1:n} \to ${2:\infty}} 
+endsnippet
+
+# context "math()"
+snippet EE "exists" iA
+\exists 
+endsnippet
+
+# context "math()"
+snippet AA "forall" iA
+\forall 
+endsnippet
+
+# context "math()"
+snippet xx "cross" i
+\times 
+endsnippet
+
+snippet ~~ "~" iA
+\sim 
+endsnippet
+
+snippet NN "n" iA
+\N
+endsnippet
+
+snippet RR "real" iA
+\R
+endsnippet
+
+snippet QQ "Q" iA
+\Q
+endsnippet
+
+snippet ZZ "Z" iA
+\Z
+endsnippet
+
+snippet lr "left( right)" i
+\left( ${1:${VISUAL}} \right) $0
+endsnippet
+
+snippet lr( "left( right)" i
+\left( ${1:${VISUAL}} \right) $0
+endsnippet
+
+snippet lr| "left| right|" i
+\left| ${1:${VISUAL}} \right| $0
+endsnippet
+
+snippet lr{ "left\{ right\}" i
+\left\\{ ${1:${VISUAL}} \right\\} $0
+endsnippet
+
+snippet lr[ "left[ right]" i
+\left[ ${1:${VISUAL}} \right] $0
+endsnippet
+
+snippet lr< "leftangle rightangle" i
+\left<${1:${VISUAL}} \right>$0
+endsnippet
+
+########################
+#  Some Environmental  #
+########################
+
+snippet sympy "sympyblock " w
+sympy $1 sympy$0
+endsnippet
+
+priority 10000
+snippet 'sympy(.*)sympy' "sympy" wr
+`!p
+from sympy import *
+x, y, z, t = symbols('x y z t')
+k, m, n = symbols('k m n', integer=True)
+f, g, h = symbols('f g h', cls=Function)
+init_printing()
+snip.rv = eval('latex(' + match.group(1).replace('\\', '').replace('^', '**').replace('{', '(').replace('}', ')') + ')')
+`
 endsnippet
