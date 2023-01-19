@@ -56,9 +56,9 @@ func AutoSetTitle()
 	" 如果文件类型为.sh文件 
 	if &filetype == 'sh' 
 		call setline(1, "\#!/bin/bash") 
+		call append(line("."), "")
 		normal G
-		normal o
-		normal o
+        normal o
 	endif
 	
 	if &filetype == 'cpp'
@@ -85,8 +85,8 @@ func AutoSetTitle()
 	endif
 
 	if &filetype == 'python'
-		call setline(1, "\#!/usr/bin/python")
-		call append(1, "\# encoding: utf-8")
+		call setline(1, "\#!/usr/bin/env python")
+		call append(line(".")+0, "\# encoding: utf-8")
 		normal G
 		normal o
 		normal o
