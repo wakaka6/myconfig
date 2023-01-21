@@ -49,6 +49,10 @@ then
 fi
 
 
+if [ ! -e "$HOME/.config/alacritty" ] 
+then
+	ln -s "$curPath/alacritty" "$HOME/.config/alacritty"
+fi
 
 if [ ! -L "$HOME/.config/lazygit/config.yml" ] 
 then
