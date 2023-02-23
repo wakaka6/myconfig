@@ -61,7 +61,7 @@ floating_modifier $mod
 # start a terminal
 # bindsym $mod+Return exec i3-sensible-terminal
 
-set $term alacritty
+set $term kitty
 
 bindsym $mod+Return exec $term
 
@@ -224,7 +224,7 @@ for_window [instance="translate"] mark --replace translate
 for_window [instance="translate"] resize set 850 600
 for_window [instance="translate"] move scratchpad
 for_window [instance="translate"] border pixel 5
-exec --no-startup-id st -n translate -e proxychains -q trans -shell -t zh
+exec --no-startup-id st -n translate -e proxychains -q trans -shell -t zh -4 -sp
 bindsym $mod+t [instance="translate"] scratchpad show; [instance="translate"] move position center
 
 
