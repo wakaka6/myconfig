@@ -54,6 +54,11 @@ then
 	ln -s "$curPath/alacritty" "$HOME/.config/alacritty"
 fi
 
+if [ ! -e "$HOME/.config/kitty" ] 
+then
+	ln -s "$curPath/kitty" "$HOME/.config/kitty"
+fi
+
 if [ ! -L "$HOME/.config/lazygit/config.yml" ] 
 then
 	rm -f "$HOME/.config/lazygit/config.yml"
