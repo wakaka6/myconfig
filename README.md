@@ -15,7 +15,7 @@ git clone -b vm --recursive https://github.com/wakaka6/myconfig.git $HOME/myconf
 
 And then, install prerequirement software
 ```sh
-yay -S the_silver_searcher neovim lazygit ripgrep fd delta fzf rofi 
+yay -S the_silver_searcher neovim lazygit ripgrep fd delta fzf rofi tealdeer zoxide
 ```
 
 File Manager
