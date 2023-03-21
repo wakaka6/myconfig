@@ -78,10 +78,18 @@ db.setup({
       },
     center = {
         {
+                icon = '  ',
+                desc = 'Create new files',
+                action = 'bdelete',
+                key = 'n',
+                desc_hl = 'String',
+                icon_hl = 'Title',
+                key_hl = 'Number',
+        },
+        {
                 icon = '  ',
                 desc = 'Recently opened files',
                 action =  'Telescope oldfiles',
-                keymap = 'SPC f h',
                 key = 'h',
                 desc_hl = 'String',
                 icon_hl = 'Title',
@@ -90,7 +98,6 @@ db.setup({
         {
                 icon = '  ',
                 desc = 'Find  File',
-                keymap = 'SPC f f',
                 key = 'f',
                 action = 'Telescope find_files find_command=rg,--hidden,--files',
                 desc_hl = 'String',
@@ -100,9 +107,17 @@ db.setup({
         {
                 icon = '  ',
                 desc = 'Find  word       ',
-                keymap = 'SPC f w',
                 key = 'w',
                 action = 'lua require("telescope").extensions.live_grep_args.live_grep_args(require("telescope.themes").get_ivy())',
+                desc_hl = 'String',
+                icon_hl = 'Title',
+                key_hl = 'Number',
+        },
+        {
+                icon = '  ',
+                desc = 'Quit  ',
+                key = 'q',
+                action = 'qa',
                 desc_hl = 'String',
                 icon_hl = 'Title',
                 key_hl = 'Number',
