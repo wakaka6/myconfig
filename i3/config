@@ -208,11 +208,11 @@ bindsym $mod+r mode "resize"
 bindsym $mod+minus exec "i3-input -F 'mark %s' -l 1 -P 'Mark to hide: ';i3-msg 'move scratchpad'"
 
 # Show the first scratchpad window
-bindsym $mod+Shift+minus exec "i3-input -F '[con_mark='%s'] scratchpad show' -l 1 -P 'Show: ';i3-msg 'floating disable'"
+bindsym $mod+Shift+minus exec "i3-input -F '[con_mark='%s'] scratchpad show' -l 1 -P 'Show: ';i3-msg 'floating disable,[floating] move scratchpad'"
 # move all floating windows to the scratchpad
 bindsym $mod+x [floating] move scratchpad
 # Show the  all scratchpad to floating windows 
-bindsym $mod+Shift+x [instance='^(?!translate$)'] scratchpad show
+bindsym $mod+Shift+x exec --no-startup-id $HOME/.config/i3/show_scratchpad.sh
 
 
 #################################
@@ -231,6 +231,27 @@ bindsym $mod+t [instance="translate"] scratchpad show; [instance="translate"] mo
 bindsym $mod+F2 exec --no-startup-id amixer sset Master 5%-
 bindsym $mod+F3 exec --no-startup-id amixer sset Master 5%+
 bindsym $mod+M exec --no-startup-id amixer sset Master 0%
+for_window [instance="AItrans"] floating enable
+for_window [instance="AItrans"] sticky enable
+for_window [instance="AItrans"] mark --replace AItrans
+for_window [instance="AItrans"] resize set 850 600
+for_window [instance="AItrans"] move scratchpad
+for_window [instance="AItrans"] border pixel 5
+exec --no-startup-id st -n AItrans -e $HOME/myconfig/.script/chatgptTranslate.sh
+
+bindsym $mod+Shift+t [instance="AItrans"] scratchpad show; [instance="AItrans"] move position center
+
+
+for_window [instance="ChatGPT"] floating enable
+for_window [instance="ChatGPT"] sticky enable
+for_window [instance="ChatGPT"] mark --replace ChatGPT
+for_window [instance="ChatGPT"] resize set 850 700
+for_window [instance="ChatGPT"] move scratchpad
+for_window [instance="ChatGPT"] border pixel 5
+exec --no-startup-id st -n ChatGPT -e $HOME/myconfig/.script/chatgpt.sh
+
+bindsym $mod+g [instance="ChatGPT"] scratchpad show; [instance="ChatGPT"] move position center
+
 
 # flameshot
 bindsym F1 --release exec --no-startup-id flameshot gui
