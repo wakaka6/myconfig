@@ -76,7 +76,7 @@ let g:mkdp_preview_options = {
 
 " use a custom markdown style must be absolute path
 " like '/Users/username/markdown.css' or expand('~/markdown.css')
-let g:mkdp_markdown_css = expand('~/.config/nvim/themes/markdown/zj.css')
+" let g:mkdp_markdown_css = expand('~/.config/nvim/themes/markdown/zj.css')
 
 " use a custom highlight style must absolute path
 " like '/Users/username/highlight.css' or expand('~/highlight.css')
@@ -95,4 +95,4 @@ let g:mkdp_filetypes = ['markdown']
 
 " set default theme (dark or light)
 " By default the theme is define according to the preferences of the system
-let g:mkdp_theme = 'light'
+let g:mkdp_theme = 'dark'
