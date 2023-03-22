@@ -241,7 +241,7 @@ bindsym $mod+Shift+t [instance="AItrans"] scratchpad show; [instance="AItrans"] 
 for_window [instance="ChatGPT"] floating enable
 for_window [instance="ChatGPT"] sticky enable
 for_window [instance="ChatGPT"] mark --replace ChatGPT
-for_window [instance="ChatGPT"] resize set 850 700
+for_window [instance="ChatGPT"] resize set 1120 710
 for_window [instance="ChatGPT"] move scratchpad
 for_window [instance="ChatGPT"] border pixel 5
 exec --no-startup-id st -n ChatGPT -e $HOME/myconfig/.script/chatgpt.sh
