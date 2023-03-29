@@ -125,6 +125,9 @@ call plug#begin(stdpath('data').'/plugged')
     " AST enhance use tree-sitter of nvim interface
     Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
 
+    " edit enhance
+    Plug 'github/copilot.vim'
+
     " Virtual enhance
     Plug 'luochen1990/rainbow'
     Plug 'petertriho/nvim-scrollbar'
@@ -238,6 +241,8 @@ source ~/.config/nvim/plugins/virt-column_config.vim
 " ==================================================== codeQL
 source ~/.config/nvim/plugins/codeql_config.vim
 
+" ==================================================== codeQL
+source ~/.config/nvim/plugins/copilot_config.vim
 
 " ==================================================== winshift
 source ~/.config/nvim/plugins/winshift_config.vim
