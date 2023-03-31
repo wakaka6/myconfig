@@ -99,8 +99,10 @@
         }
     },
     "python.linting.pylintArgs": [
-        "--disable=E0401"
+        "--disable=E0401",
+        "--rcfile=~/.config/pylintrc"
     ],
+    "python.linting.pylintEnabled": true,
     "sumneko-lua.enableNvimLuaDev": true,
     "explorer.width": 35,
     "explorer.quitOnOpen": true,
