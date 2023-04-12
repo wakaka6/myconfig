@@ -28,9 +28,13 @@ Beautify
 sudo pacman -S picom feh variety polybar-git arc-gtk-theme papirus-icon-theme adapta-gtk-theme lxappearance arc-icon-theme
 ```
 
-Reinforce i3 like bspwm to the spiral tiling 
+Reinforce i3
 ```sh
+# like bspwm to the spiral tiling 
 yay -S autotiling
+
+# Visually focus windows by label
+yay -S wmfocus
 ```
 
 Nerd Font
