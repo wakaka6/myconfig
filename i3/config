@@ -256,6 +256,9 @@ bindsym $mod+g [instance="ChatGPT"] scratchpad show; [instance="ChatGPT"] move p
 # flameshot
 bindsym F1 --release exec --no-startup-id flameshot gui
 
+# windows swtich
+bindsym $mod+Tab exec --no-startup-id wmfocus --fill
+
 # Start i3bar to display a workspace bar (plus the system information i3status
 # finds out, if available)
 # bar {
