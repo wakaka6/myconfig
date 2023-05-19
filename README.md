@@ -83,6 +83,7 @@ sudo pacman -S dunst # notify
 # translation software
 sudo pacman -S goldendict
 sudo pacman -S translate-shell
+sudo pacman -S remmina  # RDP tools
 
 # Input method
 sudo pacman -S fcitx5-im #基础包组
