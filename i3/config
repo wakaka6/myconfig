@@ -61,7 +61,7 @@ floating_modifier $mod
 # start a terminal
 # bindsym $mod+Return exec i3-sensible-terminal
 
-set $term kitty
+set $term alacritty
 
 bindsym $mod+Return exec $term
 
