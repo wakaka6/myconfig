@@ -10,6 +10,8 @@ export XDG_CONFIG_HOME=$HOME/.config
 export PATH=$PATH:$HOME/.cargo/bin
 
 
+# homebrew
+eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
 
 
 eval "$(zoxide init --cmd cd zsh)"
