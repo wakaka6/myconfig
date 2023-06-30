@@ -103,9 +103,9 @@ call plug#begin(stdpath('data').'/plugged')
     Plug 'lervag/vimtex'
 
     " codeql
-    Plug 'MunifTanjim/nui.nvim' " UI Component Library for Neovim.
-    Plug 's1n7ax/nvim-window-picker', { 'tag': 'v1.*' }
-    Plug 'pwntester/codeql.nvim', {'for': 'ql'}
+    " Plug 'MunifTanjim/nui.nvim' " UI Component Library for Neovim.
+    " Plug 's1n7ax/nvim-window-picker', { 'tag': 'v1.*' }
+    " Plug 'pwntester/codeql.nvim', {'for': 'ql'}
 
     " utils plugin
     Plug 'lambdalisue/suda.vim' " do stuff like :sudowrite
@@ -239,9 +239,9 @@ source ~/.config/nvim/plugins/virt-column_config.vim
 
 
 " ==================================================== codeQL
-source ~/.config/nvim/plugins/codeql_config.vim
+" source ~/.config/nvim/plugins/codeql_config.vim
 
-" ==================================================== codeQL
+" ==================================================== copilot
 source ~/.config/nvim/plugins/copilot_config.vim
 
 " ==================================================== winshift
