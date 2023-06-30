@@ -7,7 +7,7 @@ It help me to quickly configure my linux desktop environment.
 ## Quick start
 Clone this project to home directory.Note that this item cannot be deleted from home.
 ```sh
-sudo pacman -Sy git yay python3 curl wget
+sudo pacman -Sy git paru python3 curl wget
 git clone --recursive https://github.com/wakaka6/myconfig.git $HOME/myconfig
 # if on virtual machine, use the following command to clone the repo
 git clone -b vm --recursive https://github.com/wakaka6/myconfig.git $HOME/myconfig
@@ -15,12 +15,12 @@ git clone -b vm --recursive https://github.com/wakaka6/myconfig.git $HOME/myconf
 
 And then, install prerequirement software
 ```sh
-yay -S the_silver_searcher neovim lazygit ripgrep fd delta fzf rofi tealdeer zoxide
+paru -S the_silver_searcher neovim lazygit ripgrep fd delta fzf rofi tealdeer zoxide
 ```
 
 File Manager
 ```sh
-yay -S thunar
+paru -S thunar filezilla
 ```
 
 Beautify
@@ -31,25 +31,25 @@ sudo pacman -S picom feh variety polybar-git arc-gtk-theme papirus-icon-theme ad
 Reinforce i3
 ```sh
 # like bspwm to the spiral tiling 
-yay -S autotiling
+paru -S autotiling
 
 # Visually focus windows by label
-yay -S wmfocus
+paru -S wmfocus
 ```
 
 Nerd Font
 ```sh
-yay -S ttf-unifont siji-git ttf-font-awesome
+paru -S ttf-unifont siji-git ttf-font-awesome
 
-yay -S ttf-linux-libertine ttf-inconsolata ttf-joypixels ttf-twemoji-color noto-fonts-emoji ttf-liberation ttf-droid
+paru -S ttf-linux-libertine ttf-inconsolata ttf-joypixels ttf-twemoji-color noto-fonts-emoji ttf-liberation ttf-droid
 
-yay -S tty-fira-code
+paru -S tty-fira-code
 
 # zh-CN
-yay -S wqy-bitmapfont wqy-microhei wqy-microhei-lite wqy-zenhei adobe-source-han-mono-cn-fonts adobe-source-han-sans-cn-fonts adobe-source-han-serif-cn-fonts
+paru -S wqy-bitmapfont wqy-microhei wqy-microhei-lite wqy-zenhei adobe-source-han-mono-cn-fonts adobe-source-han-sans-cn-fonts adobe-source-han-serif-cn-fonts
 ```
 
-If on virtual machine, run the following command.
+If running on virtual machine, run the following command.
 ```sh
 pacman -S open-vm-tools-desktop
 ```
@@ -89,7 +89,7 @@ sudo pacman -S remmina freerdp # RDP tools
 sudo pacman -S fcitx5-im #基础包组
 sudo pacman -S fcitx5-chinese-addons #官方中文输入引擎
 # sudo pacman -S fcitx5-anthy #日文输入引擎
-yay -S fcitx5-pinyin-moegirl #萌娘百科词库 由于中国大陆政府对github封锁，你在下载时可能需要使用魔法。
+paru -S fcitx5-pinyin-moegirl #萌娘百科词库 由于中国大陆政府对github封锁，你在下载时可能需要使用魔法。
 sudo pacman -S fcitx5-pinyin-zhwiki #中文维基百科词库
 sudo pacman -S fcitx5-material-color #主题
 ```
