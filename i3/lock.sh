@@ -7,7 +7,8 @@ killall -q picom
 while pgrep -u $UID -x picom >/dev/null; do sleep 0.1; done
 
 # the lock screen
-i3lock -n -c 000000
+# i3lock -n -c 000000
+i3lock -n -i $HOME/myconfig/i3/lock.png
 
 # Wait until screen unlock
 # while pgrep -u $UID -x i3lock >/dev/null; do sleep 1; done
