@@ -14,6 +14,6 @@ export PATH=$PATH:$HOME/.cargo/bin
 eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
 
 
-eval "$(zoxide init --cmd cd zsh)"
+source $HOME/.config/zsh/zoxide.zsh
 
 
