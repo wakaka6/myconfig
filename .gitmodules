@@ -4,3 +4,6 @@
 [submodule "ranger/plugins/devicons2"]
 	path = ranger/plugins/devicons2
 	url = https://github.com/cdump/ranger-devicons2
+[submodule "ranger-zoxide"]
+	path = ranger/plugins/zoxide
+	url = https://github.com/jchook/ranger-zoxide.git
