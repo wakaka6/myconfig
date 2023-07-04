@@ -11,7 +11,7 @@ UNIQUE_PREFIX="i3lock-image-${UUID}-"
 
 CACHE_FOLDER=$DEFAULT_CACHE_FOLDER
 
-if ! [[ "$CACHE_FOLDER" == "*/" ]]; then
+if [[ $CACHE_FOLDER != */ ]]; then
     CACHE_FOLDER="$CACHE_FOLDER/"
 fi
 
@@ -71,7 +71,6 @@ do
     SCREEN_Y=${BASH_REMATCH[4]}
 
     CACHE_IMG="${CACHE_FOLDER}${UNIQUE_PREFIX}${SCREEN_WIDTH}x${SCREEN_HEIGHT}-${LOCK_IMG}"
-    echo $CACHE_IMG
     ## if cache for that screensize doesnt exist
     if ! [ -e $CACHE_IMG ]
     then
