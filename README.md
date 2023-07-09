@@ -25,7 +25,12 @@ paru -S thunar filezilla
 
 Beautify
 ```sh
-sudo pacman -S picom feh variety polybar-git arc-gtk-theme papirus-icon-theme adapta-gtk-theme lxappearance arc-icon-theme
+sudo pacman -S picom feh variety polybar-git arc-gtk-theme papirus-icon-theme adapta-gtk-theme arc-icon-theme
+# configure GTK theme
+sudo pacman -S lxappearance
+# configure i3 theme
+sudo pacman -S kvantum
+
 ```
 
 Reinforce i3
