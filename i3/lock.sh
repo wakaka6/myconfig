@@ -36,6 +36,8 @@ function lock_screen() {
     # Terminate already running picom instances
     killall -q picom
 
+    # suspend message display
+    pkill -u "$USER" -USR1 dunst
     # Wait until the processes have been shut down
     while pgrep -u $UID -x picom >/dev/null; do sleep 0.1; done
 
@@ -46,6 +48,8 @@ function lock_screen() {
     # Wait until screen unlock
     # while pgrep -u $UID -x i3lock >/dev/null; do sleep 1; done
 
+    # resume message display
+    pkill -u "$USER" -USR2 dunst
     # restart picom
     picom -b --inactive-dim 0.02
 }
