@@ -48,6 +48,6 @@
  :sgr-welcome-message ["light blue" "bold"]
  :fmt-welcome-submessage "(:q to quit)"
  :sgr-welcome-submessage "light blue"
- :fmt-prompt "=========%n%s韛隷 "
+ :fmt-prompt "=========%n%s󰗊隷 "
  :sgr-prompt ["light blue" "bold"]
  }
