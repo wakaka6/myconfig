@@ -1,16 +1,9 @@
 lua << EOF
 
-require("ibl").overwrite {
-    indent = {
-        char = { "│", "|", "¦", "┆" },
-    },
-    exclude = {
-        filetypes = {'lsp', 'packer', 'vim-plug', 'checkhealth', 'text' , 'dashboard', 'coc-explorer', 'man', 'help'},
-        buftypes = { 'terminal', 'nofile', 'quickfix', 'prompt'},
-        }
-}
 
 vim.opt.list = true
+vim.opt.listchars:append "eol:↴"
+-- vim.opt.listchars:append "space:⋅"
 
 local highlight = {
     "RainbowRed",
@@ -35,6 +28,23 @@ hooks.register(hooks.type.HIGHLIGHT_SETUP, function()
     vim.api.nvim_set_hl(0, "RainbowCyan", { fg = "#56B6C2" })
 end)
 
-require("ibl").setup { indent = { highlight = highlight } }
+require("ibl").setup { 
+    indent = {
+        highlight = highlight,
+        char = { "│", "|", "¦", "┆" },
+    },
+    exclude = {
+        filetypes = {'lsp', 'packer', 'vim-plug', 'checkhealth', 'text' , 'dashboard', 'coc-explorer', 'man', 'help'},
+        buftypes = { 'terminal', 'nofile', 'quickfix', 'prompt'},
+        },
+    whitespace = { 
+        highlight = highlight,
+        remove_blankline_trail = false,
+    },
+    scope = { 
+        highlight = highlight,
+        enabled = true,
+    },
+}
 
 EOF
