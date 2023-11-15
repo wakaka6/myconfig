@@ -67,7 +67,7 @@ call plug#begin(stdpath('data').'/plugged')
     Plug 'nvim-lua/plenary.nvim' " ull; complete; entire; absolute; unqualified. All the lua functions
     Plug 'nvim-lua/popup.nvim' " An implementation of the Popup API from vim in Neovim.
     Plug 'nvim-telescope/telescope.nvim', { 'tag': '0.1.4' }
-    Plug 'nvim-telescope/telescope-fzf-native.nvim', { 'do': 'make' }
+    Plug 'nvim-telescope/telescope-fzf-native.nvim', { 'do': 'cmake -S. -Bbuild -DCMAKE_BUILD_TYPE=Release && cmake --build build --config Release && cmake --install build --prefix build' }
     Plug 'nvim-telescope/telescope-live-grep-args.nvim'
 
 	" beautiful catalogue
