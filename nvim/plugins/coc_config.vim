@@ -48,3 +48,5 @@ augroup hugefile
         \ unlet size
 augroup END
 
+
+autocmd FileType python let b:coc_root_patterns = ['.git', '.env', 'venv', '.venv', 'setup.cfg', 'setup.py', 'pyproject.toml', 'pyrightconfig.json']
