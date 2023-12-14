@@ -61,6 +61,10 @@ fi
 
 if [ ! -L "$HOME/.config/lazygit/config.yml" ]
 then
+    if [ ! -e "$HOME/.config/lazygit" ]
+    then 
+        mkdir $HOME/.config/lazygit
+    fi
 	rm -f "$HOME/.config/lazygit/config.yml"
     ln -s "$curPath/lazygit/config.yml" "$HOME/.config/lazygit/config.yml"
 fi
@@ -82,6 +86,11 @@ fi
 if [ ! -e "$HOME/.config/rofi" ]
 then
 	ln -s "$curPath/rofi" "$HOME/.config/rofi"
+fi
+
+if [ ! -e "$HOME/.config/dunst" ]
+then
+	ln -s "$curPath/dunst" "$HOME/.config/dunst"
 fi
 
 if [ ! -e "$HOME/.config/picom" ]
