@@ -94,7 +94,7 @@ call plug#begin(stdpath('data').'/plugged')
 	Plug 'dhruvasagar/vim-table-mode'
 	Plug 'ferrine/md-img-paste.vim'
     " Plug 'mzlogin/vim-markdown-toc', { 'for': ['gitignore', 'markdown', 'vim-plug'] }
-    
+
     " Distraction-free writing in Vim
     Plug 'junegunn/goyo.vim' 
     Plug 'junegunn/limelight.vim'
@@ -114,6 +114,9 @@ call plug#begin(stdpath('data').'/plugged')
     Plug 'dstein64/vim-startuptime' " Plugin startup speed test
     Plug 'sindrets/winshift.nvim' " Rearrange your windows with ease.
     Plug 'numToStr/Comment.nvim'
+
+    " fun plugin
+    Plug 'Eandrju/cellular-automaton.nvim'
 
     " debugger
     " Plug 'puremourning/vimspector', {'do': './install_gadget.py --enable-c --enable-python --enable-go'}
@@ -246,3 +249,5 @@ source ~/.config/nvim/plugins/copilot_config.vim
 
 " ==================================================== winshift
 source ~/.config/nvim/plugins/winshift_config.vim
+" ==================================================== cellular-automaton
+source ~/.config/nvim/plugins/cellular_automaton_config.vim
