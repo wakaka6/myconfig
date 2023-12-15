@@ -123,6 +123,7 @@ local mappings = {
     h = { "<Cmd>Telescope oldfiles<cr>", "Open Recent File" },
 
     z =  { [[<ESC>/\v<[\u4e00-\u9fa5]+>/<CR>:nohlsearch<CR>]], 'Find zh-CN word' },
+    k = { "<cmd>CellularAutomaton make_it_rain<CR>", 'Make it awesome rain' },
   },
 
   s = {
