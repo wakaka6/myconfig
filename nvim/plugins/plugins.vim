@@ -38,6 +38,7 @@ call plug#begin(stdpath('data').'/plugged')
 	" Auto Complete
 	Plug 'neoclide/coc.nvim', {'branch': 'release'}
     Plug 'fatih/vim-go', { 'do': ':GoUpdateBinaries',  'for': ['go', 'vim-plug'] }
+    Plug 's3rvac/vim-syntax-yara'
 	
 	" Highlight the symbol and its references when holding the cursor.
 	Plug 'RRethy/vim-illuminate'
