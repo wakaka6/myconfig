@@ -1,0 +1,191 @@
+live_config_reload = true
+#tabspaces = 4
+
+[colors]
+draw_bold_text_with_bright_colors = true
+
+[colors.bright]
+black = "#6272a4"
+blue = "#d6acff"
+cyan = "#a4ffff"
+green = "#69ff94"
+magenta = "#ff92df"
+red = "#ff6e6e"
+white = "#ffffff"
+yellow = "#ffffa5"
+
+[colors.cursor]
+cursor = "CellForeground"
+text = "CellBackground"
+
+[colors.hints.end]
+background = "#282a36"
+foreground = "#f1fa8c"
+
+[colors.hints.start]
+background = "#f1fa8c"
+foreground = "#282a36"
+
+[colors.line_indicator]
+background = "None"
+foreground = "None"
+
+[colors.normal]
+black = "#21222c"
+blue = "#bd93f9"
+cyan = "#8be9fd"
+green = "#50fa7b"
+magenta = "#ff79c6"
+red = "#ff5555"
+white = "#f8f8f2"
+yellow = "#f1fa8c"
+
+[colors.primary]
+background = "#282a36"
+bright_foreground = "#ffffff"
+foreground = "#f8f8f2"
+
+[colors.search.focused_match]
+background = "#ffb86c"
+foreground = "#44475a"
+
+# [colors.search.footer_bar]
+# background = "#282a36"
+# foreground = "#f8f8f2"
+
+[colors.search.matches]
+background = "#50fa7b"
+foreground = "#44475a"
+
+[colors.selection]
+background = "#44475a"
+text = "CellForeground"
+
+[colors.vi_mode_cursor]
+cursor = "CellForeground"
+text = "CellBackground"
+
+[env]
+TERM = "xterm-256color"
+
+[font]
+size = 14.0
+
+[font.normal]
+family = "SauceCodePro Nerd Font"
+style = "Regular"
+
+[[hints.enabled]]
+command = "xdg-open"
+post_processing = true
+regex = "(ipfs:|ipns:|magnet:|mailto:|gemini:|gopher:|https:|http:|news:|file:|git:|ssh:|ftp:)[^\u0000-\u001F\u007F-<>\"\\s{-}\\^⟨⟩`]+"
+
+[hints.enabled.binding]
+key = "U"
+mods = "Alt"
+
+[hints.enabled.mouse]
+enabled = true
+mods = "None"
+
+[[hints.enabled]]
+action = "Copy"
+post_processing = true
+regex = "(ipfs:|ipns:|magnet:|mailto:|gemini:|gopher:|https:|http:|news:|file:|git:|ssh:|ftp:)[^\u0000-\u001F\u007F-<>\"\\s{-}\\^⟨⟩`]+"
+
+[hints.enabled.binding]
+key = "Y"
+mods = "Alt"
+
+[hints.enabled.mouse]
+enabled = true
+mods = "None"
+
+[[hints.enabled]]
+action = "Copy"
+post_processing = true
+regex = '(?:(?:25[0-5]|2[0-4]\d|[01]?\d?\d)\.){3}(?:25[0-5]|2[0-4]\d|[01]?\d?\d)'
+
+[hints.enabled.binding]
+key = "I"
+mods = "Alt"
+
+[hints.enabled.mouse]
+enabled = true
+mods = "None"
+
+[[keyboard.bindings]]
+action = "SpawnNewInstance"
+key = "Return"
+mods = "Super|Shift"
+
+[[keyboard.bindings]]
+action = "ScrollLineUp"
+key = "K"
+mods = "Alt"
+
+[[keyboard.bindings]]
+action = "ScrollLineDown"
+key = "J"
+mods = "Alt"
+
+[[keyboard.bindings]]
+action = "ScrollHalfPageUp"
+key = "K"
+mods = "Alt|Control"
+
+[[keyboard.bindings]]
+action = "ScrollHalfPageDown"
+key = "J"
+mods = "Alt|Control"
+
+[[keyboard.bindings]]
+action = "ToggleViMode"
+key = "Q"
+mode = "Vi|~Search"
+mods = "Control"
+
+[[keyboard.bindings]]
+action = "SearchCancel"
+key = "Q"
+mode = "Search"
+mods = "Control"
+
+[[keyboard.bindings]]
+action = "ResetFontSize"
+key = "Home"
+mods = "Control|Shift"
+
+[[keyboard.bindings]]
+action = "IncreaseFontSize"
+key = "Plus"
+mods = "Control"
+
+[[keyboard.bindings]]
+action = "IncreaseFontSize"
+key = "Up"
+mods = "Control|Shift"
+
+[[keyboard.bindings]]
+action = "DecreaseFontSize"
+key = "Minus"
+mods = "Control"
+
+[[keyboard.bindings]]
+action = "DecreaseFontSize"
+key = "Down"
+mods = "Control|Shift"
+
+[mouse]
+hide_when_typing = true
+
+[scrolling]
+history = 20000
+multiplier = 5
+
+[selection]
+save_to_clipboard = true
+semantic_escape_chars = ",│`|:\"' ()[]{}<>\t"
+
+[window]
+opacity = 0.9
