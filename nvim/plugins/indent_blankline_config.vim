@@ -32,6 +32,7 @@ require("ibl").setup {
     indent = {
         highlight = highlight,
         char = { "│", "|", "¦", "┆" },
+        tab_char = { "" }
     },
     exclude = {
         filetypes = {'lsp', 'packer', 'vim-plug', 'checkhealth', 'text' , 'dashboard', 'coc-explorer', 'man', 'help'},
