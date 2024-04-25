@@ -106,14 +106,4 @@ cd ~/myconfig && ./auto_config.sh && reboot
 
 ## ChatGPT configure
 
-First of all, Install `revChatGPT`.
-```bash
-python3 -m pip install --upgrade revChatGPT
-```
-
-And then add you ChatGPT API key as environment variable `ChatGPT_KEY` in the `~/.xprofile` file.
-```bash
-echo 'export ChatGPT_KEY="sk-xxxxxxxxxxxx"' >> ~/.xporfile
-```
-
-Finally you can use `super+g` to active ChatGPT dialog or `super+shift+t` to active ChatGPT Translate dialog. 
+refer. https://github.com/j178/chatgpt
