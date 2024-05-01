@@ -237,7 +237,7 @@ for_window [instance="AItrans"] mark --replace AItrans
 for_window [instance="AItrans"] resize set 850 600
 for_window [instance="AItrans"] move scratchpad
 for_window [instance="AItrans"] border pixel 5
-exec --no-startup-id st -n AItrans -e $HOME/myconfig/.script/chatgptTranslate.sh
+exec --no-startup-id st -n AItrans -e $GOPATH/bin/chatgpt -d -p translator
 
 bindsym $mod+Shift+t [instance="AItrans"] scratchpad show; [instance="AItrans"] move position center
 
@@ -248,7 +248,7 @@ for_window [instance="ChatGPT"] mark --replace ChatGPT
 for_window [instance="ChatGPT"] resize set 1120 710
 for_window [instance="ChatGPT"] move scratchpad
 for_window [instance="ChatGPT"] border pixel 5
-exec --no-startup-id st -n ChatGPT -e $HOME/myconfig/.script/chatgpt.sh
+exec --no-startup-id st -n ChatGPT -e $GOPATH/bin/chatgpt
 
 bindsym $mod+g [instance="ChatGPT"] scratchpad show; [instance="ChatGPT"] move position center
 
