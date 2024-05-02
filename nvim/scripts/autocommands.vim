@@ -9,7 +9,7 @@ func AutoSetCodeTitle()
 		normal G
         normal o
 	endif
-	
+
 	if &filetype == 'cpp'
 		call setline(1, "#include <iostream>")
 		call append(line("."), "using namespace std;")
@@ -43,10 +43,10 @@ func AutoSetCodeTitle()
 		normal o
 		normal o
 	endif
-	
+
 endfunc 
 
 augroup _load_break_points
     autocmd!
-    autocmd FileType c,cpp,go,python,lua :lua require('user.dap.utils').load_breakpoints()
+    autocmd FileType c,cpp,go,python,lua :lua require('user.conf.plugins.debugger.utils').load_breakpoints()
 augroup end

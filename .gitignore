@@ -204,3 +204,4 @@ cython_debug/
 # zsh ignore
 .zshrc
 *.zcompdump*
+nvim/lazy-lock.json
