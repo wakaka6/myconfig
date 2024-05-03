@@ -134,7 +134,7 @@ return {
 					},
 				},
 				lualine_b = { "branch", "diff", "diagnostics" },
-				lualine_c = { custom_fname, "g:coc_status" },
+				lualine_c = { custom_fname },
 				lualine_x = {
 					"filetype",
 					mixed_indent,
@@ -152,7 +152,7 @@ return {
 					},
 					{
 						function()
-							return [[%l %c]]
+							return [[%l %2c]]
 						end,
 						separator = { right = "" },
 						left_padding = 0,

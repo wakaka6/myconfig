@@ -103,6 +103,10 @@ return {
 				name = "trouble",
 			},
 
+			g = {
+				name = "git",
+			},
+
 			d = {
 				name = "debug",
 				-- c = { '<Cmd>tabe .vimspector.json<CR><Cmd>LoadDebugLaunchJsonTemplate<CR>', 'Creat debug file' },

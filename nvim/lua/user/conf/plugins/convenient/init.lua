@@ -28,4 +28,6 @@ return {
 	require("user.conf.plugins.convenient.todo-comments"),
 	require("user.conf.plugins.convenient.trouble"),
 	require("user.conf.plugins.convenient.auto-session"),
+
+	require("user.conf.plugins.convenient.git"),
 }
