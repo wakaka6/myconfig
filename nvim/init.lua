@@ -6,7 +6,7 @@ vim.cmd("source ~/.config/nvim/globals/globals.vim")
 -- ***
 -- Maping Config
 -- ***
-vim.cmd("source ~/.config/nvim/mappings/mapping.vim")
+require("user.mappings")
 
 -- ***
 -- scripts
