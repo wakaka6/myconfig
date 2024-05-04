@@ -28,9 +28,7 @@ end
 local M = {}
 M.config = {
 	"hrsh7th/nvim-cmp",
-	after = {
-		"SirVer/ultisnips",
-	},
+	event = "InsertEnter",
 	dependencies = {
 		"hrsh7th/cmp-buffer",
 		"hrsh7th/cmp-path",
@@ -46,6 +44,7 @@ M.config = {
 				require("lspkind").init()
 			end,
 		},
+		"SirVer/ultisnips",
 		{
 			"quangnguyen30192/cmp-nvim-ultisnips",
 			config = function()
@@ -53,18 +52,18 @@ M.config = {
 				require("cmp_nvim_ultisnips").setup({})
 			end,
 		},
-		-- "L3MON4D3/LuaSnip",
 	},
 	config = function()
 		local cmp = require("cmp")
 		local lspkind = require("lspkind")
+
 		cmp.setup({
 			snippet = {
 				expand = function(args)
 					vim.fn["UltiSnips#Anon"](args.body)
 				end,
 			},
-			mapping = {
+			mapping = cmp.mapping.preset.insert({
 				["<C-t>"] = cmp.mapping({
 					i = function(fallback)
 						if cmp.visible() then
@@ -78,17 +77,8 @@ M.config = {
 					i = function(fallback)
 						if cmp.visible() then
 							cmp.select_next_item({ behavior = cmp.SelectBehavior.Insert })
-						elseif vim.fn["UltiSnips#CanJumpForwards"]() == 1 then
-							vim.api.nvim_feedkeys(t("<Plug>(ultisnips_jump_forward)"), "m", true)
-						elseif not has_words_before() then
-							fallback()
-						else
-							fallback()
-						end
-					end,
-					s = function(fallback)
-						if vim.fn["UltiSnips#CanJumpForwards"]() == 1 then
-							vim.api.nvim_feedkeys(t("<Plug>(ultisnips_jump_forward)"), "m", true)
+						elseif has_words_before() then
+							cmp.complete()
 						else
 							fallback()
 						end
@@ -99,13 +89,6 @@ M.config = {
 						if cmp.visible() then
 							cmp.select_prev_item({ behavior = cmp.SelectBehavior.Insert })
 						elseif vim.fn["UltiSnips#CanJumpBackwards"]() == 1 then
-							return vim.api.nvim_feedkeys(t("<Plug>(ultisnips_jump_backward)"), "m", true)
-						else
-							fallback()
-						end
-					end,
-					s = function(fallback)
-						if vim.fn["UltiSnips#CanJumpBackwards"]() == 1 then
 							return vim.api.nvim_feedkeys(t("<Plug>(ultisnips_jump_backward)"), "m", true)
 						else
 							fallback()
@@ -148,7 +131,7 @@ M.config = {
 						end
 					end,
 				}),
-			},
+			}),
 			window = {
 				completion = {
 					-- winhighlight = "Normal:Pmenu,FloatBorder:Pmenu,Search:None",
@@ -169,24 +152,6 @@ M.config = {
 					return kind
 				end,
 			},
-		})
-		-- Use buffer source for `/`.
-		cmp.setup.cmdline("/", {
-			completion = { autocomplete = false },
-			sources = {
-				-- { name = 'buffer' }
-				{ name = "buffer", opts = { keyword_pattern = [=[[^[:blank:]].*]=] } },
-			},
-		})
-
-		-- Use cmdline & path source for ':'.
-		cmp.setup.cmdline(":", {
-			completion = { autocomplete = false },
-			sources = cmp.config.sources({
-				{ name = "path" },
-			}, {
-				{ name = "cmdline" },
-			}),
 		})
 		local default_cmp_sources = cmp.config.sources({
 			{ name = "nvim_lsp" },
@@ -210,6 +175,116 @@ M.config = {
 				})
 			end,
 		})
+	end,
+}
+
+M.lua_config = {
+	"hrsh7th/nvim-cmp",
+	event = "InsertEnter",
+	dependencies = {
+		"hrsh7th/cmp-buffer", -- source for text in buffer
+		"hrsh7th/cmp-path", -- source for file system paths
+		{
+			"L3MON4D3/LuaSnip",
+			-- follow latest release.
+			version = "v2.*", -- Replace <CurrentMajor> by the latest released major (first number of latest release)
+			-- install jsregexp (optional!).
+			build = "make install_jsregexp",
+		},
+		"saadparwaiz1/cmp_luasnip", -- for autocompletion
+		"rafamadriz/friendly-snippets", -- useful snippets
+		"onsails/lspkind.nvim", -- vs-code like pictograms
+	},
+	config = function()
+		local cmp = require("cmp")
+
+		local luasnip = require("luasnip")
+
+		local lspkind = require("lspkind")
+
+		-- loads vscode style snippets from installed plugins (e.g. friendly-snippets)
+		require("luasnip.loaders.from_vscode").lazy_load()
+
+		cmp.setup({
+			completion = {
+				completeopt = "menu,menuone,preview,noselect",
+			},
+			snippet = { -- configure how nvim-cmp interacts with snippet engine
+				expand = function(args)
+					luasnip.lsp_expand(args.body)
+				end,
+			},
+			mapping = cmp.mapping.preset.insert({
+				["<Tab>"] = cmp.mapping(function(fallback)
+					if cmp.visible() then
+						cmp.select_next_item()
+					elseif luasnip.expand_or_jumpable() then
+						luasnip.expand_or_jump()
+					elseif has_words_before() then
+						cmp.complete()
+					else
+						fallback()
+					end
+				end, { "i", "s" }),
+				["<s-Tab>"] = cmp.mapping(function(fallback)
+					if cmp.visible() then
+						cmp.select_prev_item()
+					elseif luasnip.jumpable(-1) then
+						luasnip.jump(-1)
+					else
+						fallback()
+					end
+				end, { "i", "s" }),
+				["<C-k>"] = cmp.mapping.select_prev_item(), -- previous suggestion
+				["<C-j>"] = cmp.mapping.select_next_item(), -- next suggestion
+				["<C-b>"] = cmp.mapping.scroll_docs(-4),
+				["<C-f>"] = cmp.mapping.scroll_docs(4),
+				["<C-Space>"] = cmp.mapping.complete(), -- show completion suggestions
+				["<C-t>"] = cmp.mapping.abort(), -- close completion window
+				["<CR>"] = cmp.mapping.confirm({ select = false }),
+			}),
+			-- sources for autocompletion
+			sources = cmp.config.sources({
+				{ name = "nvim_lsp" },
+				{ name = "luasnip" }, -- snippets
+				{ name = "buffer" }, -- text within current buffer
+				{ name = "path" }, -- file system paths
+			}),
+
+			-- configure lspkind for vs-code like pictograms in completion menu
+			formatting = {
+				format = function(entry, vim_item)
+					local kind = lspkind.cmp_format({
+						mode = "symbol_text",
+						symbol_map = { Codeium = "" },
+					})(entry, vim_item)
+					-- local strings = vim.split(kind.kind, "%s", { trimempty = true })
+					-- kind.kind = " " .. (strings[1] or "") .. " "
+					kind.menu = limitStr(entry:get_completion_item().detail or "")
+					return kind
+				end,
+			},
+		})
+
+		local default_cmp_sources = cmp.config.sources({
+			{ name = "nvim_lsp" },
+			{ name = "luasnip" }, -- snippets
+			{ name = "buffer" }, -- text within current buffer
+			{ name = "path" }, -- file system paths
+		})
+		-- If a file is too large, I don't want to add to it's cmp sources treesitter, see:
+		-- https://github.com/hrsh7th/nvim-cmp/issues/1522
+		-- vim.api.nvim_create_autocmd("BufReadPre", {
+		-- 	callback = function(tt)
+		-- 		local sources = default_cmp_sources
+		-- 		if not bufIsBig(tt.buf) then
+		-- 			sources[#sources + 1] = { name = "treesitter", group_index = 2 }
+		-- 		end
+		-- 		cmp.setup.buffer({
+		-- 			sources = sources,
+		-- 		})
+		-- 	end,
+		-- })
 	end,
 }
 

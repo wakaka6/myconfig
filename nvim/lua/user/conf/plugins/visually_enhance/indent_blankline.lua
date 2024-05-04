@@ -60,8 +60,9 @@ local indent_blankline = {
 	end,
 }
 
-hlchunk = {
+local hlchunk = {
 	"shellRaining/hlchunk.nvim",
+	dependencies = { "nvim-treesitter/nvim-treesitter" },
 	init = function()
 		local cb = function()
 			return "#F1FA8C"

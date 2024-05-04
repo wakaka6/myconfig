@@ -1,47 +1,62 @@
 return {
-    'nvim-treesitter/nvim-treesitter',
-    event = { "BufReadPre", "BufNewFile" },
-    build = ":TSUpdate",
-    config = function()
-        local status_ok, nt = pcall(require, "nvim-treesitter.configs")
-        if not status_ok then
-            return
-        end
+	"nvim-treesitter/nvim-treesitter",
+	event = { "BufReadPre", "BufNewFile" },
+	build = ":TSUpdate",
+	dependencies = {
+		"windwp/nvim-ts-autotag",
+	},
+	config = function()
+		local status_ok, nt = pcall(require, "nvim-treesitter.configs")
+		if not status_ok then
+			return
+		end
 
-        nt.setup {
-            -- A list of parser names, or "all"
-            ensure_installed = { "c", "cpp", "go", "python", "lua", "markdown" },
+		nt.setup({
+			ensure_installed = {
+				"c",
+				"cpp",
+				"go",
+				"python",
+				"lua",
+				"markdown",
+			},
 
-            -- Install parsers synchronously (only applied to `ensure_installed`)
-            sync_install = false,
+			autotag = {
+				enable = true,
+			},
 
-            -- Automatically install missing parsers when entering buffer
-            auto_install = false,
+			sync_install = false,
 
-            -- List of parsers to ignore installing (for "all")
-            ignore_install = { "all" },
+			auto_install = false,
 
-            highlight = {
-                -- `false` will disable the whole extension
-                enable = true,
+			ignore_install = { "all" },
 
-                -- NOTE: these are the names of the parsers and not the filetype. (for example if you want to
-                -- disable highlighting for the `tex` filetype, you need to include `latex` in this list as this is
-                -- the name of the parser)
-                -- list of language that will be disabled
-                disable = { 'vim' },
+			highlight = {
+				-- `false` will disable the whole extension
+				enable = true,
 
-                -- Setting this to true will run `:h syntax` and tree-sitter at the same time.
-                -- Set this to `true` if you depend on 'syntax' being enabled (like for indentation).
-                -- Using this option may slow down your editor, and you may see some duplicate highlights.
-                -- Instead of true it can also be a list of languages
-                additional_vim_regex_highlighting = {'markdown'},
-            },
-        }
+				-- NOTE: these are the names of the parsers and not the filetype. (for example if you want to
+				-- disable highlighting for the `tex` filetype, you need to include `latex` in this list as this is
+				-- the name of the parser)
+				-- list of language that will be disabled
+				disable = function(lang, buf)
+					local max_filesize = 100 * 1024 -- 100 KB
+					local ok, stats = pcall(vim.loop.fs_stat, vim.api.nvim_buf_get_name(buf))
+					if vim.api.nvim_buf_get_option(buf, "filetype") == "vim" then
+						return true
+					end
+					if ok and stats and stats.size > max_filesize then
+						return true
+					end
+				end,
 
-        -- Config curl proxy to download parsers
-        -- require("nvim-treesitter.install").command_extra_args = {
-        --     curl = { "--proxy", "<proxy url>" },
-        -- }
-    end,
+				additional_vim_regex_highlighting = { "markdown" },
+			},
+		})
+
+		-- Config curl proxy to download parsers
+		-- require("nvim-treesitter.install").command_extra_args = {
+		--     curl = { "--proxy", "<proxy url>" },
+		-- }
+	end,
 }
