@@ -137,7 +137,7 @@ line.setup {
     lualine_c = {},
     lualine_x = {'encoding', {'fileformat', separator = { left = '' }} },
     lualine_y = {{'filename', cond = is_ignore}, },
-    lualine_z = {{'%l', fmt=function(str) return '並'..str end}},
+    lualine_z = {{'%l', fmt=function(str) return '󰕱'..str end}},
   },
   tabline = {},
   winbar = {},
