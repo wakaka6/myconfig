@@ -32,7 +32,9 @@ M.null_ls = {
 
 		null_ls.setup({
 			sources = {
-				null_ls.builtins.diagnostics.pylint,
+				null_ls.builtins.diagnostics.pylint.with({
+					Args = { "--disable=E0401", "--rcfile=~/.config/pylintrc" },
+				}),
 			},
 		})
 	end,
