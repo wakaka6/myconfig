@@ -45,6 +45,7 @@ local indent_blankline = {
 					"coc-explorer",
 					"man",
 					"help",
+					"translator",
 				},
 				buftypes = { "terminal", "nofile", "quickfix", "prompt" },
 			},
@@ -68,6 +69,17 @@ local hlchunk = {
 			return "#F1FA8C"
 		end
 		vim.api.nvim_create_autocmd({ "CursorMoved", "CursorMovedI" }, { pattern = "*", command = "EnableHL" })
+
+		-- exclude some filetypes
+		default_exclude_ft = require("hlchunk.utils.filetype").exclude_filetypes
+		exclude_ft = {
+			translator = true,
+			dashboard = true,
+		}
+		for k, v in pairs(default_exclude_ft) do
+			exclude_ft[k] = v
+		end
+
 		require("hlchunk").setup({
 			chunk = {
 				enable = true,
@@ -82,6 +94,7 @@ local hlchunk = {
 				style = {
 					{ fg = "#6272a4" },
 				},
+				exclude_filetype = exclude_ft,
 			},
 			blank = {
 				enable = false,

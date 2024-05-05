@@ -30,4 +30,5 @@ return {
 	require("user.conf.plugins.convenient.auto-session"),
 
 	require("user.conf.plugins.convenient.git"),
+	require("user.conf.plugins.convenient.translator"),
 }
