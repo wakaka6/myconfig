@@ -1,6 +1,6 @@
 return {
 	require("user.conf.plugins.editor_enhance.Comment"),
-	require("user.conf.plugins.editor_enhance.copilot"),
+	require("user.conf.plugins.editor_enhance.copilot").lua,
 
 	{
 		"windwp/nvim-autopairs",

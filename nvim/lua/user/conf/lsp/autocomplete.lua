@@ -240,11 +240,20 @@ M.lua_config = {
 				["<C-b>"] = cmp.mapping.scroll_docs(-4),
 				["<C-f>"] = cmp.mapping.scroll_docs(4),
 				["<C-Space>"] = cmp.mapping.complete(), -- show completion suggestions
-				["<C-t>"] = cmp.mapping.abort(), -- close completion window
+				["<C-t>"] = cmp.mapping({
+					i = function(fallback)
+						if cmp.visible() then
+							cmp.abort()
+						else
+							cmp.complete()
+						end
+					end,
+				}),
 				["<CR>"] = cmp.mapping.confirm({ select = false }),
 			}),
 			-- sources for autocompletion
 			sources = cmp.config.sources({
+				{ name = "copilot" },
 				{ name = "nvim_lsp" },
 				{ name = "luasnip" }, -- snippets
 				{ name = "buffer" }, -- text within current buffer
@@ -256,7 +265,7 @@ M.lua_config = {
 				format = function(entry, vim_item)
 					local kind = lspkind.cmp_format({
 						mode = "symbol_text",
-						symbol_map = { Codeium = "" },
+						symbol_map = { Codeium = "", Copilot = "" },
 					})(entry, vim_item)
 					-- local strings = vim.split(kind.kind, "%s", { trimempty = true })
 					-- kind.kind = " " .. (strings[1] or "") .. " "
@@ -265,26 +274,6 @@ M.lua_config = {
 				end,
 			},
 		})
-
-		local default_cmp_sources = cmp.config.sources({
-			{ name = "nvim_lsp" },
-			{ name = "luasnip" }, -- snippets
-			{ name = "buffer" }, -- text within current buffer
-			{ name = "path" }, -- file system paths
-		})
-		-- If a file is too large, I don't want to add to it's cmp sources treesitter, see:
-		-- https://github.com/hrsh7th/nvim-cmp/issues/1522
-		-- vim.api.nvim_create_autocmd("BufReadPre", {
-		-- 	callback = function(tt)
-		-- 		local sources = default_cmp_sources
-		-- 		if not bufIsBig(tt.buf) then
-		-- 			sources[#sources + 1] = { name = "treesitter", group_index = 2 }
-		-- 		end
-		-- 		cmp.setup.buffer({
-		-- 			sources = sources,
-		-- 		})
-		-- 	end,
-		-- })
 	end,
 }
 
