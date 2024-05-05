@@ -42,13 +42,13 @@ return {
 				numhl = "",
 			},
 			rejected = {
-				text = "",
+				text = "󰃤",
 				texthl = "LspDiagnosticsDefaultHint",
 				linehl = "",
 				numhl = "",
 			},
 			stopped = {
-				text = "ﰲ",
+				text = "",
 				texthl = "LspDiagnosticsDefaultInformation",
 				linehl = "DiagnosticUnderlineInfo",
 				numhl = "LspDiagnosticsDefaultInformation",
