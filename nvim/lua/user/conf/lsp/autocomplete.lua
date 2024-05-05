@@ -249,8 +249,20 @@ M.lua_config = {
 						end
 					end,
 				}),
-				["<CR>"] = cmp.mapping.confirm({ select = false }),
+				-- confirm completion
+				["<CR>"] = cmp.mapping({
+					i = function(fallback)
+						if cmp.visible() and cmp.get_active_entry() then
+							cmp.confirm({ behavior = cmp.ConfirmBehavior.Replace, select = false })
+						else
+							fallback()
+						end
+					end,
+					s = cmp.mapping.confirm({ select = true }),
+					c = cmp.mapping.confirm({ behavior = cmp.ConfirmBehavior.Replace, select = true }),
+				}),
 			}),
+
 			-- sources for autocompletion
 			sources = cmp.config.sources({
 				{ name = "copilot" },
