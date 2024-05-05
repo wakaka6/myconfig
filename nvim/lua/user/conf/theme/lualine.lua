@@ -134,7 +134,7 @@ return {
 					},
 				},
 				lualine_b = { "branch", "diff", "diagnostics" },
-				lualine_c = { custom_fname },
+				lualine_c = { custom_fname, "copilot" },
 				lualine_x = {
 					"filetype",
 					mixed_indent,
