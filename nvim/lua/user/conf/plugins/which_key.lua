@@ -115,11 +115,11 @@ return {
 				o = { [[<Cmd>lua require('dap').repl.toggle()<CR>]], "toggle dap REPL" },
 				q = { '<Cmd>lua require("dap").terminate()<CR>', "stop debug" },
 				l = {
-					'<Cmd>lua require("dap.ext.vscode").load_launchjs(".dap_launch.json", require("user.dap.utils").get_adapter_map())<CR>',
+					'<Cmd>lua require("dap.ext.vscode").load_launchjs(".dap_launch.json", require("user.conf.plugins.debugger.utils").get_adapter_map())<CR>',
 					"load launch.json to dap",
 				},
 				b = {
-					[[<Cmd>lua require("dap").toggle_breakpoint();require'user.dap.utils'.store_breakpoints()<CR>]],
+					[[<Cmd>lua require("dap").toggle_breakpoint();require'user.conf.plugins.debugger.utils'.store_breakpoints()<CR>]],
 					"breakpoint",
 				},
 				B = {
