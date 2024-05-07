@@ -15,11 +15,11 @@ require("lazy").setup({
 	require("user.conf.theme"),
 	require("user.conf.plugins.fzf"),
 	require("user.conf.lsp"),
-	require("user.conf.plugins.visually_enhance"),
-	require("user.conf.plugins.editor_enhance"),
 	require("user.conf.plugins.debugger"),
+	require("user.conf.plugins.editor_enhance"),
 	require("user.conf.plugins.telescope"),
 	require("user.conf.plugins.convenient"),
+	require("user.conf.plugins.visually_enhance"),
 
 	require("user.conf.plugins.markdown"),
 	require("user.conf.plugins.tex"),

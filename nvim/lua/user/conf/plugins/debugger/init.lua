@@ -1,3 +1,10 @@
+vim.cmd([[
+augroup _load_break_points
+autocmd!
+autocmd FileType c,cpp,go,python,lua :lua require('user.conf.plugins.debugger.utils').load_breakpoints()
+augroup end
+]])
+
 return {
 	"mfussenegger/nvim-dap",
 	dependencies = {
@@ -5,18 +12,31 @@ return {
 		"rcarriga/nvim-dap-ui",
 		"jbyuki/one-small-step-for-vimkind",
 	},
+	keys = {
+		{
+			"<F9>",
+			[[<cmd>lua require("dap").toggle_breakpoint();require'user.conf.plugins.debugger.utils'.store_breakpoints()<CR>]],
+			noremap = true,
+			silent = true,
+		},
+		{ "<F5>", '<cmd>lua require"dap".continue()<CR>', noremap = true, silent = true },
+		{ "<F10>", '<cmd>lua require"dap".step_over()<CR>', noremap = true, silent = true },
+		{ "<F11>", '<cmd>lua require"dap".step_into()<CR>', noremap = true, silent = true },
+		{ "<F12>", '<cmd>lua require"dap".step_out()<CR>', noremap = true, silent = true },
+	},
 	config = function()
 		local status_ok, dap = pcall(require, "dap")
 		if not status_ok then
 			return
 		end
 
-		local status_ok, vt = pcall(require, "nvim-dap-virtual-text")
+		local vt, dapui
+		status_ok, vt = pcall(require, "nvim-dap-virtual-text")
 		if not status_ok then
 			return
 		end
 
-		local status_ok, dapui = pcall(require, "dapui")
+		status_ok, dapui = pcall(require, "dapui")
 		if not status_ok then
 			return
 		end
@@ -200,5 +220,6 @@ return {
 		vim.keymap.set("n", "<F10>", ':lua require"dap".step_over()<CR>', { noremap = true, silent = true })
 		vim.keymap.set("n", "<F11>", ':lua require"dap".step_into()<CR>', { noremap = true, silent = true })
 		vim.keymap.set("n", "<F12>", ':lua require"dap".step_out()<CR>', { noremap = true, silent = true })
+		-- =================== autocmd ========================
 	end,
 }

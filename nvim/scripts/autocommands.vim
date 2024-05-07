@@ -46,7 +46,3 @@ func AutoSetCodeTitle()
 
 endfunc 
 
-augroup _load_break_points
-    autocmd!
-    autocmd FileType c,cpp,go,python,lua :lua require('user.conf.plugins.debugger.utils').load_breakpoints()
-augroup end

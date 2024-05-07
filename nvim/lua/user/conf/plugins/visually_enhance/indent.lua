@@ -1,4 +1,5 @@
-local indent_blankline = {
+local M = {}
+M.indent_blankline = {
 	"lukas-reineke/indent-blankline.nvim",
 	config = function()
 		vim.opt.list = true
@@ -61,18 +62,19 @@ local indent_blankline = {
 	end,
 }
 
-local hlchunk = {
+M.hlchunk = {
 	"shellRaining/hlchunk.nvim",
 	dependencies = { "nvim-treesitter/nvim-treesitter" },
-	init = function()
+	event = "VeryLazy",
+	config = function()
 		local cb = function()
 			return "#F1FA8C"
 		end
 		vim.api.nvim_create_autocmd({ "CursorMoved", "CursorMovedI" }, { pattern = "*", command = "EnableHL" })
 
 		-- exclude some filetypes
-		default_exclude_ft = require("hlchunk.utils.filetype").exclude_filetypes
-		exclude_ft = {
+		local default_exclude_ft = require("hlchunk.utils.filetype").exclude_filetypes
+		local exclude_ft = {
 			translator = true,
 			dashboard = true,
 		}
@@ -109,4 +111,4 @@ local hlchunk = {
 	end,
 }
 
-return hlchunk
+return M
