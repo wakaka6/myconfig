@@ -1,7 +1,7 @@
 local configureKeybinds = function()
 	local keymap = vim.keymap -- for conciseness
 	vim.api.nvim_create_autocmd("LspAttach", {
-		group = vim.api.nvim_create_augroup("UserLspConfig", {}),
+		group = vim.api.nvim_create_augroup("UserLspConfig", { clear = true }),
 		callback = function(ev)
 			-- See `:help vim.lsp.*` for documentation on any of the below functions
 			local opts = { buffer = ev.buf, silent = true }
@@ -54,6 +54,7 @@ return {
 	dependencies = {
 		"hrsh7th/cmp-nvim-lsp",
 		"williamboman/mason.nvim",
+		"williamboman/mason-lspconfig.nvim",
 		{ "antosha417/nvim-lsp-file-operations", config = true },
 		{ "folke/neodev.nvim", opts = {} },
 	},
@@ -71,7 +72,8 @@ return {
 		configureKeybinds()
 
 		-- used to enable autocompletion (assign to every lsp server config)
-		local capabilities = cmp_nvim_lsp.default_capabilities()
+		local capabilities = vim.lsp.protocol.make_client_capabilities()
+		capabilities = vim.tbl_deep_extend("force", capabilities, cmp_nvim_lsp.default_capabilities())
 		-- for ufo
 		capabilities.textDocument.foldingRange = {
 			dynamicRegistration = false,

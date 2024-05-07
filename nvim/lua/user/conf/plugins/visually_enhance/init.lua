@@ -1,4 +1,5 @@
 return {
+	require("user.conf.plugins.visually_enhance.indent").hlchunk,
 	-- awesome ui improve the default vim.ui
 	{ "stevearc/dressing.nvim", event = "VeryLazy" },
 
@@ -14,6 +15,5 @@ return {
 
 	require("user.conf.plugins.visually_enhance.wilder"),
 
-	require("user.conf.plugins.visually_enhance.indent_blankline"),
 	require("user.conf.plugins.visually_enhance.distraction_free"),
 }
