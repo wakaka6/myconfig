@@ -34,23 +34,16 @@ return {
 			-- add operators that will trigger motion and text object completion
 			-- to enable all native operators, set the preset / operators plugin above
 			-- operators = { gc = "Comments" },
-			key_labels = {
-				-- override the label used to display some keys. It doesn't effect WK in any other way.
-				-- For example:
-				-- ["<space>"] = "SPC",
-				-- ["<cr>"] = "RET",
-				-- ["<tab>"] = "TAB",
-			},
 			icons = {
 				breadcrumb = "", -- symbol used in the command line area that shows your active key combo
 				separator = "", -- symbol used between a key and it's label
 				group = "󱡠", -- symbol prepended to a group
 			},
-			popup_mappings = {
+			keys = {
 				scroll_down = "<c-d>", -- binding to scroll down inside the popup
 				scroll_up = "<c-u>", -- binding to scroll up inside the popup
 			},
-			window = {
+			win = {
 				border = "rounded", -- none, single, double, shadow
 				position = "bottom", -- bottom, top
 				margin = { 1, 0, 1, 0 }, -- extra window margin [top, right, bottom, left]
@@ -63,10 +56,11 @@ return {
 				spacing = 3, -- spacing between columns
 				align = "left", -- align columns left, center or right
 			},
-			ignore_missing = false, -- enable this to hide mappings for which you didn't specify a label
-			hidden = { "<silent>", "<cmd>", "<Cmd>", "<CR>", "call", "lua", "^:", "^ " }, -- hide mapping boilerplate
 			show_help = true, -- show help message on the command line when the popup is visible
-			triggers = "auto", -- automatically setup triggers
+            triggers = { 
+                { "<auto>", mode = "nixsotc" },
+                { "<leader>", mode = { "n", "v" } },
+            }, -- automatically setup triggers
 			-- triggers = {"<leader>"} -- or specify a list manually
 			triggers_blacklis = {
 				-- list of mode / prefixes that should never be hooked by WhichKey
@@ -154,6 +148,43 @@ return {
 			},
 		}
 
+        local mappings_v2 = {
+			mode = "n", -- NORMAL mode
+			buffer = nil, -- Global mappings. Specify a buffer number for buffer local mappings
+			silent = true, -- use `silent` when creating keymaps
+			noremap = true, -- use `noremap` when creating keymaps
+			nowait = true, -- use `nowait` when creating keymaps
+            { "<leader>/", "<cmd>HopPattern<CR>", desc = "Easy Emotion by pattern search"},
+            { "<leader><leader>", '<ESC>/<,.><CR>:nohlsearch<CR>"_c4l', desc = "Find mark"},
+            { "<leader>c", group = "code action" },
+            { "<leader>d", group = "debug" },
+            { "<leader>dB" },
+            { "<leader>dR" },
+            { "<leader>db" },
+            { "<leader>dc" },
+            { "<leader>dd", "<Cmd>lua require'dap'.down()<CR>", desc = "Go down stack frame" },
+            { "<leader>de", '<Cmd>lua require("dapui").eval()<CR>', desc = "show expression value on hover window" },
+            { "<leader>dl", '<Cmd>lua require("dap.ext.vscode").load_launchjs(".dap_launch.json", require("user.conf.plugins.debugger.utils").get_adapter_map())<CR>', desc = "load launch.json to dap" },
+            { "<leader>do", "<Cmd>lua require('dap').repl.toggle()<CR>", desc = "toggle dap REPL" },
+            { "<leader>dq", '<Cmd>lua require("dap").terminate()<CR>', desc = "stop debug" },
+            { "<leader>du", "<Cmd>lua require'dap'.up()<CR>", desc = "Go up stack frame" },
+            { "<leader>f", group = "find" },
+            { "<leader>fa", "<Cmd>Telescope treesitter<CR>", desc = "Find AST" },
+            { "<leader>fb", "<Cmd>Telescope buffers<CR>", desc = "Navigation buffers" },
+            { "<leader>ff", "<Cmd>Telescope find_files find_command=rg,--hidden,--files<CR>", desc = "Find fuzz file" },
+            { "<leader>fh", "<Cmd>Telescope oldfiles<cr>", desc = "Open Recent File" },
+            { "<leader>fk", "<cmd>CellularAutomaton make_it_rain<CR>", desc = "Make it awesome rain" },
+            { "<leader>fw", '<Cmd>lua require("telescope").extensions.live_grep_args.live_grep_args(require("telescope.themes").get_ivy())<cr>', desc = "Find fuzz word" },
+            { "<leader>fz", "<ESC>/\\v<[\\u4e00-\\u9fa5]+>/<CR>:nohlsearch<CR>", desc = "Find zh-CN word" },
+            { "<leader>g", group = "git" },
+            { "<leader>s", group = "session" },
+            { "<leader>sl", "<cmd>SessionRestore<CR>", desc = "Session Load" },
+            { "<leader>ss", "<cmd>SessionSave<CR>", desc = "Session Save" },
+            { "<leader>u", "<cmd>MundoToggle<CR>", desc = "undotree" },
+            { "<leader>w", "<cmd>HopWord<CR>", desc = "Easy Emotion by word" },
+            { "<leader>x", group = "trouble" },
+            { "<leader>|", "a<,.><ESC>", desc = "Insert mark" },
+          }
 		local vopts = {
 			mode = "v", -- VISUAL mode
 			prefix = "<leader>",
@@ -171,6 +202,16 @@ return {
 				e = { '<Cmd>lua require("dapui").eval()<CR>', "show expression value on hover window" },
 			},
 		}
+        local vmappings_v2 = {
+            mode = "v",
+			silent = true, -- use `silent` when creating keymaps
+			noremap = true, -- use `noremap` when creating keymaps
+			nowait = true, -- use `nowait` when creating keymaps
+            { "<leader>c", group = "code action" },
+            { "<leader>d", group = "debug" },
+            { "<leader>dc" },
+            { "<leader>de", '<Cmd>lua require("dapui").eval()<CR>', desc = "show expression value on hover window" },
+        }
 
 		-- window <C-w>
 		local wopts = {
@@ -182,13 +223,15 @@ return {
 			nowait = true, -- use `nowait` when creating keymaps
 		}
 		local wmappings = {
-			m = { "<Cmd>WinShift<CR>", "Window Shift Mode" },
+			{ "<C-w>m", "<Cmd>WinShift<CR>", desc = "Window Shift Mode" },
 			--  X = { "<Cmd>WinShift swap<CR>", "Pick window to swap" },
 		}
 
 		which_key.setup(setup)
-		which_key.register(mappings, opts)
-		which_key.register(vmappings, vopts)
-		which_key.register(wmappings, wopts)
+		-- which_key.register(mappings, opts)
+		-- which_key.register(vmappings, vopts)
+		which_key.add(mappings_v2)
+		which_key.add(vmappings_v2)
+		which_key.add(wmappings, wopts)
 	end,
 }
