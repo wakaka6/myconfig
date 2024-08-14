@@ -9,5 +9,5 @@ return {
 	require("user.conf.lsp.formatting"),
 	require("user.conf.lsp.fold"),
 
-	require("user.conf.lsp.go"),
+	require("user.conf.lsp.go").vim_go,
 }
