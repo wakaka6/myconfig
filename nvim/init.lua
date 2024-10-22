@@ -3,6 +3,16 @@
 -- ***
 vim.cmd("source ~/.config/nvim/globals/globals.vim")
 
+-- vim.g.clipboard = {
+--     name = "osc52",
+--     copy = {
+--         ["+"] = require('vim.ui.clipboard.osc52').copy("+"),
+--         ["*"] = require('vim.ui.clipboard.osc52').copy("*"),
+--     },
+--     paste = {
+--     },
+-- }
+
 -- ***
 -- Maping Config
 -- ***
