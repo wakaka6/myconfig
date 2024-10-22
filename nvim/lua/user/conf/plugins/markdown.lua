@@ -92,11 +92,15 @@ return {
 					return "img"
 				end,
 				relative_to_current_file = true,
-				use_absolute_path = false,
+				use_absolute_path = false, -- set ture if runnging on Windows
 
 				-- base64 options
 				max_base64_size = 10,
 				embed_image_as_base64 = false,
+				prompt_for_file_name = false,
+				drag_and_drop = {
+					insert_mode = true,
+				},
 			},
 
 			filetypes = {
