@@ -10,7 +10,7 @@ set expandtab  " using space relace tab
 set termguicolors
 
 
-syntax enable
+"syntax enable " 不知道为什么启动这一行lsp就不会自动启动了
 exec "nohlsearch"
 set hlsearch
 set incsearch
