@@ -70,7 +70,7 @@ M.hlchunk = {
 		local cb = function()
 			return "#F1FA8C"
 		end
-		vim.api.nvim_create_autocmd({ "CursorMoved", "CursorMovedI" }, { pattern = "*", command = "EnableHL" })
+		-- vim.api.nvim_create_autocmd({ "CursorMoved", "CursorMovedI" }, { pattern = "*", command = "EnableHL" })
 
 		-- exclude some filetypes
 		local default_exclude_ft = require("hlchunk.utils.filetype").exclude_filetypes
