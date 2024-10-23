@@ -177,6 +177,7 @@ M.avante = {
 		},
 		{
 			-- Make sure to set this up properly if you have lazy=true
+			-- replace project "OXY2DEV/markview.nvim"
 			"MeanderingProgrammer/render-markdown.nvim",
 			opts = {
 				file_types = { "markdown", "Avante" },
