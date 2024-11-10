@@ -56,6 +56,7 @@ return {
 						gitsigns.blame_line({ full = true })
 					end, "Blame line")
 					map("n", "<leader>gd", gitsigns.diffthis, "Diff this")
+					map("n", "<leader>gB", gitsigns.toggle_current_line_blame, "toggle current line blame")
 
 					-- Text object
 					map({ "o", "x" }, "ih", ":<C-U>Gitsigns select_hunk<CR>", "Select hunk")
