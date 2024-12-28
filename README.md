@@ -39,6 +39,12 @@ sudo pacman -S kvantum
 
 ```
 
+shell
+
+```sh
+sudo pacman -S zsh starship
+```
+
 Reinforce i3
 
 ```sh

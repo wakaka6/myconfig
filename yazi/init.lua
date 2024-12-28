@@ -28,6 +28,7 @@ Status:children_add(function()
 end, 500, Status.RIGHT)
 
 require("git"):setup()
+require("starship"):setup()
 
 if os.getenv("NVIM") then
 	require("hide-preview"):entry()
