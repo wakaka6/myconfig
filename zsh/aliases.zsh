@@ -4,7 +4,6 @@
 alias nv=nvim
 alias ls=lsd
 alias sudo="sudo "
-alias ra="ranger"
 alias lg="lazygit"
 alias ipy="ipython3"
 alias pweb="python -m http.server 8000"

@@ -98,6 +98,11 @@ then
 	ln -s "$curPath/picom" "$HOME/.config/picom"
 fi
 
+if [ ! -e "$HOME/.config/yazi" ]
+then
+	ln -s "$curPath/yazi" "$HOME/.config/yazi"
+fi
+
 if [ ! -d "$HOME/.oh-my-zsh" ]
 then
     sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"

@@ -1,11 +1,14 @@
 # myconfig
-This project stores the configuration files for various software under linux. 
+
+This project stores the configuration files for various software under linux.
 It help me to quickly configure my linux desktop environment.
 
 <div align=center> <img src=".img/demo.png" width = 100%/> </div>
 
 ## Quick start
+
 Clone this project to home directory.Note that this item cannot be deleted from home.
+
 ```sh
 sudo pacman -Sy git paru python3 curl wget
 git clone --recursive https://github.com/wakaka6/myconfig.git $HOME/myconfig
@@ -14,16 +17,19 @@ git clone -b vm --recursive https://github.com/wakaka6/myconfig.git $HOME/myconf
 ```
 
 And then, install prerequirement software
+
 ```sh
 paru -S the_silver_searcher neovim lazygit ripgrep fd delta fzf rofi tealdeer zoxide
 ```
 
 File Manager
+
 ```sh
 paru -S thunar filezilla
 ```
 
 Beautify
+
 ```sh
 sudo pacman -S picom feh variety polybar-git arc-gtk-theme papirus-icon-theme adapta-gtk-theme arc-icon-theme
 # configure GTK theme
@@ -34,8 +40,9 @@ sudo pacman -S kvantum
 ```
 
 Reinforce i3
+
 ```sh
-# like bspwm to the spiral tiling 
+# like bspwm to the spiral tiling
 paru -S autotiling
 
 # Visually focus windows by label
@@ -43,6 +50,7 @@ paru -S wmfocus
 ```
 
 Nerd Font
+
 ```sh
 paru -S ttf-unifont siji-git ttf-font-awesome
 
@@ -55,16 +63,27 @@ paru -S wqy-bitmapfont wqy-microhei wqy-microhei-lite wqy-zenhei adobe-source-ha
 ```
 
 If running on virtual machine, run the following command.
+
 ```sh
 pacman -S open-vm-tools-desktop
 ```
 
-About ranger prerequirement
+About ranger prerequirement (optional)
+
 ```sh
 pacman -S ranger highlight atool w3m poppler mediainfo ueberzug zathura-pdf-mupdf
 ```
 
+About yazi prerequirement (optional, recommended)
+
+> yazi better than ranger, faster.
+
+```sh
+pacman -S yazi ffmpeg 7zip jq poppler imagemagick ueberzugpp
+```
+
 About Neovim prerequirement
+
 ```sh
 sudo pacman -S neovim python-pynvim
 sudo pacman -S python-pip
@@ -75,11 +94,13 @@ sudo pacman -S xdotool
 ```
 
 A modern alterative to traditional software
+
 ```sh
 sudo pacman -S lsd htop duf
 ```
 
 Other Software
+
 ```sh
 sudo pacman -S flameshot
 sudo pacman -S network-manager-applet
@@ -100,6 +121,7 @@ sudo pacman -S fcitx5-material-color #主题
 ```
 
 In the end, run this command
+
 ```sh
 cd ~/myconfig && ./auto_config.sh && reboot
 ```
