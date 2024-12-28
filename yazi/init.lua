@@ -2,8 +2,8 @@ require("yaziline"):setup({
 	separator_style = "curvy", -- "angly" | "curvy" | "liney" | "empty"
 	select_symbol = "",
 	yank_symbol = "󰆐",
-	filename_max_length = 24, -- trim when filename > 24
-	filename_trim_length = 6, -- trim 6 chars from both ends
+	filename_max_length = 40, -- trim when filename > 40
+	filename_trim_length = 12, -- trim 12 chars from both ends
 })
 
 Header:children_add(function()
