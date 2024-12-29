@@ -5,9 +5,7 @@ require("yatline"):setup({
 
 	header_line = {
 		left = {
-			section_a = {
-				{ type = "string", custom = false, name = "tab_path" },
-			},
+			section_a = {},
 			section_b = {},
 			section_c = {},
 		},
@@ -52,7 +50,6 @@ require("yatline"):setup({
 })
 
 require("git"):setup()
-require("starship"):setup()
 
 if os.getenv("NVIM") then
 	require("hide-preview"):entry()
