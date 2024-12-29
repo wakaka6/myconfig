@@ -28,7 +28,7 @@ require("yatline"):setup({
 					type = "string",
 					custom = false,
 					name = "hovered_name",
-					params = { { trimed = true, show_symlink = true, max_length = 24, trim_length = 7 } },
+					params = { { trimed = true, show_symlink = true, max_length = 24, trim_length = 6 } },
 				},
 				{ type = "coloreds", custom = false, name = "count" },
 			},
