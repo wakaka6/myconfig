@@ -1,31 +1,62 @@
-require("yaziline"):setup({
-	separator_style = "curvy", -- "angly" | "curvy" | "liney" | "empty"
-	select_symbol = "",
-	yank_symbol = "󰆐",
-	filename_max_length = 40, -- trim when filename > 40
-	filename_trim_length = 12, -- trim 12 chars from both ends
+require("yatline"):setup({
+	show_background = false,
+	section_separator = { open = "", close = "" },
+	part_separator = { open = "", close = "" },
+	inverse_separator = { open = "", close = "" },
+
+	header_line = {
+		left = {
+			section_a = {},
+			section_b = {},
+			section_c = {},
+		},
+		right = {
+			section_a = {},
+			section_b = {},
+			section_c = {},
+		},
+	},
+	status_line = {
+		left = {
+			section_a = {
+				{ type = "string", custom = false, name = "tab_mode" },
+			},
+			section_b = {
+				{ type = "string", custom = false, name = "hovered_size" },
+			},
+			section_c = {
+				{
+					type = "string",
+					custom = false,
+					name = "hovered_name",
+					params = { { trimed = true, show_symlink = true, max_length = 24, trim_length = 7 } },
+				},
+				{ type = "coloreds", custom = false, name = "count" },
+			},
+		},
+		right = {
+			section_a = {
+				{ type = "string", custom = false, name = "cursor_position" },
+			},
+			section_b = {
+				{ type = "string", custom = false, name = "cursor_percentage" },
+			},
+			section_c = {
+				{ type = "string", custom = false, name = "hovered_file_extension", params = { true } },
+				{ type = "string", custom = false, name = "hovered_ownership" },
+				{ type = "coloreds", custom = false, name = "permissions" },
+			},
+		},
+	},
 })
 
+-- show current user and host
 Header:children_add(function()
 	if ya.target_family() ~= "unix" then
 		return ""
 	end
 	return ui.Span(ya.user_name() .. "@" .. ya.host_name() .. ":"):fg("green")
 end, 500, Header.LEFT)
-
-Status:children_add(function()
-	local h = cx.active.current.hovered
-	if h == nil or ya.target_family() ~= "unix" then
-		return ""
-	end
-
-	return ui.Line({
-		ui.Span(ya.user_name(h.cha.uid) or tostring(h.cha.uid)):fg("magenta"),
-		":",
-		ui.Span(ya.group_name(h.cha.gid) or tostring(h.cha.gid)):fg("magenta"),
-		" ",
-	})
-end, 500, Status.RIGHT)
 
 require("git"):setup()
 require("starship"):setup()
