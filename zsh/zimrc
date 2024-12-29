@@ -9,8 +9,7 @@ zmodule duration-info
 zmodule prompt-pwd
 
 zmodule zthxxx/jovial
-
-zmodule zsh-users/zsh-syntax-highlighting
+zmodule zdharma-continuum/fast-syntax-highlighting
 zmodule zsh-users/zsh-history-substring-search
 zmodule zsh-users/zsh-autosuggestions
 zmodule Aloxaf/fzf-tab

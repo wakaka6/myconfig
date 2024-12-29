@@ -3,5 +3,5 @@ if [[ ! -d $ZIM_HOME ]]; then
     echo "Installing Zimfw"
     curl -fsSL https://raw.githubusercontent.com/zimfw/install/master/install.zsh | zsh
     rm ~/.config/zsh/.zimrc
-    cp ~/.config/zsh/zimrc ~/.config/zsh/.zimrc
+    ln -s ~/.config/zsh/zimrc ~/.config/zsh/.zimrc
 fi
