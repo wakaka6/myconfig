@@ -1,8 +1,7 @@
+local dracula_theme = require("yatline-dracula"):setup()
 require("yatline"):setup({
 	show_background = false,
-	section_separator = { open = "", close = "" },
-	part_separator = { open = "", close = "" },
-	inverse_separator = { open = "", close = "" },
+	theme = dracula_theme,
 
 	header_line = {
 		left = {
@@ -43,7 +42,7 @@ require("yatline"):setup({
 			},
 			section_c = {
 				{ type = "string", custom = false, name = "hovered_file_extension", params = { true } },
-				{ type = "string", custom = false, name = "hovered_ownership" },
+				-- { type = "string", custom = false, name = "hovered_ownership" },
 				{ type = "coloreds", custom = false, name = "permissions" },
 			},
 		},

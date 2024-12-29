@@ -7,7 +7,7 @@ deps = [
   { use = "h-hg/yamb", rev = "108347b" },
   { use = "KKV9/compress", rev = "60b24af" },
   { use = "yazi-rs/plugins:jump-to-char", rev = "71c4fc2" },
-  { use = "Rolv-Apneseth/starship", rev = "9c37d37" },
+  { use = "Rolv-Apneseth/starship", rev = "9c37d37" }, { use = "wakaka6/yatline-dracula", rev = "82dde5a" },
 ]
 
 [flavor]
