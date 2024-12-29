@@ -5,7 +5,9 @@ require("yatline"):setup({
 
 	header_line = {
 		left = {
-			section_a = {},
+			section_a = {
+				{ type = "string", custom = false, name = "tab_path" },
+			},
 			section_b = {},
 			section_c = {},
 		},
