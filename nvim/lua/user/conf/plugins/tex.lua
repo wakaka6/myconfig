@@ -3,17 +3,15 @@ return {
 	lazy = false, -- we don't want to lazy load VimTeX
 	ft = "tex", -- load only for TeX files
 	tag = "v2.15", -- uncomment to pin to a specific release
-	init = function()
-		if vim.bo.filetype == "tex" then
-			-- Define a custom shortcut to trigger VimtexView
-			vim.api.nvim_set_keymap("n", "<localleader>v", "<plug>(vimtex-view)", { noremap = true, silent = true })
-			-- Use `<localleader>vc` to trigger continuous compilation...
-			vim.api.nvim_set_keymap("n", "<C-p>", "<Plug>(vimtex-compile)", { noremap = true, silent = true })
-			-- Use `dsm` to delete surrounding math (replacing the default shorcut `ds$`)
-			vim.api.nvim_set_keymap("n", "dsm", "<Plug>(vimtex-env-delete-math)", { noremap = true, silent = true })
-			-- Use `tsm` to toggle surrounding math (replacing the default shorcut `ts$`)
-			vim.api.nvim_set_keymap("n", "tsm", "<Plug>(vimtex-env-toggle-math)", { noremap = true, silent = true })
-		end
+	config = function()
+		-- Define a custom shortcut to trigger VimtexView
+		vim.api.nvim_set_keymap("n", "<leader>v", "<plug>(vimtex-view)", { noremap = true, silent = true })
+		-- Use `<localleader>vc` to trigger continuous compilation...
+		vim.api.nvim_set_keymap("n", "<C-p>", "<Plug>(vimtex-compile)", { noremap = true, silent = true })
+		-- Use `dsm` to delete surrounding math (replacing the default shorcut `ds$`)
+		vim.api.nvim_set_keymap("n", "dsm", "<Plug>(vimtex-env-delete-math)", { noremap = true, silent = true })
+		-- Use `tsm` to toggle surrounding math (replacing the default shorcut `ts$`)
+		vim.api.nvim_set_keymap("n", "tsm", "<Plug>(vimtex-env-toggle-math)", { noremap = true, silent = true })
 		-- Viewer method
 		vim.g.vimtex_view_method = "zathura"
 
