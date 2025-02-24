@@ -99,6 +99,12 @@ curl -sL install-node.now.sh/lts | bash
 sudo pacman -S xdotool
 ```
 
+Latex prerequirement
+
+```sh
+paru -S texlive texlive-lang biber
+```
+
 A modern alterative to traditional software
 
 ```sh
