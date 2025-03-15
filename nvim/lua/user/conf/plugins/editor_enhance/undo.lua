@@ -1,6 +1,7 @@
 return {
 	"simnalamburt/vim-mundo",
 	lazy = false,
+	cond = not vim.g.vscode,
 	config = function()
 		vim.cmd([[
         if has("persistent_undo")

@@ -8,15 +8,18 @@ require("user.preferences")
 -- ***
 require("user.mappings")
 
--- ***
--- scripts
--- ***
-vim.cmd("source ~/.config/nvim/scripts/convenience.vim")
+if not vim.g.vscode then
+	-- ***
+	-- scripts
+	-- ***
+	vim.cmd("source ~/.config/nvim/scripts/convenience.vim")
 
--- auto command
-vim.cmd("source ~/.config/nvim/scripts/autocommands.vim")
+	-- auto command
+	vim.cmd("source ~/.config/nvim/scripts/autocommands.vim")
+end
 
 -- ***
 -- Plugins
 -- ***
 require("user.plugins")
+require("user.conf.vscode")

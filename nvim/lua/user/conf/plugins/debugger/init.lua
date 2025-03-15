@@ -1,3 +1,6 @@
+if not vim.g.vscode then
+	return {}
+end
 vim.cmd([[
 augroup _load_break_points
 autocmd!

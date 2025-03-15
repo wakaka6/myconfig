@@ -6,6 +6,7 @@ return {
 		"windwp/nvim-autopairs",
 		event = "InsertEnter",
 		config = true,
+		cond = not vim.g.vscode,
 	},
 
 	-- 可以查看文件的历史修改树

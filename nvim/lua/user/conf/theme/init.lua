@@ -1,3 +1,7 @@
+if vim.g.vscode then
+	return {}
+end
+
 return {
 	require("user.conf.theme.colorscheme").custom,
 	"ryanoasis/vim-devicons",

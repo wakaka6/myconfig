@@ -1,10 +1,14 @@
+if vim.g.vscode then
+	return {}
+end
 return {
 	"folke/which-key.nvim",
 	event = "VeryLazy",
-    tag = "v2.1.0",
+	tag = "v2.1.0",
 	init = function()
 		vim.o.timeout = true
-		vim.o.timeoutlen = 1000
+		-- vscode don't show which key (set long timeout 1 min)
+		vim.o.timeoutlen = not vim.g.vscode and 1000 or 60000
 	end,
 	config = function()
 		local status_ok, which_key = pcall(require, "which-key")

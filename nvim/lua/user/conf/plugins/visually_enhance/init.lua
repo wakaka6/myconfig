@@ -1,3 +1,6 @@
+if vim.g.vscode then
+	return {}
+end
 return {
 	require("user.conf.plugins.visually_enhance.indent").hlchunk,
 	-- awesome ui improve the default vim.ui

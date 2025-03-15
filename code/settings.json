@@ -1,0 +1,25 @@
+{
+  "extensions.experimental.affinity": {
+    "asvetliakov.vscode-neovim": 1
+  },
+  "vscode-neovim.ctrlKeysForInsertMode": [
+    "a",
+    "b",
+    "c",
+    "d",
+    "e",
+    "f",
+    "h",
+    "j",
+    "m",
+    "o",
+    "r",
+    "t",
+    "u",
+    "w",
+    "q"
+  ],
+  "editor.fontFamily": "'SourceCodePro', 'Droid Sans Mono', 'monospace', monospace",
+  "editor.lineNumbers": "relative",
+  "vscode-neovim.compositeKeys": {}
+}

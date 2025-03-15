@@ -15,24 +15,65 @@ vim.keymap.set("n", "<Leader><Leader>", [[<Esc>/<,.><CR><cmd>nohlsearch<CR>"_c4l
 vim.keymap.set("n", "<Leader>|", "a<,.><Esc>", { noremap = true, silent = true })
 
 -- toggle buffer
-vim.keymap.set("n", "[b", "<cmd>bprevious<CR>", { noremap = true, silent = true })
-vim.keymap.set("n", "]b", "<cmd>bnext<CR>", { noremap = true, silent = true })
-vim.keymap.set("n", "<Leader>[", "<cmd>bprevious<CR>", { noremap = true, silent = true })
-vim.keymap.set("n", "<Leader>]", "<cmd>bnext<CR>", { noremap = true, silent = true })
-vim.keymap.set("n", "[B", "<cmd>bfirst<CR>", { noremap = true, silent = true })
-vim.keymap.set("n", "]B", "<cmd>blast<CR>", { noremap = true, silent = true })
 
--- change better pane move method
-vim.keymap.set("n", "<Leader>h", "<C-w>h", { noremap = true, silent = true })
-vim.keymap.set("n", "<Leader>j", "<C-w>j", { noremap = true, silent = true })
-vim.keymap.set("n", "<Leader>k", "<C-w>k", { noremap = true, silent = true })
-vim.keymap.set("n", "<Leader>l", "<C-w>l", { noremap = true, silent = true })
+if not vim.g.vscode then
+	vim.keymap.set("n", "[b", "<cmd>bprevious<CR>", { noremap = true, silent = true })
+	vim.keymap.set("n", "]b", "<cmd>bnext<CR>", { noremap = true, silent = true })
+	vim.keymap.set("n", "<Leader>[", "<cmd>bprevious<CR>", { noremap = true, silent = true })
+	vim.keymap.set("n", "<Leader>]", "<cmd>bnext<CR>", { noremap = true, silent = true })
+	vim.keymap.set("n", "[B", "<cmd>bfirst<CR>", { noremap = true, silent = true })
+	vim.keymap.set("n", "]B", "<cmd>blast<CR>", { noremap = true, silent = true })
+else
+	vim.keymap.set(
+		"n",
+		"[b",
+		"<cmd>lua require('vscode').action('workbench.action.previousEditor')<CR>",
+		{ noremap = true, silent = true }
+	)
+	vim.keymap.set(
+		"n",
+		"]b",
+		"<cmd>lua require('vscode').action('workbench.action.nextEditor')<CR>",
+		{ noremap = true, silent = true }
+	)
+	vim.keymap.set(
+		"n",
+		"<Leader>[",
+		"<cmd>lua require('vscode').action('workbench.action.previousEditor')<CR>",
+		{ noremap = true, silent = true }
+	)
+	vim.keymap.set(
+		"n",
+		"<Leader>]",
+		"<cmd>lua require('vscode').action('workbench.action.nextEditor')<CR>",
+		{ noremap = true, silent = true }
+	)
+	vim.keymap.set(
+		"n",
+		"[B",
+		"<cmd>lua require('vscode').action('workbench.action.firstEditorInGroup')<CR>",
+		{ noremap = true, silent = true }
+	)
+	vim.keymap.set(
+		"n",
+		"]B",
+		"<cmd>lua require('vscode').action('workbench.action.lastEditorInGroup')<CR>",
+		{ noremap = true, silent = true }
+	)
+end
 
--- resize pane with ALT+arrow
-vim.keymap.set("n", "<M-Up>", "<cmd>resize -2<CR>", { noremap = true, silent = true })
-vim.keymap.set("n", "<M-Down>", "<cmd>resize +2<CR>", { noremap = true, silent = true })
-vim.keymap.set("n", "<M-Left>", "<cmd>vertical resize -2<CR>", { noremap = true, silent = true })
-vim.keymap.set("n", "<M-Right>", "<cmd>vertical resize +2<CR>", { noremap = true, silent = true })
+if not vim.g.vscode then
+	-- change better pane move method
+	vim.keymap.set("n", "<Leader>h", "<C-w>h", { noremap = true, silent = true })
+	vim.keymap.set("n", "<Leader>j", "<C-w>j", { noremap = true, silent = true })
+	vim.keymap.set("n", "<Leader>k", "<C-w>k", { noremap = true, silent = true })
+	vim.keymap.set("n", "<Leader>l", "<C-w>l", { noremap = true, silent = true })
+	-- resize pane with ALT+arrow
+	vim.keymap.set("n", "<M-Up>", "<cmd>resize -2<CR>", { noremap = true, silent = true })
+	vim.keymap.set("n", "<M-Down>", "<cmd>resize +2<CR>", { noremap = true, silent = true })
+	vim.keymap.set("n", "<M-Left>", "<cmd>vertical resize -2<CR>", { noremap = true, silent = true })
+	vim.keymap.set("n", "<M-Right>", "<cmd>vertical resize +2<CR>", { noremap = true, silent = true })
+end
 
 -- Command Mode Cursor Movement
 vim.keymap.set("c", "<C-a>", "<Home>", { noremap = true })

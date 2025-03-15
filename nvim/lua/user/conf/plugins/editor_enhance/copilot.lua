@@ -1,6 +1,7 @@
 local M = {}
 M.offical = {
 	"github/copilot.vim",
+	cond = not vim.g.vscode,
 	config = function()
 		vim.g.copilot_enabled = true
 		vim.g.copilot_no_tab_map = true
@@ -19,6 +20,7 @@ M.lua = {
 	{
 		"zbirenbaum/copilot.lua",
 		build = ":Copilot auth",
+		cond = not vim.g.vscode,
 		config = function()
 			require("copilot").setup({
 				suggestion = { enabled = false },
@@ -36,6 +38,7 @@ M.lua = {
 	},
 	{
 		"zbirenbaum/copilot-cmp",
+		cond = not vim.g.vscode,
 		dependencies = { "zbirenbaum/copilot.lua" },
 		config = function()
 			require("copilot_cmp").setup()
@@ -43,6 +46,7 @@ M.lua = {
 	},
 	{
 		"AndreM222/copilot-lualine",
+		cond = not vim.g.vscode,
 		dependencies = { "zbirenbaum/copilot.lua" },
 	},
 }
@@ -51,6 +55,7 @@ M.avante = {
 	"yetone/avante.nvim",
 	event = "VeryLazy",
 	lazy = false,
+	cond = not vim.g.vscode,
 	version = false, -- set this if you want to always pull the latest change
 	opts = {
 		---@alias Provider "claude" | "openai" | "azure" | "gemini" | "cohere" | "copilot" | string
