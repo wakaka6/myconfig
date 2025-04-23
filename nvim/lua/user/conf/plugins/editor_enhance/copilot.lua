@@ -59,9 +59,15 @@ M.avante = {
 	version = false, -- set this if you want to always pull the latest change
 	opts = {
 		---@alias Provider "claude" | "openai" | "azure" | "gemini" | "cohere" | "copilot" | string
-		provider = "copilot", -- Recommend using Claude
+		provider = "openrouter", -- Recommend using Claude
 		auto_suggestions_provider = "copilot",
 		vendors = {
+			openrouter = {
+				__inherited_from = "openai",
+				endpoint = "https://openrouter.ai/api/v1",
+				api_key_name = "OPENROUTER_API_KEY",
+				model = "anthropic/claude-3.7-sonnet",
+			},
 			---@type AvanteProvider
 			ollama = {
 				["local"] = true,
