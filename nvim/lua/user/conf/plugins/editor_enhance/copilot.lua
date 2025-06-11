@@ -61,36 +61,16 @@ M.avante = {
 		---@alias Provider "claude" | "openai" | "azure" | "gemini" | "cohere" | "copilot" | string
 		provider = "openrouter", -- Recommend using Claude
 		auto_suggestions_provider = "copilot",
-		vendors = {
+		providers = {
 			openrouter = {
 				__inherited_from = "openai",
 				endpoint = "https://openrouter.ai/api/v1",
 				api_key_name = "OPENROUTER_API_KEY",
 				model = "anthropic/claude-3.7-sonnet",
 			},
-			---@type AvanteProvider
 			ollama = {
-				["local"] = true,
-				endpoint = "127.0.0.1:11434/v1",
+				endpoint = "127.0.0.1:11434",
 				model = "openbuddy/openbuddy-llama3-8b-v21.1-8k",
-				parse_curl_args = function(opts, code_opts)
-					return {
-						url = opts.endpoint .. "/chat/completions",
-						headers = {
-							["Accept"] = "application/json",
-							["Content-Type"] = "application/json",
-						},
-						body = {
-							model = opts.model,
-							messages = require("avante.providers").copilot.parse_message(code_opts), -- you can make your own message, but this is very advanced
-							max_tokens = 8000,
-							stream = true,
-						},
-					}
-				end,
-				parse_response_data = function(data_stream, event_state, opts)
-					require("avante.providers").openai.parse_response(data_stream, event_state, opts)
-				end,
 			},
 		},
 		behaviour = {
