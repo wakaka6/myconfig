@@ -135,7 +135,7 @@ sudo pacman -S fcitx5-material-color #主题
 In the end, run this command
 
 ```sh
-cd ~/myconfig && ./auto_config.sh && reboot
+cd ~/myconfig && ./auto_config.sh install && reboot
 ```
 
 ## ChatGPT configure
