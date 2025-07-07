@@ -2,7 +2,7 @@
 # If you encounter any issues, please make an issue at https://github.com/yazi-rs/schemas.
 "$schema" = "https://yazi-rs.github.io/schemas/keymap.json"
 
-[mgr]
+[manager]
 
 prepend_keymap = [
 
@@ -14,11 +14,11 @@ prepend_keymap = [
   { on = [
     "t",
     "p",
-  ], run = "plugin toggle-pane min-preview", desc = "Hide or show preview" },
+  ], run = "plugin hide-preview", desc = "Hide or show preview" },
   { on = [
     "t",
     "m",
-  ], run = "plugin toggle-pane max-preview", desc = "Maximize or restore preview" },
+  ], run = "plugin max-preview", desc = "Maximize or restore preview" },
 
   # bookmark
   { on = [

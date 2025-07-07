@@ -2,7 +2,7 @@
 # If you encounter any issues, please make an issue at https://github.com/yazi-rs/schemas.
 "$schema" = "https://yazi-rs.github.io/schemas/yazi.json"
 
-[mgr]
+[manager]
 ratio = [2, 4, 7]
 sort_by = "mtime"
 sort_sensitive = false
@@ -55,9 +55,6 @@ play = [
   { run = 'mpv --force-window %*', orphan = true, for = "windows" },
   { run = '''mediainfo "$1"; echo "Press enter to exit"; read _''', block = true, desc = "Show media info", for = "unix" },
 ]
-read = [
-    { run = 'zathura "$@"', desc = "Read", for = "linux" },
-]
 
 [open]
 rules = [
@@ -99,17 +96,6 @@ rules = [
   # Empty file
   { mime = "inode/empty", use = [
     "edit",
-    "reveal",
-  ] },
-  # Email
-  { name = "*.eml", use = [
-        "edit",
-        "open",
-        "reveal",
-  ] },
-  # PDF
-  { mime = "application/pdf", use = [
-    "read",
     "reveal",
   ] },
   # Fallback

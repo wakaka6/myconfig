@@ -59,7 +59,7 @@ end, 500, Header.LEFT)
 require("git"):setup()
 
 if os.getenv("NVIM") then
-	require("hide-preview"):entry()
+	require("toggle-pane"):entry("min-preview")
 end
 
 -- You can configure your bookmarks by lua language

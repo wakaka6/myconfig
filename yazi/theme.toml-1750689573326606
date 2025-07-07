@@ -9,7 +9,7 @@
 
 dark = "dracula"
 
-[mgr]
+[manager]
 
 # hovered
 preview_hovered = { fg = "#f8f8f2", bg = "#44475a" }

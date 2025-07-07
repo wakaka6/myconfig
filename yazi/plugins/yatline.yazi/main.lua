@@ -1,3 +1,4 @@
+--- @since 25.5.31
 --- @diagnostic disable: undefined-global, undefined-field
 --- @alias Mode Mode Comes from Yazi.
 --- @alias Rect Rect Comes from Yazi.
@@ -62,10 +63,14 @@ local tab_width
 local selected_icon
 local copied_icon
 local cut_icon
+local files_icon
+local filtereds_icon
 
 local selected_fg
 local copied_fg
 local cut_fg
+local files_fg
+local filtereds_fg
 
 local task_total_icon
 local task_succ_icon
@@ -330,7 +335,7 @@ end
 --- @class HoveredNameConfig
 --- @field trimed? boolean Whether to trim the filename if it's too long (default: false)
 --- @field max_length? integer Maximum length of the filename (default: 24)
---- @field trim_length? integer Length of each end when trimming (default: 6)
+--- @field trim_length? integer Length of each end when trimming (default: 10)
 --- @field show_symlink? boolean Whether to show symlink target (default: false)
 --- Gets the hovered file's name of the current active tab.
 --- @param config? HoveredNameConfig Configuration for getting hovered file's name
@@ -347,7 +352,7 @@ function Yatline.string.get:hovered_name(config)
 
 	local trimed = config.trimed or false
 	local max_length = config.max_length or 24
-	local trim_length = config.trim_length or 6
+	local trim_length = config.trim_length or 10
 	local show_symlink = config.show_symlink or false
 
 	local link_delimiter = " -> "
@@ -368,14 +373,32 @@ function Yatline.string.get:hovered_name(config)
 	end
 end
 
+--- Configuration for getting hovered file's path
+--- @class HoveredPathConfig
+--- @field trimed? boolean Whether to trim the file path if it's too long (default: false)
+--- @field max_length? integer Maximum length of the file path (default: 24)
+--- @field trim_length? integer Length of each end when trimming (default: 10)
 --- Gets the hovered file's path of the current active tab.
+--- @param config? HoveredPathConfig Configuration for getting hovered file's path
 --- @return string path Current active tab's hovered file's path.
-function Yatline.string.get:hovered_path()
+function Yatline.string.get:hovered_path(config)
 	local hovered = cx.active.current.hovered
-	if hovered then
-		return ya.readable_path(tostring(hovered.url))
-	else
+	if not hovered then
 		return ""
+	end
+
+	if not config then
+		return ya.readable_path(tostring(hovered.url))
+	end
+
+	local trimed = config.trimed or false
+	local max_length = config.max_length or 24
+	local trim_length = config.trim_length or 10
+
+	if trimed then
+		return trim_filename(ya.readable_path(tostring(hovered.url)), max_length, trim_length)
+	else
+		return ya.readable_path(tostring(hovered.url))
 	end
 end
 
@@ -402,12 +425,20 @@ function Yatline.string.get:hovered_mime()
 end
 
 --- Gets the hovered file's user and group ownership of the current active tab.
+--- Unix-like systems only.
 --- @return string ownership Current active tab's hovered file's user and group ownership.
 function Yatline.string.get:hovered_ownership()
 	local hovered = cx.active.current.hovered
 
 	if hovered then
-		return ya.user_name(hovered.cha.uid) .. ":" .. ya.group_name(hovered.cha.gid)
+		if not hovered.cha.uid or not hovered.cha.gid then
+			return ""
+		end
+
+		local username = ya.user_name(hovered.cha.uid) or tostring(hovered.cha.uid)
+		local groupname = ya.group_name(hovered.cha.gid) or tostring(hovered.cha.gid)
+
+		return username .. ":" .. groupname
 	else
 		return ""
 	end
@@ -426,7 +457,7 @@ function Yatline.string.get:hovered_file_extension(show_icon)
 		if cha.is_dir then
 			name = "dir"
 		else
-			name = get_file_extension(hovered.url:name())
+			name = get_file_extension(hovered.url.name)
 		end
 
 		if show_icon then
@@ -440,13 +471,19 @@ function Yatline.string.get:hovered_file_extension(show_icon)
 	end
 end
 
+--- Configuration for getting curent active tab's path
+--- @class TabPathConfig
+--- @field trimed? boolean Whether to trim the current active tab's path if it's too long (default: false)
+--- @field max_length? integer Maximum length of the current active tab's path (default: 24)
+--- @field trim_length? integer Length of each end when trimming (default: 10)
 --- Gets the path of the current active tab.
+--- @param config? TabPathConfig Configuration for getting current active tab's path
 --- @return string path Current active tab's path.
-function Yatline.string.get:tab_path()
+function Yatline.string.get:tab_path(config)
 	local cwd = cx.active.current.cwd
 	local filter = cx.active.current.files.filter
 
-	local search = cwd.is_search and string.format(" (search: %s", cwd:frag()) or ""
+	local search = cwd.is_search and string.format(" (search: %s", cwd.frag) or ""
 
 	local suffix
 	if not filter then
@@ -457,7 +494,19 @@ function Yatline.string.get:tab_path()
 		suffix = string.format("%s, filter: %s)", search, tostring(filter))
 	end
 
-	return ya.readable_path(tostring(cx.active.current.cwd)) .. suffix
+	if not config then
+		return ya.readable_path(tostring(cwd)) .. suffix
+	end
+
+	local trimed = config.trimed or false
+	local max_length = config.max_length or 24
+	local trim_length = config.trim_length or 10
+
+	if trimed then
+		return trim_filename(ya.readable_path(tostring(cwd)), max_length, trim_length) .. suffix
+	else
+		return ya.readable_path(tostring(cwd)) .. suffix
+	end
 end
 
 --- Gets the mode of active tab.
@@ -553,7 +602,7 @@ function Yatline.line.get:tabs(side)
 	for i = 1, tabs do
 		local text = i
 		if tab_width > 2 then
-			text = ya.truncate(text .. " " .. cx.tabs[i]:name(), { max = tab_width })
+			text = ya.truncate(text .. " " .. cx.tabs[i].name, { max = tab_width })
 		end
 
 		separator_style = { bg = nil, fg = nil }
@@ -673,6 +722,7 @@ function Yatline.coloreds.create(coloreds, component_type)
 end
 
 --- Gets the hovered file's permissions of the current active tab.
+--- Unix-like systems only.
 --- @return Coloreds coloreds Current active tab's hovered file's permissions
 function Yatline.coloreds.get:permissions()
 	local hovered = cx.active.current.hovered
@@ -712,11 +762,13 @@ function Yatline.coloreds.get:permissions()
 	end
 end
 
---- Gets the number of selected and yanked files of the active tab.
---- @return Coloreds coloreds Active tab's number of selected and yanked files.
-function Yatline.coloreds.get:count()
+--- Gets the number of selected and yanked files and also number of files or filtered files of the active tab.
+--- @param filter? boolean Whether or not number of files (or filtered files) will be shown.
+--- @return Coloreds coloreds Active tab's number of selected and yanked files and also number of files or filtered files
+function Yatline.coloreds.get:count(filter)
 	local num_yanked = #cx.yanked
 	local num_selected = #cx.active.selected
+	local num_files = #cx.active.current.files
 
 	local yanked_fg, yanked_icon
 	if cx.yanked.is_cut then
@@ -727,10 +779,28 @@ function Yatline.coloreds.get:count()
 		yanked_icon = copied_icon
 	end
 
-	local coloreds = {
-		{ string.format(" %s %d ", selected_icon, num_selected), selected_fg },
-		{ string.format(" %s %d ", yanked_icon, num_yanked), yanked_fg },
-	}
+	local files_count_fg, files_count_icon
+	if cx.active.current.files.filter or cx.active.current.cwd.is_search then
+		files_count_icon = filtereds_icon
+		files_count_fg = filtereds_fg
+	else
+		files_count_icon = files_icon
+		files_count_fg = files_fg
+	end
+
+	local coloreds
+	if filter then
+		coloreds = {
+			{ string.format(" %s %d ", files_count_icon, num_files), files_count_fg },
+			{ string.format(" %s %d ", selected_icon, num_selected), selected_fg },
+			{ string.format(" %s %d ", yanked_icon, num_yanked), yanked_fg },
+		}
+	else
+		coloreds = {
+			{ string.format(" %s %d ", selected_icon, num_selected), selected_fg },
+			{ string.format(" %s %d ", yanked_icon, num_yanked), yanked_fg },
+		}
+	end
 
 	return coloreds
 end
@@ -930,8 +1000,10 @@ local function config_side(side)
 
 			if component_group then
 				if component.custom then
-					section_components[#section_components + 1] =
-						{ component_group.create(component.name, in_section), component_group.has_separator }
+					if component.name ~= nil and component.name ~= "" and #component.name ~= 0 then
+						section_components[#section_components + 1] =
+							{ component_group.create(component.name, in_section), component_group.has_separator }
+					end
 				else
 					local getter = component_group.get[component.name]
 
@@ -1015,8 +1087,64 @@ local function config_paragraph(area, line)
 end
 
 return {
-	setup = function(_, config)
+	setup = function(_, config, pre_theme)
 		config = config or {}
+
+		if config == 0 then
+			config = {
+				show_background = false,
+
+				header_line = {
+					left = {
+						section_a = {
+							{ type = "line", custom = false, name = "tabs", params = { "left" } },
+						},
+						section_b = {},
+						section_c = {},
+					},
+					right = {
+						section_a = {
+							{ type = "string", custom = false, name = "date", params = { "%A, %d %B %Y" } },
+						},
+						section_b = {
+							{ type = "string", custom = false, name = "date", params = { "%X" } },
+						},
+						section_c = {},
+					},
+				},
+
+				status_line = {
+					left = {
+						section_a = {
+							{ type = "string", custom = false, name = "tab_mode" },
+						},
+						section_b = {
+							{ type = "string", custom = false, name = "hovered_size" },
+						},
+						section_c = {
+							{ type = "string", custom = false, name = "hovered_path" },
+							{ type = "coloreds", custom = false, name = "count" },
+						},
+					},
+					right = {
+						section_a = {
+							{ type = "string", custom = false, name = "cursor_position" },
+						},
+						section_b = {
+							{ type = "string", custom = false, name = "cursor_percentage" },
+						},
+						section_c = {
+							{ type = "string", custom = false, name = "hovered_file_extension", params = { true } },
+							{ type = "coloreds", custom = false, name = "permissions" },
+						},
+					},
+				},
+			}
+		end
+
+		if pre_theme then
+			config.theme = pre_theme
+		end
 
 		tab_width = config.tab_width or 20
 
@@ -1045,8 +1173,16 @@ return {
 				right = { section_a = {}, section_b = {}, section_c = {} },
 			}
 
+		config.theme = (not rt.term.light and config.theme_dark)
+			or (rt.term.light and config.theme_light)
+			or config.theme
+
 		if config.theme then
-			config = config.theme
+			for key, value in pairs(config.theme) do
+				if not config[key] then
+					config[key] = value
+				end
+			end
 		end
 
 		if config.section_separator then
@@ -1120,6 +1256,22 @@ return {
 			cut_fg = "red"
 		end
 
+		if config.files then
+			files_icon = config.files.icon
+			files_fg = config.files.fg
+		else
+			files_icon = ""
+			files_fg = "blue"
+		end
+
+		if config.filtereds then
+			filtereds_icon = config.filtereds.icon
+			filtereds_fg = config.filtereds.fg
+		else
+			filtereds_icon = ""
+			filtereds_fg = "magenta"
+		end
+
 		if config.total then
 			task_total_icon = config.total.icon
 			task_total_fg = config.total.fg
@@ -1160,17 +1312,19 @@ return {
 			task_processed_fg = "green"
 		end
 
+		config = nil
+
 		Progress.partial_render = function(self)
 			local progress = cx.tasks.progress
 			if progress.total == 0 then
-				return { config_paragraph(self._area) }
+				return config_paragraph(self._area)
 			end
 
 			local gauge = ui.Gauge():area(self._area)
 			if progress.fail == 0 then
-				gauge = gauge:gauge_style(THEME.status.progress_normal)
+				gauge = gauge:gauge_style(th.status.progress_normal)
 			else
-				gauge = gauge:gauge_style(THEME.status.progress_error)
+				gauge = gauge:gauge_style(th.status.progress_error)
 			end
 
 			local percent = 99
@@ -1179,11 +1333,9 @@ return {
 			end
 
 			local left = progress.total - progress.succ
-			return {
-				gauge
-					:percent(percent)
-					:label(ui.Span(string.format("%3d%%, %d left", percent, left)):style(THEME.status.progress_label)),
-			}
+			return gauge
+				:percent(percent)
+				:label(ui.Span(string.format("%3d%%, %d left", percent, left)):style(th.status.progress_label))
 		end
 
 		if display_header_line then
@@ -1194,7 +1346,7 @@ return {
 
 					return {
 						config_paragraph(self._area, left_line),
-						ui.Text(right_line):area(self._area):align(ui.Text.RIGHT),
+						right_line:area(self._area):align(ui.Align.RIGHT),
 					}
 				end
 
@@ -1220,8 +1372,8 @@ return {
 
 					return {
 						config_paragraph(self._area, left_line),
-						ui.Text(right_line):area(self._area):align(ui.Text.RIGHT),
-						table.unpack(Progress:new(self._area, right_width):redraw()),
+						right_line:area(self._area):align(ui.Align.RIGHT),
+						table.unpack(ui.redraw(Progress:new(self._area, right_width))),
 					}
 				end
 
@@ -1269,6 +1421,8 @@ return {
 					i = i + 1
 				end
 			end
+
+			table.insert(childrens, Modal:new(self._area))
 
 			self._children = childrens
 		end
