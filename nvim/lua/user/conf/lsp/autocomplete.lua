@@ -1,6 +1,9 @@
 local has_words_before = function()
 	local line, col = unpack(vim.api.nvim_win_get_cursor(0))
-	return col ~= 0 and vim.api.nvim_buf_get_lines(0, line - 1, line, true)[1]:sub(col, col):match("%s") == nil
+	if col == 0 then return false end
+	local current_line = vim.api.nvim_buf_get_lines(0, line - 1, line, true)[1]
+	local before_cursor = current_line:sub(1, col)
+	return before_cursor:match("^%s*$") == nil
 end
 
 local limitStr = function(str)
@@ -93,6 +96,7 @@ M.config = {
 		local snippet_source = SNIPPET_ENGINE == "luasnip" and { name = "luasnip" } or { name = "ultisnips" }
 		
 		local default_cmp_sources = cmp.config.sources({
+			{ name = "copilot" },
 			{ name = "nvim_lsp" },
 			snippet_source,
 			{ name = "buffer" },
@@ -212,6 +216,35 @@ M.config = {
 					return kind
 				end,
 			},
+		})
+		
+		-- 设置自动触发补全的条件
+		local function should_auto_complete()
+			local line, col = unpack(vim.api.nvim_win_get_cursor(0))
+			if col == 0 then return false end
+			
+			local current_line = vim.api.nvim_buf_get_lines(0, line - 1, line, true)[1]
+			local char_before = current_line:sub(col, col)
+			local two_chars_before = current_line:sub(col - 1, col)
+			
+			-- 在这些字符后自动触发补全
+			local trigger_chars = { '.', ':', '->', '::', '(', '[' }
+			for _, trigger in ipairs(trigger_chars) do
+				if two_chars_before:sub(-#trigger) == trigger or char_before == trigger then
+					return true
+				end
+			end
+			
+			return false
+		end
+		
+		-- 设置自动触发补全
+		vim.api.nvim_create_autocmd({ "TextChangedI" }, {
+			callback = function()
+				if should_auto_complete() then
+					cmp.complete()
+				end
+			end,
 		})
 		
 		-- If a file is too large, I don't want to add to it's cmp sources treesitter, see:
