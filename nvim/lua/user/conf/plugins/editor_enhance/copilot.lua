@@ -51,6 +51,30 @@ M.lua = {
 	},
 }
 
+M.claude = {
+	"greggh/claude-code.nvim",
+	event = "VeryLazy",
+	dependencies = {
+		"nvim-lua/plenary.nvim", -- Required for git operations
+	},
+	config = function()
+		require("claude-code").setup({
+			keymaps = {
+				toggle = {
+					normal = "<leader>aa", -- Normal mode keymap for toggling Claude Code, false to disable
+					terminal = "<leader>aa", -- Terminal mode keymap for toggling Claude Code, false to disable
+					variants = {
+						continue = "<leader>aC", -- Normal mode keymap for Claude Code with continue flag
+						verbose = "<leader>aV", -- Normal mode keymap for Claude Code with verbose flag
+					},
+				},
+				window_navigation = true, -- Enable window navigation keymaps (<C-h/j/k/l>)
+				scrolling = true, -- Enable scrolling keymaps (<C-f/b>) for page up/down
+			},
+		})
+	end,
+}
+
 M.avante = {
 	"yetone/avante.nvim",
 	event = "VeryLazy",
