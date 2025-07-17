@@ -102,7 +102,7 @@ keymap = [
 
   # Open file
   { on = "o", run = "open", desc = "Open selected files" },
-  { on = "E", run = "open", desc = "Open selected files" },
+  { on = "E", run = 'shell --block -- ${EDITOR:-nvim} "$@"', desc = "Edit selected files" },
   { on = "O", run = "open --interactive", desc = "Open selected files interactively" },
   { on = "<S-Enter>", run = "open --interactive", desc = "Open selected files interactively" },
 
@@ -332,15 +332,15 @@ keymap = [
   ], run = "cd --interactive", desc = "Jump interactively" },
 
   # Tabs
-  { on = "1", run = "plugin smart-switch --args=0", desc = "Switch to the first tab" },
-  { on = "2", run = "plugin smart-switch --args=1", desc = "Switch to the second tab" },
-  { on = "3", run = "plugin smart-switch --args=2", desc = "Switch to the third tab" },
-  { on = "4", run = "plugin smart-switch --args=3", desc = "Switch to the fourth tab" },
-  { on = "5", run = "plugin smart-switch --args=4", desc = "Switch to the fifth tab" },
-  { on = "6", run = "plugin smart-switch --args=5", desc = "Switch to the sixth tab" },
-  { on = "7", run = "plugin smart-switch --args=6", desc = "Switch to the seventh tab" },
-  { on = "8", run = "plugin smart-switch --args=7", desc = "Switch to the eighth tab" },
-  { on = "9", run = "plugin smart-switch --args=8", desc = "Switch to the ninth tab" },
+  { on = "1", run = "plugin smart-switch 0", desc = "Switch to the first tab" },
+  { on = "2", run = "plugin smart-switch 1", desc = "Switch to the second tab" },
+  { on = "3", run = "plugin smart-switch 2", desc = "Switch to the third tab" },
+  { on = "4", run = "plugin smart-switch 3", desc = "Switch to the fourth tab" },
+  { on = "5", run = "plugin smart-switch 4", desc = "Switch to the fifth tab" },
+  { on = "6", run = "plugin smart-switch 5", desc = "Switch to the sixth tab" },
+  { on = "7", run = "plugin smart-switch 6", desc = "Switch to the seventh tab" },
+  { on = "8", run = "plugin smart-switch 7", desc = "Switch to the eighth tab" },
+  { on = "9", run = "plugin smart-switch 8", desc = "Switch to the ninth tab" },
 
   { on = "[", run = "tab_switch -1 --relative", desc = "Switch to the previous tab" },
   { on = "]", run = "tab_switch 1 --relative", desc = "Switch to the next tab" },

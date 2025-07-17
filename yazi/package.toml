@@ -1,17 +1,17 @@
 [[plugin.deps]]
 use = "yazi-rs/plugins:smart-enter"
-rev = "7c174cc"
+rev = "b886025"
 hash = "56fdabc96fc1f4d53c96eb884b02a5be"
 
 [[plugin.deps]]
 use = "yazi-rs/plugins:git"
-rev = "7c174cc"
-hash = "e01006bfb38951ea89031bd918b20dbb"
+rev = "b886025"
+hash = "63b6c222bf2103b3023389dde5e2ecfe"
 
 [[plugin.deps]]
 use = "yazi-rs/plugins:hide-preview"
 rev = "8945e54"
-hash = "b25c2acb08d9ca5ff5cf71ea764fed8d"
+hash = "55904f17e1053cfb91dacd9015a99f9d"
 
 [[plugin.deps]]
 use = "yazi-rs/plugins:max-preview"
@@ -34,19 +34,19 @@ rev = "8945e54"
 hash = "af11685de39c366ec1137fcbccacdbff"
 
 [[plugin.deps]]
+use = "yazi-rs/plugins:toggle-pane"
+rev = "b886025"
+hash = "d6f60c24d8c0cf57a855bf46115b2502"
+
+[[plugin.deps]]
 use = "wakaka6/yatline-dracula"
-rev = "82dde5a"
-hash = "bc0f8b6847f57a3519050b18ab85ae8"
+rev = "598ea29"
+hash = "303f8ca9084dbdd15c640b1f7388f54d"
 
 [[plugin.deps]]
 use = "imsi32/yatline"
 rev = "88bd1c5"
 hash = "981acbe9b758b1af3a8154c932bb936d"
-
-[[plugin.deps]]
-use = "yazi-rs/plugins:toggle-pane"
-rev = "b886025"
-hash = "d6f60c24d8c0cf57a855bf46115b2502"
 
 [flavor]
 deps = []

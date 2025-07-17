@@ -103,8 +103,8 @@ rules = [
   ] },
   # Email
   { name = "*.eml", use = [
-        "edit",
         "open",
+        "edit",
         "reveal",
   ] },
   # PDF
@@ -115,6 +115,7 @@ rules = [
   # Fallback
   { name = "*", use = [
     "open",
+    "edit",
     "reveal",
   ] },
 ]

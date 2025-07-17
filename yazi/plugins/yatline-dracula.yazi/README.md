@@ -11,13 +11,13 @@ Dracula theme For [yatline.yazi](https://github.com/imsi32/yatline.yazi)
 
 ## Requirements
 
-- [yazi](https://github.com/sxyazi/yazi) version >= 0.3.0
+- [yazi](https://github.com/sxyazi/yazi) version >= 25.5.31
 - [yatline.yazi](https://github.com/imsi32/yatline.yazi)
 
 ## Installation
 
 ```sh
-ya pack -a wakaka6/yatline-dracula
+ya pkg add wakaka6/yatline-dracula
 ```
 
 ## Usage
