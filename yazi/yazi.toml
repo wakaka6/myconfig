@@ -191,6 +191,9 @@ previewers = [
   { mime = "application/ms-opentype", run = "font" },
   # Empty file
   { mime = "inode/empty", run = "empty" },
+  # Email
+  { mime = "message/rfc822", run = "code" },
+  { name = "*.eml", run = "code" },
   # Fallback
   { name = "*", run = "file" },
 ]
