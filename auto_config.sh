@@ -37,6 +37,7 @@ declare -A CONFIG_ITEMS=(
     ["picom"]="$HOME/.config/picom"
     ["yazi"]="$HOME/.config/yazi"
     ["gitui"]="$HOME/.config/gitui"
+    ["awesome"]="$HOME/.config/awesome"
 )
 
 # Special configurations that need custom handling
