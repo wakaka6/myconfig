@@ -79,6 +79,9 @@ awful.layout.layouts = {
 -- }}}
 
 -- {{{ Wibar
+local xresources = require("beautiful.xresources")
+local dpi = xresources.apply_dpi
+
 local taglist_buttons = gears.table.join(
 	awful.button({}, 1, function(t)
 		t:view_only()
@@ -147,7 +150,7 @@ awful.screen.connect_for_each_screen(function(s)
 	-- Create a promptbox
 	s.mypromptbox = awful.widget.prompt()
 
-	-- Create layoutbox
+	-- Create layoutbox with rounded background
 	s.mylayoutbox = awful.widget.layoutbox(s)
 	s.mylayoutbox:buttons(gears.table.join(
 		awful.button({}, 1, function()
@@ -164,67 +167,216 @@ awful.screen.connect_for_each_screen(function(s)
 		end)
 	))
 
-	-- Create taglist widget
+	-- Wrap layoutbox in rounded container (size based on screen)
+	local layoutbox_margin = s == screen.primary and dpi(2) or dpi(1)
+	local layoutbox_container = wibox.widget({
+		{
+			s.mylayoutbox,
+			margins = layoutbox_margin,
+			widget = wibox.container.margin,
+		},
+		bg = "#44475A80",
+		shape = function(cr, w, h)
+			gears.shape.rounded_rect(cr, w, h, dpi(4))
+		end,
+		widget = wibox.container.background,
+	})
+
+	-- Create taglist widget with pill style (smaller for non-primary)
+	local taglist_lr_margin = s == screen.primary and dpi(8) or dpi(5)
+	local taglist_outer_margin = s == screen.primary and dpi(1) or dpi(0)
+	local taglist_spacing = s == screen.primary and dpi(3) or dpi(2)
+
 	s.mytaglist = awful.widget.taglist({
 		screen = s,
 		filter = awful.widget.taglist.filter.all,
 		buttons = taglist_buttons,
+		widget_template = {
+			{
+				{
+					{
+						id = "text_role",
+						widget = wibox.widget.textbox,
+					},
+					left = taglist_lr_margin,
+					right = taglist_lr_margin,
+					widget = wibox.container.margin,
+				},
+				id = "background_role",
+				widget = wibox.container.background,
+			},
+			margins = taglist_outer_margin,
+			widget = wibox.container.margin,
+		},
+		layout = {
+			spacing = taglist_spacing,
+			layout = wibox.layout.fixed.horizontal,
+		},
 	})
 
-	-- Create tasklist widget
+	-- Create tasklist widget with modern style
 	s.mytasklist = awful.widget.tasklist({
 		screen = s,
 		filter = awful.widget.tasklist.filter.currenttags,
 		buttons = tasklist_buttons,
+		widget_template = {
+			{
+				{
+					{
+						id = "icon_role",
+						widget = wibox.widget.imagebox,
+					},
+					margins = dpi(4),
+					widget = wibox.container.margin,
+				},
+				{
+					id = "text_role",
+					widget = wibox.widget.textbox,
+				},
+				layout = wibox.layout.fixed.horizontal,
+			},
+			left = dpi(8),
+			right = dpi(8),
+			widget = wibox.container.margin,
+			id = "background_role_container",
+			create_callback = function(self, c, index, objects)
+				self:get_children_by_id("background_role_container")[1].bg = c == client.focus
+						and "#44475A"
+					or "transparent"
+			end,
+			update_callback = function(self, c, index, objects)
+				-- This is handled by background_role
+			end,
+		},
+		layout = {
+			spacing = dpi(4),
+			layout = wibox.layout.flex.horizontal,
+		},
 	})
 
-	-- Create wibar on all screens
+	-- Create floating wibar
+	local wibar_height = dpi(28)
+	local wibar_margin_top = dpi(4)
+	if s ~= screen.primary then
+		wibar_height = dpi(22)
+		wibar_margin_top = dpi(3)
+	end
+
 	s.mywibox = awful.wibar({
 		position = "top",
 		screen = s,
-		height = beautiful.wibar_height or 28,
+		height = wibar_height,
+		bg = "#00000000", -- Fully transparent
+		margins = {
+			top = wibar_margin_top,
+			left = dpi(6),
+			right = dpi(6),
+		},
 	})
 
 	-- Right widgets (systray only on primary screen)
-	local right_widgets = {
-		layout = wibox.layout.fixed.horizontal,
-		s.mylayoutbox,
-	}
+	local right_widgets
 
-	-- Primary screen gets full widgets
 	if s == screen.primary then
+		-- Systray with background
+		local systray = wibox.widget({
+			{
+				{
+					wibox.widget.systray(),
+					margins = dpi(2),
+					widget = wibox.container.margin,
+				},
+				bg = "#44475A80",
+				shape = function(cr, w, h)
+					gears.shape.rounded_rect(cr, w, h, dpi(4))
+				end,
+				widget = wibox.container.background,
+			},
+			layout = wibox.layout.fixed.horizontal,
+		})
+
 		right_widgets = {
 			layout = wibox.layout.fixed.horizontal,
+			spacing = dpi(6),
 			widgets.network,
-			widgets.separator,
 			widgets.cpu,
-			widgets.separator,
 			widgets.memory,
-			widgets.separator,
 			widgets.temperature,
-			widgets.separator,
-			wibox.widget.systray(),
-			wibox.widget.textclock(" %Y-%m-%d %H:%M "),
-			s.mylayoutbox,
+			systray,
+			widgets.clock,
+			layoutbox_container,
 		}
 	else
-		-- Secondary screens get simple clock + layoutbox
+		-- Secondary screens: compact clock + layoutbox
+		local simple_clock = wibox.widget({
+			{
+				{
+					text = "",
+					font = "JetBrainsMono Nerd Font 9",
+					widget = wibox.widget.textbox,
+				},
+				wibox.widget.textclock("%H:%M", 60),
+				spacing = dpi(4),
+				layout = wibox.layout.fixed.horizontal,
+			},
+			left = dpi(5),
+			right = dpi(5),
+			top = dpi(1),
+			bottom = dpi(1),
+			widget = wibox.container.margin,
+		})
+
+		local simple_clock_container = wibox.widget({
+			simple_clock,
+			bg = "#44475A80",
+			shape = function(cr, w, h)
+				gears.shape.rounded_rect(cr, w, h, dpi(3))
+			end,
+			widget = wibox.container.background,
+		})
+
 		right_widgets = {
 			layout = wibox.layout.fixed.horizontal,
-			wibox.widget.textclock(" %H:%M "),
-			s.mylayoutbox,
+			spacing = dpi(4),
+			simple_clock_container,
+			layoutbox_container,
 		}
 	end
 
+	-- Setup wibar with rounded inner container
+	local inner_margin = s == screen.primary and dpi(8) or dpi(4)
+	local inner_padding = s == screen.primary and dpi(2) or dpi(1)
+	local corner_radius = s == screen.primary and dpi(8) or dpi(6)
+
 	s.mywibox:setup({
-		layout = wibox.layout.align.horizontal,
-		{ -- Left widgets
-			layout = wibox.layout.fixed.horizontal,
-			s.mytaglist,
-			s.mypromptbox,
+		{
+			{
+				layout = wibox.layout.align.horizontal,
+				{ -- Left widgets
+					layout = wibox.layout.fixed.horizontal,
+					spacing = s == screen.primary and dpi(8) or dpi(4),
+					s.mytaglist,
+					s.mypromptbox,
+				},
+				{ -- Middle widget (tasklist)
+					s.mytasklist,
+					left = s == screen.primary and dpi(16) or dpi(8),
+					right = s == screen.primary and dpi(16) or dpi(8),
+					widget = wibox.container.margin,
+				},
+				right_widgets,
+			},
+			left = inner_margin,
+			right = inner_margin,
+			top = inner_padding,
+			bottom = inner_padding,
+			widget = wibox.container.margin,
 		},
-		s.mytasklist, -- Middle widget
-		right_widgets,
+		bg = "#282A36E8",
+		shape = function(cr, w, h)
+			gears.shape.rounded_rect(cr, w, h, corner_radius)
+		end,
+		widget = wibox.container.background,
 	})
 end)
 -- }}}

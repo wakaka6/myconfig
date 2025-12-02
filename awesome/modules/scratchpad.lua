@@ -6,8 +6,12 @@
 
 local awful = require("awful")
 local beautiful = require("beautiful")
+local gears = require("gears")
 
 local M = {}
+
+-- State file path
+local state_file = gears.filesystem.get_cache_dir() .. "scratchpad_state"
 
 -- Scratchpad definitions
 local scratchpads = {
@@ -18,14 +22,6 @@ local scratchpads = {
         height = 600,
         sticky = true,
     },
-    -- 在这里添加更多 scratchpad
-    -- example = {
-    --     command = "alacritty --class example",
-    --     instance = "example",
-    --     width = 1200,
-    --     height = 800,
-    --     sticky = true,
-    -- },
 }
 
 -- Track scratchpad clients
@@ -39,6 +35,40 @@ local function find_client(instance)
         end
     end
     return nil
+end
+
+-- Save scratchpad visibility state
+local function save_state()
+    local state = {}
+    for name, config in pairs(scratchpads) do
+        local c = find_client(config.instance)
+        if c then
+            state[name] = not c.hidden
+        end
+    end
+    local file = io.open(state_file, "w")
+    if file then
+        for name, visible in pairs(state) do
+            file:write(name .. "=" .. tostring(visible) .. "\n")
+        end
+        file:close()
+    end
+end
+
+-- Load scratchpad visibility state
+local function load_state()
+    local state = {}
+    local file = io.open(state_file, "r")
+    if file then
+        for line in file:lines() do
+            local name, visible = line:match("(.+)=(.+)")
+            if name and visible then
+                state[name] = visible == "true"
+            end
+        end
+        file:close()
+    end
+    return state
 end
 
 -- Center and resize scratchpad
@@ -97,6 +127,7 @@ function M.toggle(name)
             setup_scratchpad(c, config)
             c:emit_signal("request::activate", "scratchpad", { raise = true })
         end
+        save_state()
     else
         -- Client doesn't exist, spawn it
         awful.spawn(config.command, {
@@ -109,6 +140,13 @@ end
 
 -- Initialize scratchpad rules
 function M.init()
+    local saved_state = load_state()
+
+    -- Save state before restart
+    awesome.connect_signal("exit", function()
+        save_state()
+    end)
+
     -- Add rules for each scratchpad
     for name, config in pairs(scratchpads) do
         -- Connect signal for when client is created
@@ -117,10 +155,11 @@ function M.init()
                 setup_scratchpad(c, config)
                 scratchpad_clients[name] = c
 
-                -- Hide on unfocus (optional, comment out if you don't want this)
-                -- c:connect_signal("unfocus", function()
-                --     c.hidden = true
-                -- end)
+                -- On restart, restore previous state
+                if awesome.startup then
+                    local was_visible = saved_state[name]
+                    c.hidden = not was_visible
+                end
             end
         end)
     end
