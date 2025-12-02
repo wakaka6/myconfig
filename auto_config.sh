@@ -1,27 +1,31 @@
 #!/usr/bin/env bash
 # Auto Configuration Script - A modular approach to dotfile management
 # Author: Auto Config Manager
-# Version: 2.0.0
+# Version: 3.1.0
 
-set -euo pipefail  # Exit on error, undefined vars, pipe failures
+set -euo pipefail
 
 # ============================================================================
 # Configuration Section
 # ============================================================================
 
-# Script directory
 readonly SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 readonly BACKUP_DIR="$HOME/.config-backup-$(date +%Y%m%d-%H%M%S)"
 readonly LOG_FILE="/tmp/auto-config-$(date +%Y%m%d-%H%M%S).log"
 
-# Colors for output
+# Colors
 readonly RED='\033[0;31m'
 readonly GREEN='\033[0;32m'
 readonly YELLOW='\033[1;33m'
 readonly BLUE='\033[0;34m'
-readonly NC='\033[0m' # No Color
+readonly CYAN='\033[0;36m'
+readonly NC='\033[0m'
 
-# Configuration items - Easy to add/remove/modify
+# Global flags
+FORCE_MODE=false
+SELECTED_PLUGINS=()
+
+# Standard symlink configurations: source -> target
 declare -A CONFIG_ITEMS=(
     ["i3"]="$HOME/.config/i3"
     ["i3status"]="$HOME/.config/i3status"
@@ -40,39 +44,77 @@ declare -A CONFIG_ITEMS=(
     ["awesome"]="$HOME/.config/awesome"
 )
 
-# Special configurations that need custom handling
+# Special configurations: name -> "type:source:target"
+# Types: symlink, copy, generate
 declare -A SPECIAL_CONFIGS=(
-    ["lazygit"]="lazygit_setup"
-    ["xprofile"]="xprofile_setup"
-    ["tmux"]="tmux_setup"
-    ["vimrc"]="vimrc_setup"
+    ["lazygit"]="symlink:lazygit/config.yml:$HOME/.config/lazygit/config.yml"
+    ["tmux"]="symlink:.tmux.conf:$HOME/.tmux.conf"
+    ["vimrc"]="symlink:.vimrc:$HOME/.vimrc"
+    ["xprofile"]="copy:.xprofile:$HOME/.xprofile"
+    ["scratchpad"]="generate:scratchpad_content:$HOME/Documents/scratchpad/CLAUDE.md"
 )
 
 # ============================================================================
 # Utility Functions
 # ============================================================================
 
-# Logging function
 log() {
     local level=$1
     shift
-    local message="$@"
-    local timestamp=$(date '+%Y-%m-%d %H:%M:%S')
-    
+    local message="$*"
+
     case "$level" in
-        INFO)  echo -e "${BLUE}[INFO]${NC} $message" | tee -a "$LOG_FILE" ;;
+        INFO)    echo -e "${BLUE}[INFO]${NC} $message" | tee -a "$LOG_FILE" ;;
         SUCCESS) echo -e "${GREEN}[SUCCESS]${NC} $message" | tee -a "$LOG_FILE" ;;
-        WARN)  echo -e "${YELLOW}[WARN]${NC} $message" | tee -a "$LOG_FILE" ;;
-        ERROR) echo -e "${RED}[ERROR]${NC} $message" | tee -a "$LOG_FILE" ;;
+        WARN)    echo -e "${YELLOW}[WARN]${NC} $message" | tee -a "$LOG_FILE" ;;
+        ERROR)   echo -e "${RED}[ERROR]${NC} $message" | tee -a "$LOG_FILE" ;;
     esac
 }
 
-# Check if command exists
 command_exists() {
     command -v "$1" >/dev/null 2>&1
 }
 
-# Create backup directory
+# Check if a plugin is selected (or if no plugins specified, return true)
+is_plugin_selected() {
+    local plugin=$1
+    if [[ ${#SELECTED_PLUGINS[@]} -eq 0 ]]; then
+        return 0
+    fi
+    for p in "${SELECTED_PLUGINS[@]}"; do
+        if [[ "$p" == "$plugin" ]]; then
+            return 0
+        fi
+    done
+    return 1
+}
+
+# Get all available plugin names
+get_all_plugins() {
+    local plugins=()
+    for key in "${!CONFIG_ITEMS[@]}"; do
+        plugins+=("$key")
+    done
+    for key in "${!SPECIAL_CONFIGS[@]}"; do
+        plugins+=("$key")
+    done
+    printf '%s\n' "${plugins[@]}" | sort -u
+}
+
+# Ask user for confirmation, returns 0 for yes, 1 for no
+# In force mode, always returns 0
+confirm() {
+    local message=$1
+
+    if [[ "$FORCE_MODE" == "true" ]]; then
+        return 0
+    fi
+
+    read -p "$message [y/N] " -n 1 -r
+    echo
+    [[ $REPLY =~ ^[Yy]$ ]]
+}
+
 create_backup_dir() {
     if [[ ! -d "$BACKUP_DIR" ]]; then
         mkdir -p "$BACKUP_DIR"
@@ -80,11 +122,11 @@ create_backup_dir() {
     fi
 }
 
-# Backup existing configuration
 backup_config() {
     local source=$1
-    local name=$(basename "$source")
-    
+    local name
+    name=$(basename "$source")
+
     if [[ -e "$source" && ! -L "$source" ]]; then
         create_backup_dir
         cp -r "$source" "$BACKUP_DIR/$name"
@@ -94,104 +136,139 @@ backup_config() {
     return 1
 }
 
-# Create symbolic link with proper checks
+# ============================================================================
+# Core Operations
+# ============================================================================
+
+# Create symbolic link with proper checks and user confirmation
 create_symlink() {
     local source=$1
     local target=$2
-    local force=${3:-false}
-    
+
     # Check if source exists
     if [[ ! -e "$source" ]]; then
         log ERROR "Source does not exist: $source"
         return 1
     fi
-    
+
     # Handle existing target
     if [[ -e "$target" || -L "$target" ]]; then
         if [[ -L "$target" ]]; then
-            local current_source=$(readlink -f "$target" 2>/dev/null || echo "unknown")
-            if [[ "$current_source" == "$source" ]]; then
-                log INFO "Already linked correctly: $target -> $source"
+            local current_source
+            current_source=$(readlink -f "$target" 2>/dev/null || echo "unknown")
+            if [[ "$current_source" == "$(readlink -f "$source")" ]]; then
+                log INFO "Already linked correctly: $target"
                 return 0
-            else
-                log WARN "Existing symlink points elsewhere: $target -> $current_source"
-                if [[ "$force" == "true" ]]; then
-                    rm -f "$target"
-                    log INFO "Removed existing symlink: $target"
-                else
-                    return 1
-                fi
             fi
+            log WARN "Existing symlink points to: $current_source"
         else
-            # Regular file/directory exists
-            if backup_config "$target"; then
-                rm -rf "$target"
-                log INFO "Removed original: $target"
-            else
-                log ERROR "Failed to backup $target"
-                return 1
+            log WARN "Target exists: $target"
+        fi
+
+        if confirm "Overwrite $target?"; then
+            if [[ ! -L "$target" ]]; then
+                backup_config "$target"
             fi
+            rm -rf "$target"
+            log INFO "Removed existing: $target"
+        else
+            log INFO "Skipped: $target"
+            return 0
         fi
     fi
-    
+
     # Create parent directory if needed
-    local target_dir=$(dirname "$target")
+    local target_dir
+    target_dir=$(dirname "$target")
     if [[ ! -d "$target_dir" ]]; then
         mkdir -p "$target_dir"
         log INFO "Created directory: $target_dir"
     fi
-    
-    # Create the symlink
+
     ln -s "$source" "$target"
     log SUCCESS "Created symlink: $target -> $source"
-    return 0
+}
+
+# Copy file with user confirmation
+copy_file() {
+    local source=$1
+    local target=$2
+
+    if [[ ! -f "$source" ]]; then
+        log WARN "Source file not found: $source"
+        return 1
+    fi
+
+    if [[ -e "$target" ]]; then
+        if confirm "Overwrite $target?"; then
+            backup_config "$target"
+        else
+            log INFO "Skipped: $target"
+            return 0
+        fi
+    fi
+
+    local target_dir
+    target_dir=$(dirname "$target")
+    if [[ ! -d "$target_dir" ]]; then
+        mkdir -p "$target_dir"
+    fi
+
+    cp "$source" "$target"
+    log SUCCESS "Copied: $source -> $target"
+}
+
+# Generate file with content from a function
+generate_file() {
+    local content_func=$1
+    local target=$2
+
+    local target_dir
+    target_dir=$(dirname "$target")
+    if [[ ! -d "$target_dir" ]]; then
+        mkdir -p "$target_dir"
+        log SUCCESS "Created directory: $target_dir"
+    fi
+
+    if [[ -f "$target" ]]; then
+        if confirm "Overwrite $target?"; then
+            backup_config "$target"
+        else
+            log INFO "Skipped: $target"
+            return 0
+        fi
+    fi
+
+    $content_func > "$target"
+    log SUCCESS "Generated: $target"
 }
 
 # ============================================================================
-# Special Configuration Handlers
+# Content Generators
 # ============================================================================
 
-lazygit_setup() {
-    local source="$SCRIPT_DIR/lazygit/config.yml"
-    local target="$HOME/.config/lazygit/config.yml"
-    create_symlink "$source" "$target"
-}
+scratchpad_content() {
+    cat << 'EOF'
+# Scratchpad 工作目录
 
-xprofile_setup() {
-    local source="$SCRIPT_DIR/.xprofile"
-    local target="$HOME/.xprofile"
-    
-    if [[ -f "$source" ]]; then
-        cp -i "$source" "$target" 2>/dev/null || {
-            log WARN "Skipped .xprofile (user chose not to overwrite)"
-            return 1
-        }
-        log SUCCESS "Copied .xprofile to $HOME"
-    else
-        log WARN ".xprofile not found in $SCRIPT_DIR"
-    fi
-}
+这是用户的个人笔记和思考记录目录。记录瞬间的想法、灵感（格式：YYYY-MM-DD.md）
 
-tmux_setup() {
-    local source="$SCRIPT_DIR/.tmux.conf"
-    local target="$HOME/.tmux.conf"
-    
-    if [[ -f "$source" ]]; then
-        create_symlink "$source" "$target"
-    else
-        log WARN ".tmux.conf not found in $SCRIPT_DIR"
-    fi
-}
+## Claude 助理指南
 
-vimrc_setup() {
-    local source="$SCRIPT_DIR/.vimrc"
-    local target="$HOME/.vimrc"
-    
-    if [[ -f "$source" ]]; then
-        create_symlink "$source" "$target"
-    else
-        log WARN ".vimrc not found in $SCRIPT_DIR"
-    fi
+作为用户的 AI 助理，请遵循以下原则：
+
+1. **尊重隐私**：这里的内容是用户的私人思考，不要在没有明确请求时主动评判
+2. **理解上下文**：阅读相关笔记以更好地理解用户的需求和背景
+3. **简洁回复**：用户通常在快速记录或查询，保持回复精炼
+4. **中文优先**：用户习惯使用中文交流
+
+## 常见任务
+
+- 帮助整理和归纳笔记
+- 回答技术问题
+- 协助代码调试
+- 头脑风暴和想法扩展
+EOF
 }
 
 # ============================================================================
@@ -199,51 +276,80 @@ vimrc_setup() {
 # ============================================================================
 
 install_configs() {
-    local force=${1:-false}
-    
     log INFO "Starting configuration installation..."
     log INFO "Script directory: $SCRIPT_DIR"
-    log INFO "Force mode: $force"
-    
+    log INFO "Force mode: $FORCE_MODE"
+    if [[ ${#SELECTED_PLUGINS[@]} -gt 0 ]]; then
+        log INFO "Selected plugins: ${SELECTED_PLUGINS[*]}"
+    fi
+
     # Process standard configurations
     for config in "${!CONFIG_ITEMS[@]}"; do
+        if ! is_plugin_selected "$config"; then
+            continue
+        fi
         local source="$SCRIPT_DIR/$config"
         local target="${CONFIG_ITEMS[$config]}"
-        
         log INFO "Processing $config..."
-        create_symlink "$source" "$target" "$force"
+        create_symlink "$source" "$target"
     done
-    
+
     # Process special configurations
     for config in "${!SPECIAL_CONFIGS[@]}"; do
-        log INFO "Processing special config: $config..."
-        ${SPECIAL_CONFIGS[$config]}
-    done
-    
-    # Install oh-my-zsh if not present
-    if [[ ! -d "$HOME/.oh-my-zsh" ]]; then
-        log INFO "Installing Oh My Zsh..."
-        if command_exists curl; then
-            sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended
-            log SUCCESS "Oh My Zsh installed"
-        else
-            log ERROR "curl not found. Please install curl to install Oh My Zsh"
+        if ! is_plugin_selected "$config"; then
+            continue
         fi
-    else
-        log INFO "Oh My Zsh already installed"
+        log INFO "Processing special config: $config..."
+        local spec="${SPECIAL_CONFIGS[$config]}"
+        local type="${spec%%:*}"
+        local rest="${spec#*:}"
+        local source_part="${rest%%:*}"
+        local target="${rest#*:}"
+
+        case "$type" in
+            symlink)
+                create_symlink "$SCRIPT_DIR/$source_part" "$target"
+                ;;
+            copy)
+                copy_file "$SCRIPT_DIR/$source_part" "$target"
+                ;;
+            generate)
+                generate_file "$source_part" "$target"
+                ;;
+            *)
+                log ERROR "Unknown config type: $type"
+                ;;
+        esac
+    done
+
+    # Install oh-my-zsh if not present (only when zsh is selected or no filter)
+    if is_plugin_selected "zsh" && [[ ! -d "$HOME/.oh-my-zsh" ]]; then
+        if confirm "Install Oh My Zsh?"; then
+            if command_exists curl; then
+                sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended
+                log SUCCESS "Oh My Zsh installed"
+            else
+                log ERROR "curl not found. Please install curl first"
+            fi
+        fi
     fi
-    
+
     log SUCCESS "Configuration installation completed!"
     log INFO "Log file: $LOG_FILE"
 }
 
 uninstall_configs() {
     log INFO "Starting configuration removal..."
-    
+    if [[ ${#SELECTED_PLUGINS[@]} -gt 0 ]]; then
+        log INFO "Selected plugins: ${SELECTED_PLUGINS[*]}"
+    fi
+
     # Remove standard configurations
     for config in "${!CONFIG_ITEMS[@]}"; do
+        if ! is_plugin_selected "$config"; then
+            continue
+        fi
         local target="${CONFIG_ITEMS[$config]}"
-        
         if [[ -L "$target" ]]; then
             rm -f "$target"
             log SUCCESS "Removed symlink: $target"
@@ -251,40 +357,56 @@ uninstall_configs() {
             log INFO "Not a symlink, skipping: $target"
         fi
     done
-    
-    # Handle special configurations
-    if [[ -L "$HOME/.config/lazygit/config.yml" ]]; then
-        rm -f "$HOME/.config/lazygit/config.yml"
-        log SUCCESS "Removed lazygit config symlink"
-    fi
-    
-    if [[ -L "$HOME/.tmux.conf" ]]; then
-        rm -f "$HOME/.tmux.conf"
-        log SUCCESS "Removed .tmux.conf symlink"
-    fi
-    
-    if [[ -L "$HOME/.vimrc" ]]; then
-        rm -f "$HOME/.vimrc"
-        log SUCCESS "Removed .vimrc symlink"
-    fi
-    
+
+    # Remove special configurations
+    for config in "${!SPECIAL_CONFIGS[@]}"; do
+        if ! is_plugin_selected "$config"; then
+            continue
+        fi
+        local spec="${SPECIAL_CONFIGS[$config]}"
+        local type="${spec%%:*}"
+        local rest="${spec#*:}"
+        local target="${rest#*:}"
+
+        case "$type" in
+            symlink)
+                if [[ -L "$target" ]]; then
+                    rm -f "$target"
+                    log SUCCESS "Removed symlink: $target"
+                fi
+                ;;
+            copy|generate)
+                if [[ -f "$target" ]]; then
+                    if confirm "Remove $target?"; then
+                        rm -f "$target"
+                        log SUCCESS "Removed: $target"
+                    fi
+                fi
+                ;;
+        esac
+    done
+
     log SUCCESS "Configuration removal completed!"
 }
 
 show_status() {
     log INFO "Configuration Status Report"
     echo "===================================="
-    
-    # Check standard configurations
+    echo "Standard Configurations:"
+
     for config in "${!CONFIG_ITEMS[@]}"; do
+        if ! is_plugin_selected "$config"; then
+            continue
+        fi
         local source="$SCRIPT_DIR/$config"
         local target="${CONFIG_ITEMS[$config]}"
-        
-        printf "%-15s: " "$config"
-        
+
+        printf "  %-15s: " "$config"
+
         if [[ -L "$target" ]]; then
-            local link_target=$(readlink -f "$target" 2>/dev/null || echo "unknown")
-            if [[ "$link_target" == "$source" ]]; then
+            local link_target
+            link_target=$(readlink -f "$target" 2>/dev/null || echo "unknown")
+            if [[ "$link_target" == "$(readlink -f "$source" 2>/dev/null)" ]]; then
                 echo -e "${GREEN}✓ Linked${NC}"
             else
                 echo -e "${YELLOW}⚠ Linked to different source${NC}"
@@ -295,72 +417,87 @@ show_status() {
             echo -e "${RED}✗ Not configured${NC}"
         fi
     done
-    
-    # Check special configurations
+
     echo "------------------------------------"
     echo "Special Configurations:"
-    
+
     for config in "${!SPECIAL_CONFIGS[@]}"; do
-        printf "%-15s: " "$config"
-        
-        case "$config" in
-            "lazygit")
-                if [[ -L "$HOME/.config/lazygit/config.yml" ]]; then
-                    echo -e "${GREEN}✓ Configured${NC}"
+        if ! is_plugin_selected "$config"; then
+            continue
+        fi
+        local spec="${SPECIAL_CONFIGS[$config]}"
+        local type="${spec%%:*}"
+        local rest="${spec#*:}"
+        local source_part="${rest%%:*}"
+        local target="${rest#*:}"
+
+        printf "  %-15s: " "$config"
+
+        case "$type" in
+            symlink)
+                if [[ -L "$target" ]]; then
+                    local link_target
+                    link_target=$(readlink -f "$target" 2>/dev/null || echo "unknown")
+                    local expected="$SCRIPT_DIR/$source_part"
+                    if [[ "$link_target" == "$(readlink -f "$expected" 2>/dev/null)" ]]; then
+                        echo -e "${GREEN}✓ Linked${NC}"
+                    else
+                        echo -e "${YELLOW}⚠ Linked to different source${NC}"
+                    fi
+                elif [[ -e "$target" ]]; then
+                    echo -e "${YELLOW}⚠ Exists but not linked${NC}"
                 else
                     echo -e "${RED}✗ Not configured${NC}"
                 fi
                 ;;
-            "xprofile")
-                if [[ -f "$HOME/.xprofile" ]]; then
+            copy|generate)
+                if [[ -f "$target" ]]; then
                     echo -e "${GREEN}✓ Present${NC}"
                 else
                     echo -e "${RED}✗ Not present${NC}"
                 fi
                 ;;
-            "tmux")
-                if [[ -e "$HOME/.tmux.conf" ]]; then
-                    echo -e "${GREEN}✓ Configured${NC}"
-                else
-                    echo -e "${RED}✗ Not configured${NC}"
-                fi
-                ;;
-            "vimrc")
-                if [[ -e "$HOME/.vimrc" ]]; then
-                    echo -e "${GREEN}✓ Configured${NC}"
-                else
-                    echo -e "${RED}✗ Not configured${NC}"
-                fi
-                ;;
         esac
     done
-    
+
     echo "===================================="
 }
 
 show_help() {
     cat << EOF
-Auto Configuration Manager v2.0.0
+Auto Configuration Manager v3.1.0
 
 USAGE:
     $0 [OPTIONS] [COMMAND]
 
 COMMANDS:
     install     Install all configurations (default)
-    uninstall   Remove all symlinks
+    uninstall   Remove all symlinks and generated files
     status      Show current configuration status
     help        Show this help message
 
 OPTIONS:
-    -f, --force     Force overwrite existing configurations
-    -h, --help      Show this help message
+    -f, --force             Force overwrite without asking
+    -p, --plugin <name>     Only process specified plugin(s), can be used multiple times
+    -h, --help              Show this help message
+
+AVAILABLE PLUGINS:
+  Standard (symlink to ~/.config/):
+$(for p in $(printf '%s\n' "${!CONFIG_ITEMS[@]}" | sort); do echo "    $p"; done)
+
+  Special:
+$(for p in $(printf '%s\n' "${!SPECIAL_CONFIGS[@]}" | sort); do
+    spec="${SPECIAL_CONFIGS[$p]}"
+    type="${spec%%:*}"
+    echo "    $p ($type)"
+done)
 
 EXAMPLES:
-    $0                  # Install configurations (interactive)
-    $0 install          # Install configurations
-    $0 -f install       # Force install configurations
-    $0 uninstall        # Remove all symlinks
-    $0 status           # Check configuration status
+    $0                          # Install all (interactive)
+    $0 -f install               # Force install all
+    $0 -p nvim -p zsh install   # Install only nvim and zsh
+    $0 -p awesome status        # Check status of awesome only
+    $0 uninstall                # Remove all configurations
 
 BACKUP:
     Existing configurations are backed up to: ~/.config-backup-<timestamp>
@@ -377,14 +514,20 @@ EOF
 
 main() {
     local command="install"
-    local force=false
-    
-    # Parse arguments
+
     while [[ $# -gt 0 ]]; do
         case "$1" in
             -f|--force)
-                force=true
+                FORCE_MODE=true
                 shift
+                ;;
+            -p|--plugin)
+                if [[ -z "${2:-}" ]]; then
+                    log ERROR "Missing plugin name after $1"
+                    exit 1
+                fi
+                SELECTED_PLUGINS+=("$2")
+                shift 2
                 ;;
             -h|--help)
                 show_help
@@ -401,16 +544,13 @@ main() {
                 ;;
         esac
     done
-    
-    # Execute command
+
     case "$command" in
         install)
-            install_configs "$force"
+            install_configs
             ;;
         uninstall)
-            read -p "Are you sure you want to uninstall all configurations? [y/N] " -n 1 -r
-            echo
-            if [[ $REPLY =~ ^[Yy]$ ]]; then
+            if confirm "Are you sure you want to uninstall configurations?"; then
                 uninstall_configs
             else
                 log INFO "Uninstall cancelled"
@@ -422,18 +562,7 @@ main() {
         help)
             show_help
             ;;
-        *)
-            log ERROR "Unknown command: $command"
-            show_help
-            exit 1
-            ;;
     esac
 }
 
-# Run main function
 main "$@"
-
-
-
-
-

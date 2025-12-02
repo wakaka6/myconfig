@@ -22,6 +22,20 @@ local scratchpads = {
         height = 600,
         sticky = true,
     },
+    claude = {
+        command = "alacritty --class scratch_claude -e zsh -ic 'cd ~/Documents/scratchpad && claude'",
+        instance = "scratch_claude",
+        width = 1200,
+        height = 800,
+        sticky = false,
+    },
+    notes = {
+        command = "alacritty --class scratch_notes -e bash -c 'cd ~/Documents/scratchpad && nvim $(date +%Y-%m-%d).md'",
+        instance = "scratch_notes",
+        width = 900,
+        height = 700,
+        sticky = true,
+    },
 }
 
 -- Track scratchpad clients

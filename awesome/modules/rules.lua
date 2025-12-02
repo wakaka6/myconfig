@@ -64,6 +64,7 @@ function M.get(current_env)
 					"DTA",
 					"copyq",
 					"pinentry",
+					"scratch_claude_query",
 				},
 				class = {
 					"Arandr",

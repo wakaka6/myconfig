@@ -123,7 +123,7 @@ theme.notification_opacity = 0.95
 theme.notification_margin = dpi(16)
 theme.notification_width = dpi(400)
 theme.notification_max_width = dpi(500)
-theme.notification_max_height = dpi(200)
+theme.notification_max_height = dpi(400)
 theme.notification_icon_size = dpi(48)
 theme.notification_shape = function(cr, w, h)
 	gears.shape.rounded_rect(cr, w, h, dpi(12))
