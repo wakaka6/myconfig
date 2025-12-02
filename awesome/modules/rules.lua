@@ -87,9 +87,10 @@ function M.get(current_env)
 					"AlarmWindow",
 					"ConfigManager",
 					"pop-up",
+					"bubble",
 				},
 			},
-			properties = { floating = true },
+			properties = { floating = true, border_width = 0 },
 		},
 
 		-- Dialogs are always floating and centered
