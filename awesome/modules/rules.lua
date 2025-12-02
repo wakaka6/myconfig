@@ -6,158 +6,137 @@
 local awful = require("awful")
 local beautiful = require("beautiful")
 local keys = require("modules.keys")
-local env = require("env.detect")
+local env = require("envws.detect")
 
 local M = {}
 
+local APP_RULES = {
+	{
+		tag = "web",
+		class = { "Google-chrome", "Chromium", "firefox", "Firefox" },
+	},
+	{
+		tag = "chat",
+		class = {
+			"Slack",
+			"discord",
+			"Discord",
+			"TelegramDesktop",
+			"WeChat",
+			"wechat",
+			"feishu",
+			"Feishu",
+			"bytedance-feishu",
+			"Lark",
+		},
+	},
+	{
+		tag = "db",
+		class = { "DBeaver", "jetbrains-datagrip", "DataGrip", "Navicat", "pgadmin4" },
+	},
+	{
+		tag = "rdp",
+		class = { "Remmina", "rdesktop", "xfreerdp", "Vncviewer", "virt-manager" },
+	},
+}
+
 function M.get(current_env)
-    local rules = {
-        -- Default rule for all clients
-        {
-            rule = {},
-            properties = {
-                border_width = beautiful.border_width,
-                border_color = beautiful.border_normal,
-                focus = awful.client.focus.filter,
-                raise = true,
-                keys = keys.clientkeys,
-                buttons = keys.clientbuttons,
-                screen = awful.screen.preferred,
-                placement = awful.placement.no_overlap + awful.placement.no_offscreen,
-            }
-        },
+	local rules = {
+		-- Default rule for all clients
+		{
+			rule = {},
+			properties = {
+				border_width = beautiful.border_width,
+				border_color = beautiful.border_normal,
+				focus = awful.client.focus.filter,
+				raise = true,
+				keys = keys.clientkeys,
+				buttons = keys.clientbuttons,
+				screen = awful.screen.preferred,
+				placement = awful.placement.no_overlap + awful.placement.no_offscreen,
+			},
+		},
 
-        -- Floating clients
-        {
-            rule_any = {
-                instance = {
-                    "DTA",
-                    "copyq",
-                    "pinentry",
-                },
-                class = {
-                    "Arandr",
-                    "Blueman-manager",
-                    "Gpick",
-                    "Kruler",
-                    "MessageWin",
-                    "Sxiv",
-                    "Tor Browser",
-                    "Wpa_gui",
-                    "veromix",
-                    "xtightvncviewer",
-                    "flameshot",
-                    "Pavucontrol",
-                    "Nm-connection-editor",
-                },
-                name = {
-                    "Event Tester",
-                },
-                role = {
-                    "AlarmWindow",
-                    "ConfigManager",
-                    "pop-up",
-                }
-            },
-            properties = { floating = true }
-        },
+		-- Floating clients
+		{
+			rule_any = {
+				instance = {
+					"DTA",
+					"copyq",
+					"pinentry",
+				},
+				class = {
+					"Arandr",
+					"Blueman-manager",
+					"Gpick",
+					"Kruler",
+					"MessageWin",
+					"Sxiv",
+					"Tor Browser",
+					"Wpa_gui",
+					"veromix",
+					"xtightvncviewer",
+					"flameshot",
+					"Pavucontrol",
+					"Nm-connection-editor",
+				},
+				name = {
+					"Event Tester",
+				},
+				role = {
+					"AlarmWindow",
+					"ConfigManager",
+					"pop-up",
+				},
+			},
+			properties = { floating = true },
+		},
 
-        -- Dialogs are always floating and centered
-        {
-            rule_any = { type = { "dialog" } },
-            properties = {
-                floating = true,
-                placement = awful.placement.centered,
-            }
-        },
+		-- Dialogs are always floating and centered
+		{
+			rule_any = { type = { "dialog" } },
+			properties = {
+				floating = true,
+				placement = awful.placement.centered,
+			},
+		},
 
-        -- GoldenDict floating
-        {
-            rule = { class = "GoldenDict" },
-            properties = {
-                floating = true,
-                width = 800,
-                height = 600,
-            }
-        },
+		-- GoldenDict floating
+		{
+			rule = { class = "GoldenDict" },
+			properties = {
+				floating = true,
+				width = 800,
+				height = 600,
+			},
+		},
 
-        -- Picture-in-picture (always on top)
-        {
-            rule = { name = "Picture-in-Picture" },
-            properties = {
-                floating = true,
-                ontop = true,
-                sticky = true,
-            }
-        },
-    }
+		-- Picture-in-picture (always on top)
+		{
+			rule = { name = "Picture-in-Picture" },
+			properties = {
+				floating = true,
+				ontop = true,
+				sticky = true,
+			},
+		},
+	}
 
-    -- Environment-specific rules
-    if current_env == "office" then
-        -- Office: 3 screens (根据角色匹配)
-        -- primary: 开发主力
-        -- secondary: 浏览器/聊天
-        -- tertiary: debug/db/远程
+	-- 根据 APP_RULES 自动生成规则，screen 由 tag 位置自动决定
+	for _, app_rule in ipairs(APP_RULES) do
+		local tag_name = app_rule.tag
+		table.insert(rules, {
+			rule_any = { class = app_rule.class },
+			properties = {
+				screen = function()
+					return env.get_screen_by_tag(tag_name)
+				end,
+				tag = tag_name,
+			},
+		})
+	end
 
-        -- === secondary: 浏览器/聊天 ===
-        table.insert(rules, {
-            rule_any = { class = { "Google-chrome", "Chromium", "firefox", "Firefox" } },
-            properties = {
-                screen = function() return env.get_screen_by_role(env.ROLE_SECONDARY) end,
-                tag = "web"
-            }
-        })
-        table.insert(rules, {
-            rule_any = { class = { "Slack", "discord", "Discord", "TelegramDesktop", "WeChat", "wechat", "feishu", "Feishu", "bytedance-feishu", "Lark" } },
-            properties = {
-                screen = function() return env.get_screen_by_role(env.ROLE_SECONDARY) end,
-                tag = "chat"
-            }
-        })
-
-        -- === tertiary: debug/数据库/远程 ===
-        table.insert(rules, {
-            rule_any = { class = { "DBeaver", "jetbrains-datagrip", "DataGrip", "Navicat", "pgadmin4" } },
-            properties = {
-                screen = function() return env.get_screen_by_role(env.ROLE_TERTIARY) end,
-                tag = "db"
-            }
-        })
-        table.insert(rules, {
-            rule_any = { class = { "Remmina", "rdesktop", "xfreerdp", "Vncviewer", "virt-manager" } },
-            properties = {
-                screen = function() return env.get_screen_by_role(env.ROLE_TERTIARY) end,
-                tag = "rdp"
-            }
-        })
-
-        -- === primary: 开发主力 (自由使用，不设规则) ===
-
-    elseif current_env == "home" then
-        -- Home: 2 screens
-        table.insert(rules, {
-            rule_any = { class = { "Google-chrome", "Chromium", "firefox", "Firefox" } },
-            properties = {
-                screen = function() return env.get_screen_by_role(env.ROLE_SECONDARY) end,
-                tag = "web"
-            }
-        })
-        table.insert(rules, {
-            rule_any = { class = { "Slack", "discord", "Discord" } },
-            properties = {
-                screen = function() return env.get_screen_by_role(env.ROLE_SECONDARY) end,
-                tag = "chat"
-            }
-        })
-    else
-        -- Single screen
-        table.insert(rules, {
-            rule_any = { class = { "Google-chrome", "Chromium", "firefox", "Firefox" } },
-            properties = { tag = "3" }
-        })
-    end
-
-    return rules
+	return rules
 end
 
 return M

@@ -62,67 +62,96 @@ end)
 -- Helper: 检查当前布局是否为 max 类型
 local function is_max_layout(s)
 	local tag = s and s.selected_tag
-	if not tag then return false end
-	return tag.layout == awful.layout.suit.max or
-	       tag.layout == awful.layout.suit.max.fullscreen
+	if not tag then
+		return false
+	end
+	return tag.layout == awful.layout.suit.max or tag.layout == awful.layout.suit.max.fullscreen
 end
 
--- Helper: 聚焦目标屏幕上的窗口
-local function focus_client_on_screen(new_screen, dir)
-	-- 优先聚焦全屏窗口
-	for _, c in ipairs(new_screen.clients) do
+-- Helper: 获取当前窗口在指定方向上的其他窗口
+local function get_clients_in_direction(c, dir)
+	local dominated = {}
+	local c_geo = c:geometry()
+
+	for _, other in ipairs(c.screen.clients) do
+		if other ~= c and not other.minimized then
+			local other_geo = other:geometry()
+			local in_dir = false
+
+			if dir == "left" then
+				in_dir = other_geo.x + other_geo.width <= c_geo.x
+			elseif dir == "right" then
+				in_dir = other_geo.x >= c_geo.x + c_geo.width
+			elseif dir == "up" then
+				in_dir = other_geo.y + other_geo.height <= c_geo.y
+			elseif dir == "down" then
+				in_dir = other_geo.y >= c_geo.y + c_geo.height
+			end
+
+			if in_dir then
+				table.insert(dominated, other)
+			end
+		end
+	end
+
+	return dominated
+end
+
+-- Helper: 聚焦目标屏幕上的窗口（根据目标屏幕布局决定策略）
+local function focus_client_on_screen(target_screen, dir)
+	-- 优先：全屏窗口
+	for _, c in ipairs(target_screen.clients) do
 		if c.fullscreen and not c.minimized then
 			c:emit_signal("request::activate", "focus_direction", { raise = true })
 			return
 		end
 	end
 
-	-- 其次恢复到该屏幕上次聚焦的窗口
-	local last_client = last_focused_client[new_screen.index]
-
-	if last_client and last_client.valid and not last_client.minimized
-	   and last_client.screen == new_screen then
-		last_client:emit_signal("request::activate", "focus_direction", { raise = true })
+	-- max 布局：优先恢复上次聚焦的窗口
+	if is_max_layout(target_screen) then
+		local last_client = last_focused_client[target_screen.index]
+		if last_client and last_client.valid and not last_client.minimized and last_client.screen == target_screen then
+			last_client:emit_signal("request::activate", "focus_direction", { raise = true })
+			return
+		end
+		-- 回退：选第一个非最小化窗口
+		for _, c in ipairs(target_screen.clients) do
+			if not c.minimized then
+				c:emit_signal("request::activate", "focus_direction", { raise = true })
+				return
+			end
+		end
 		return
 	end
 
-	-- 回退：在该屏幕的可见窗口中选择一个
-	local clients = new_screen.clients
-	if #clients == 0 then return end
+	-- tile/floating 布局：按进入方向选择边缘窗口
+	local clients = target_screen.clients
+	if #clients == 0 then
+		return
+	end
 
 	local target = nil
-
-	if is_max_layout(new_screen) then
-		-- max 布局：选第一个非最小化窗口
-		for _, c in ipairs(clients) do
-			if not c.minimized then
-				target = c
-				break
-			end
-		end
-	else
-		-- tiling 布局：按方向选择
-		if dir == "left" then
-			for _, c in ipairs(clients) do
-				if not c.minimized and (target == nil or c:geometry().x > target:geometry().x) then
+	for _, c in ipairs(clients) do
+		if not c.minimized then
+			local c_geo = c:geometry()
+			if dir == "left" then
+				-- 从左边进入（按 h 循环），选最右边的窗口
+				if target == nil or c_geo.x > target:geometry().x then
 					target = c
 				end
-			end
-		elseif dir == "right" then
-			for _, c in ipairs(clients) do
-				if not c.minimized and (target == nil or c:geometry().x < target:geometry().x) then
+			elseif dir == "right" then
+				-- 从右边进入（按 l 循环），选最左边的窗口
+				if target == nil or c_geo.x < target:geometry().x then
 					target = c
 				end
-			end
-		elseif dir == "up" then
-			for _, c in ipairs(clients) do
-				if not c.minimized and (target == nil or c:geometry().y > target:geometry().y) then
+			elseif dir == "up" then
+				-- 从上边进入，选最下边的窗口
+				if target == nil or c_geo.y > target:geometry().y then
 					target = c
 				end
-			end
-		elseif dir == "down" then
-			for _, c in ipairs(clients) do
-				if not c.minimized and (target == nil or c:geometry().y < target:geometry().y) then
+			elseif dir == "down" then
+				-- 从下边进入，选最上边的窗口
+				if target == nil or c_geo.y < target:geometry().y then
 					target = c
 				end
 			end
@@ -134,13 +163,22 @@ local function focus_client_on_screen(new_screen, dir)
 	end
 end
 
--- Helper: 按物理方向查找相邻屏幕
+-- Helper: 按物理方向查找相邻屏幕（支持循环）
 local function get_screen_in_direction(s, dir)
-	if not s then return nil end
+	if not s then
+		return nil
+	end
+
+	-- 单屏幕时不需要切换
+	if screen.count() <= 1 then
+		return nil
+	end
+
 	local geo = s.geometry
 	local target = nil
 	local best_distance = math.huge
 
+	-- 首先尝试找物理方向上的相邻屏幕
 	for other_screen in screen do
 		if other_screen ~= s then
 			local other_geo = other_screen.geometry
@@ -148,41 +186,36 @@ local function get_screen_in_direction(s, dir)
 			local distance = 0
 
 			if dir == "left" then
-				-- 目标屏幕的右边缘 <= 当前屏幕的左边缘
 				if other_geo.x + other_geo.width <= geo.x then
-					-- 垂直方向有重叠
-					local overlap = math.min(geo.y + geo.height, other_geo.y + other_geo.height) -
-					                math.max(geo.y, other_geo.y)
+					local overlap = math.min(geo.y + geo.height, other_geo.y + other_geo.height)
+						- math.max(geo.y, other_geo.y)
 					if overlap > 0 then
 						distance = geo.x - (other_geo.x + other_geo.width)
 						dominated = true
 					end
 				end
 			elseif dir == "right" then
-				-- 目标屏幕的左边缘 >= 当前屏幕的右边缘
 				if other_geo.x >= geo.x + geo.width then
-					local overlap = math.min(geo.y + geo.height, other_geo.y + other_geo.height) -
-					                math.max(geo.y, other_geo.y)
+					local overlap = math.min(geo.y + geo.height, other_geo.y + other_geo.height)
+						- math.max(geo.y, other_geo.y)
 					if overlap > 0 then
 						distance = other_geo.x - (geo.x + geo.width)
 						dominated = true
 					end
 				end
 			elseif dir == "up" then
-				-- 目标屏幕的下边缘 <= 当前屏幕的上边缘
 				if other_geo.y + other_geo.height <= geo.y then
-					local overlap = math.min(geo.x + geo.width, other_geo.x + other_geo.width) -
-					                math.max(geo.x, other_geo.x)
+					local overlap = math.min(geo.x + geo.width, other_geo.x + other_geo.width)
+						- math.max(geo.x, other_geo.x)
 					if overlap > 0 then
 						distance = geo.y - (other_geo.y + other_geo.height)
 						dominated = true
 					end
 				end
 			elseif dir == "down" then
-				-- 目标屏幕的上边缘 >= 当前屏幕的下边缘
 				if other_geo.y >= geo.y + geo.height then
-					local overlap = math.min(geo.x + geo.width, other_geo.x + other_geo.width) -
-					                math.max(geo.x, other_geo.x)
+					local overlap = math.min(geo.x + geo.width, other_geo.x + other_geo.width)
+						- math.max(geo.x, other_geo.x)
 					if overlap > 0 then
 						distance = other_geo.y - (geo.y + geo.height)
 						dominated = true
@@ -197,42 +230,102 @@ local function get_screen_in_direction(s, dir)
 		end
 	end
 
-	return target
+	-- 如果找到了相邻屏幕，返回它
+	if target then
+		return target
+	end
+
+	-- 没有找到相邻屏幕，实现循环：找对侧最远端的屏幕
+	-- 按 left 在最左边 → 去最右边屏幕
+	-- 按 right 在最右边 → 去最左边屏幕
+	local wrap_target = nil
+	local wrap_distance = -math.huge
+
+	for other_screen in screen do
+		if other_screen ~= s then
+			local other_geo = other_screen.geometry
+
+			if dir == "left" or dir == "right" then
+				local overlap = math.min(geo.y + geo.height, other_geo.y + other_geo.height)
+					- math.max(geo.y, other_geo.y)
+				if overlap > 0 then
+					if dir == "left" then
+						-- 按 left 循环：找最右边的屏幕
+						if other_geo.x + other_geo.width > wrap_distance then
+							wrap_distance = other_geo.x + other_geo.width
+							wrap_target = other_screen
+						end
+					else
+						-- 按 right 循环：找最左边的屏幕
+						if wrap_target == nil or other_geo.x < wrap_target.geometry.x then
+							wrap_target = other_screen
+						end
+					end
+				end
+			else
+				local overlap = math.min(geo.x + geo.width, other_geo.x + other_geo.width)
+					- math.max(geo.x, other_geo.x)
+				if overlap > 0 then
+					if dir == "up" then
+						-- 按 up 循环：找最下面的屏幕
+						if other_geo.y + other_geo.height > wrap_distance then
+							wrap_distance = other_geo.y + other_geo.height
+							wrap_target = other_screen
+						end
+					else
+						-- 按 down 循环：找最上面的屏幕
+						if wrap_target == nil or other_geo.y < wrap_target.geometry.y then
+							wrap_target = other_screen
+						end
+					end
+				end
+			end
+		end
+	end
+
+	return wrap_target
 end
 
 -- Helper: 智能跨屏幕焦点切换
--- 如果当前方向没有窗口，则切换到相邻屏幕（按物理位置）
+-- 源屏幕布局决定何时离开，目标屏幕布局决定聚焦哪个窗口
 local function focus_global_direction(dir)
 	local old_client = client.focus
 	local old_screen = awful.screen.focused()
 
-	-- 检查当前窗口是否全屏
-	local is_fullscreen = old_client and old_client.fullscreen
-
-	-- max 布局或全屏窗口下，hjkl 按物理方向跨屏
-	if is_max_layout(old_screen) or is_fullscreen then
+	-- 没有聚焦窗口时直接跨屏
+	if not old_client then
 		local target_screen = get_screen_in_direction(old_screen, dir)
 		if target_screen then
 			awful.screen.focus(target_screen)
 			focus_client_on_screen(target_screen, dir)
 		end
-		-- 如果该方向没有屏幕，什么都不做（保持原位）
+		return
+	end
+
+	-- 判断是否应该直接跨屏（基于源屏幕布局）
+	local should_cross_immediately = is_max_layout(old_screen) or old_client.fullscreen
+
+	if should_cross_immediately then
+		-- max/fullscreen：直接跨屏
+		local target_screen = get_screen_in_direction(old_screen, dir)
+		if target_screen then
+			awful.screen.focus(target_screen)
+			focus_client_on_screen(target_screen, dir)
+		end
 	else
-		-- tiling 布局：先尝试同屏方向切换
-		awful.client.focus.bydirection(dir)
+		-- tile/floating：先检查该方向是否有窗口
+		local clients_in_dir = get_clients_in_direction(old_client, dir)
 
-		-- 如果焦点没变化或切到其他屏幕失败，尝试手动切换屏幕
-		local new_client = client.focus
-		local still_same_screen = (new_client == old_client) or
-		                          (new_client == nil) or
-		                          (new_client and new_client.screen == old_screen)
-
-		if still_same_screen and (new_client == old_client or new_client == nil) then
+		if #clients_in_dir == 0 then
+			-- 到边缘了，跨屏
 			local target_screen = get_screen_in_direction(old_screen, dir)
 			if target_screen then
 				awful.screen.focus(target_screen)
 				focus_client_on_screen(target_screen, dir)
 			end
+		else
+			-- 同屏切换
+			awful.client.focus.bydirection(dir)
 		end
 	end
 
@@ -277,10 +370,6 @@ M.globalkeys = gears.table.join(
 	end, { description = "cycle through windows (reverse)", group = "client" }),
 	-- }}}
 
-	-- {{{ Tag navigation (like i3 workspaces)
-	awful.key({ modkey }, "Left", awful.tag.viewprev, { description = "view previous tag", group = "tag" }),
-	awful.key({ modkey }, "Right", awful.tag.viewnext, { description = "view next tag", group = "tag" }),
-	awful.key({ modkey }, "Tab", awful.tag.history.restore, { description = "go back", group = "tag" }),
 	-- }}}
 
 	-- {{{ 动态 Tag 管理
@@ -375,22 +464,9 @@ M.globalkeys = gears.table.join(
 		focus_global_direction("right")
 	end, { description = "focus right (cross-screen)", group = "client" }),
 
-	-- Arrow key alternatives
-	awful.key({ modkey }, "Left", function()
-		focus_global_direction("left")
-	end, { description = "focus left (cross-screen)", group = "client" }),
-
-	awful.key({ modkey }, "Down", function()
-		focus_global_direction("down")
-	end, { description = "focus down (cross-screen)", group = "client" }),
-
-	awful.key({ modkey }, "Up", function()
-		focus_global_direction("up")
-	end, { description = "focus up (cross-screen)", group = "client" }),
-
-	awful.key({ modkey }, "Right", function()
-		focus_global_direction("right")
-	end, { description = "focus right (cross-screen)", group = "client" }),
+	-- Arrow keys for tag navigation
+	awful.key({ modkey }, "Left", awful.tag.viewprev, { description = "view previous tag", group = "tag" }),
+	awful.key({ modkey }, "Right", awful.tag.viewnext, { description = "view next tag", group = "tag" }),
 
 	-- Focus between screens (like i3's mod+n/p)
 	awful.key({ modkey }, "n", function()
@@ -406,7 +482,9 @@ M.globalkeys = gears.table.join(
 	-- 智能判断：浮动窗口移动位置，非浮动窗口交换位置
 	awful.key({ modkey, "Shift" }, "h", function()
 		local c = client.focus
-		if not c then return end
+		if not c then
+			return
+		end
 		if c.floating or awful.layout.get(c.screen) == awful.layout.suit.floating then
 			c:relative_move(-50, 0, 0, 0)
 		else
@@ -416,7 +494,9 @@ M.globalkeys = gears.table.join(
 
 	awful.key({ modkey, "Shift" }, "j", function()
 		local c = client.focus
-		if not c then return end
+		if not c then
+			return
+		end
 		if c.floating or awful.layout.get(c.screen) == awful.layout.suit.floating then
 			c:relative_move(0, 50, 0, 0)
 		else
@@ -426,7 +506,9 @@ M.globalkeys = gears.table.join(
 
 	awful.key({ modkey, "Shift" }, "k", function()
 		local c = client.focus
-		if not c then return end
+		if not c then
+			return
+		end
 		if c.floating or awful.layout.get(c.screen) == awful.layout.suit.floating then
 			c:relative_move(0, -50, 0, 0)
 		else
@@ -436,7 +518,9 @@ M.globalkeys = gears.table.join(
 
 	awful.key({ modkey, "Shift" }, "l", function()
 		local c = client.focus
-		if not c then return end
+		if not c then
+			return
+		end
 		if c.floating or awful.layout.get(c.screen) == awful.layout.suit.floating then
 			c:relative_move(50, 0, 0, 0)
 		else

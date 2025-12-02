@@ -105,8 +105,20 @@ function M.get_tags(env, s, total_screens)
 		end
 	else
 		-- 单屏配置
-		return { "1", "2", "3", "4", "5", "6", "7", "8", "9", "0" }
+		return { "web", "chat", "misc", "debug", "rdp", "db", "7", "8", "9", "0" }
 	end
+end
+
+-- 根据 tag 名称查找其所在的屏幕
+function M.get_screen_by_tag(tag_name)
+	for s in screen do
+		for _, t in ipairs(s.tags) do
+			if t.name == tag_name then
+				return s
+			end
+		end
+	end
+	return screen.primary
 end
 
 -- 获取指定屏幕的默认布局
