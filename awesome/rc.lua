@@ -16,7 +16,7 @@ local hotkeys_popup = require("awful.hotkeys_popup")
 require("awful.hotkeys_popup.keys")
 
 -- Custom modules
-local env = require("env.detect")
+local env = require("envws.detect")
 local keys = require("modules.keys")
 local rules = require("modules.rules")
 local scratchpad = require("modules.scratchpad")
@@ -26,25 +26,27 @@ local tag_persist = require("modules.tag_persist")
 
 -- {{{ Error handling
 if awesome.startup_errors then
-    naughty.notify({
-        preset = naughty.config.presets.critical,
-        title = "Startup Error",
-        text = awesome.startup_errors
-    })
+	naughty.notify({
+		preset = naughty.config.presets.critical,
+		title = "Startup Error",
+		text = awesome.startup_errors,
+	})
 end
 
 do
-    local in_error = false
-    awesome.connect_signal("debug::error", function(err)
-        if in_error then return end
-        in_error = true
-        naughty.notify({
-            preset = naughty.config.presets.critical,
-            title = "Error",
-            text = tostring(err)
-        })
-        in_error = false
-    end)
+	local in_error = false
+	awesome.connect_signal("debug::error", function(err)
+		if in_error then
+			return
+		end
+		in_error = true
+		naughty.notify({
+			preset = naughty.config.presets.critical,
+			title = "Error",
+			text = tostring(err),
+		})
+		in_error = false
+	end)
 end
 -- }}}
 
@@ -59,161 +61,176 @@ modkey = "Mod4"
 -- Detect environment (office/home)
 local current_env = env.detect()
 naughty.notify({
-    title = "AwesomeWM",
-    text = "Environment: " .. current_env .. " (" .. screen.count() .. " screens)",
-    timeout = 3
+	title = "AwesomeWM",
+	text = "Environment: " .. current_env .. " (" .. screen.count() .. " screens)",
+	timeout = 3,
 })
 -- }}}
 
 -- {{{ Layouts
 awful.layout.layouts = {
-    awful.layout.suit.tile,
-    awful.layout.suit.tile.left,
-    awful.layout.suit.tile.bottom,
-    awful.layout.suit.fair,
-    awful.layout.suit.max,
-    awful.layout.suit.floating,
+	awful.layout.suit.tile,
+	awful.layout.suit.tile.left,
+	awful.layout.suit.tile.bottom,
+	awful.layout.suit.fair,
+	awful.layout.suit.max,
+	awful.layout.suit.floating,
 }
 -- }}}
 
 -- {{{ Wibar
 local taglist_buttons = gears.table.join(
-    awful.button({}, 1, function(t) t:view_only() end),
-    awful.button({ modkey }, 1, function(t)
-        if client.focus then
-            client.focus:move_to_tag(t)
-        end
-    end),
-    awful.button({}, 3, awful.tag.viewtoggle),
-    awful.button({ modkey }, 3, function(t)
-        if client.focus then
-            client.focus:toggle_tag(t)
-        end
-    end),
-    awful.button({}, 4, function(t) awful.tag.viewnext(t.screen) end),
-    awful.button({}, 5, function(t) awful.tag.viewprev(t.screen) end)
+	awful.button({}, 1, function(t)
+		t:view_only()
+	end),
+	awful.button({ modkey }, 1, function(t)
+		if client.focus then
+			client.focus:move_to_tag(t)
+		end
+	end),
+	awful.button({}, 3, awful.tag.viewtoggle),
+	awful.button({ modkey }, 3, function(t)
+		if client.focus then
+			client.focus:toggle_tag(t)
+		end
+	end),
+	awful.button({}, 4, function(t)
+		awful.tag.viewnext(t.screen)
+	end),
+	awful.button({}, 5, function(t)
+		awful.tag.viewprev(t.screen)
+	end)
 )
 
 local tasklist_buttons = gears.table.join(
-    awful.button({}, 1, function(c)
-        if c == client.focus then
-            c.minimized = true
-        else
-            c:emit_signal("request::activate", "tasklist", { raise = true })
-        end
-    end),
-    awful.button({}, 3, function()
-        awful.menu.client_list({ theme = { width = 250 } })
-    end),
-    awful.button({}, 4, function() awful.client.focus.byidx(1) end),
-    awful.button({}, 5, function() awful.client.focus.byidx(-1) end)
+	awful.button({}, 1, function(c)
+		if c == client.focus then
+			c.minimized = true
+		else
+			c:emit_signal("request::activate", "tasklist", { raise = true })
+		end
+	end),
+	awful.button({}, 3, function()
+		awful.menu.client_list({ theme = { width = 250 } })
+	end),
+	awful.button({}, 4, function()
+		awful.client.focus.byidx(1)
+	end),
+	awful.button({}, 5, function()
+		awful.client.focus.byidx(-1)
+	end)
 )
 
 -- Wallpaper function
 local function set_wallpaper(s)
-    if beautiful.wallpaper then
-        local wallpaper = beautiful.wallpaper
-        if type(wallpaper) == "function" then
-            wallpaper = wallpaper(s)
-        end
-        gears.wallpaper.maximized(wallpaper, s, true)
-    end
+	if beautiful.wallpaper then
+		local wallpaper = beautiful.wallpaper
+		if type(wallpaper) == "function" then
+			wallpaper = wallpaper(s)
+		end
+		gears.wallpaper.maximized(wallpaper, s, true)
+	end
 end
 
 screen.connect_signal("property::geometry", set_wallpaper)
 
 -- Setup each screen
 awful.screen.connect_for_each_screen(function(s)
-    set_wallpaper(s)
+	set_wallpaper(s)
 
-    -- Get tags for this screen based on environment
-    local tags = env.get_tags(current_env, s, screen.count())
-    local default_layout = env.get_default_layout(current_env, s)
+	-- Get tags for this screen based on environment
+	local tags = env.get_tags(current_env, s, screen.count())
+	local default_layout = env.get_default_layout(current_env, s)
 
-    awful.tag(tags, s, default_layout)
+	awful.tag(tags, s, default_layout)
 
-    -- Create a promptbox
-    s.mypromptbox = awful.widget.prompt()
+	-- Create a promptbox
+	s.mypromptbox = awful.widget.prompt()
 
-    -- Create layoutbox
-    s.mylayoutbox = awful.widget.layoutbox(s)
-    s.mylayoutbox:buttons(gears.table.join(
-        awful.button({}, 1, function() awful.layout.inc(1) end),
-        awful.button({}, 3, function() awful.layout.inc(-1) end),
-        awful.button({}, 4, function() awful.layout.inc(1) end),
-        awful.button({}, 5, function() awful.layout.inc(-1) end)
-    ))
+	-- Create layoutbox
+	s.mylayoutbox = awful.widget.layoutbox(s)
+	s.mylayoutbox:buttons(gears.table.join(
+		awful.button({}, 1, function()
+			awful.layout.inc(1)
+		end),
+		awful.button({}, 3, function()
+			awful.layout.inc(-1)
+		end),
+		awful.button({}, 4, function()
+			awful.layout.inc(1)
+		end),
+		awful.button({}, 5, function()
+			awful.layout.inc(-1)
+		end)
+	))
 
-    -- Create taglist widget
-    s.mytaglist = awful.widget.taglist {
-        screen = s,
-        filter = awful.widget.taglist.filter.all,
-        buttons = taglist_buttons
-    }
+	-- Create taglist widget
+	s.mytaglist = awful.widget.taglist({
+		screen = s,
+		filter = awful.widget.taglist.filter.all,
+		buttons = taglist_buttons,
+	})
 
-    -- Create tasklist widget
-    s.mytasklist = awful.widget.tasklist {
-        screen = s,
-        filter = awful.widget.tasklist.filter.currenttags,
-        buttons = tasklist_buttons
-    }
+	-- Create tasklist widget
+	s.mytasklist = awful.widget.tasklist({
+		screen = s,
+		filter = awful.widget.tasklist.filter.currenttags,
+		buttons = tasklist_buttons,
+	})
 
-    -- Create wibar on all screens
-    s.mywibox = awful.wibar({
-        position = "top",
-        screen = s,
-        height = beautiful.wibar_height or 28
-    })
+	-- Create wibar on all screens
+	s.mywibox = awful.wibar({
+		position = "top",
+		screen = s,
+		height = beautiful.wibar_height or 28,
+	})
 
-    -- Right widgets (systray only on primary screen)
-    local right_widgets = {
-        layout = wibox.layout.fixed.horizontal,
-        s.mylayoutbox,
-    }
+	-- Right widgets (systray only on primary screen)
+	local right_widgets = {
+		layout = wibox.layout.fixed.horizontal,
+		s.mylayoutbox,
+	}
 
-    -- Primary screen gets full widgets
-    if s == screen.primary then
-        right_widgets = {
-            layout = wibox.layout.fixed.horizontal,
-            widgets.network,
-            widgets.separator,
-            widgets.cpu,
-            widgets.separator,
-            widgets.memory,
-            widgets.separator,
-            widgets.temperature,
-            widgets.separator,
-            wibox.widget.systray(),
-            wibox.widget.textclock(" %Y-%m-%d %H:%M "),
-            s.mylayoutbox,
-        }
-    else
-        -- Secondary screens get simple clock + layoutbox
-        right_widgets = {
-            layout = wibox.layout.fixed.horizontal,
-            wibox.widget.textclock(" %H:%M "),
-            s.mylayoutbox,
-        }
-    end
+	-- Primary screen gets full widgets
+	if s == screen.primary then
+		right_widgets = {
+			layout = wibox.layout.fixed.horizontal,
+			widgets.network,
+			widgets.separator,
+			widgets.cpu,
+			widgets.separator,
+			widgets.memory,
+			widgets.separator,
+			widgets.temperature,
+			widgets.separator,
+			wibox.widget.systray(),
+			wibox.widget.textclock(" %Y-%m-%d %H:%M "),
+			s.mylayoutbox,
+		}
+	else
+		-- Secondary screens get simple clock + layoutbox
+		right_widgets = {
+			layout = wibox.layout.fixed.horizontal,
+			wibox.widget.textclock(" %H:%M "),
+			s.mylayoutbox,
+		}
+	end
 
-    s.mywibox:setup {
-        layout = wibox.layout.align.horizontal,
-        { -- Left widgets
-            layout = wibox.layout.fixed.horizontal,
-            s.mytaglist,
-            s.mypromptbox,
-        },
-        s.mytasklist, -- Middle widget
-        right_widgets,
-    }
+	s.mywibox:setup({
+		layout = wibox.layout.align.horizontal,
+		{ -- Left widgets
+			layout = wibox.layout.fixed.horizontal,
+			s.mytaglist,
+			s.mypromptbox,
+		},
+		s.mytasklist, -- Middle widget
+		right_widgets,
+	})
 end)
 -- }}}
 
 -- {{{ Mouse bindings
-root.buttons(gears.table.join(
-    awful.button({}, 4, awful.tag.viewnext),
-    awful.button({}, 5, awful.tag.viewprev)
-))
+root.buttons(gears.table.join(awful.button({}, 4, awful.tag.viewnext), awful.button({}, 5, awful.tag.viewprev)))
 -- }}}
 
 -- {{{ Key bindings
@@ -226,46 +243,44 @@ awful.rules.rules = rules.get(current_env)
 
 -- {{{ Signals
 client.connect_signal("manage", function(c)
-    if awesome.startup
-        and not c.size_hints.user_position
-        and not c.size_hints.program_position then
-        awful.placement.no_offscreen(c)
-    end
+	if awesome.startup and not c.size_hints.user_position and not c.size_hints.program_position then
+		awful.placement.no_offscreen(c)
+	end
 end)
 
 -- Focus follows mouse
 client.connect_signal("mouse::enter", function(c)
-    c:emit_signal("request::activate", "mouse_enter", { raise = false })
+	c:emit_signal("request::activate", "mouse_enter", { raise = false })
 end)
 
 client.connect_signal("focus", function(c)
-    c.border_color = beautiful.border_focus
+	c.border_color = beautiful.border_focus
 end)
 
 client.connect_signal("unfocus", function(c)
-    c.border_color = beautiful.border_normal
+	c.border_color = beautiful.border_normal
 end)
 -- }}}
 
 -- {{{ Screen handling (hot-plug support)
 screen.connect_signal("added", function(s)
-    naughty.notify({
-        title = "Screen Added",
-        text = "New screen detected: " .. s.index,
-        timeout = 5
-    })
-    -- Re-detect environment
-    current_env = env.detect()
-    local tags = env.get_tags(current_env, s, screen.count())
-    awful.tag(tags, s, awful.layout.suit.tile)
+	naughty.notify({
+		title = "Screen Added",
+		text = "New screen detected: " .. s.index,
+		timeout = 5,
+	})
+	-- Re-detect environment
+	current_env = env.detect()
+	local tags = env.get_tags(current_env, s, screen.count())
+	awful.tag(tags, s, awful.layout.suit.tile)
 end)
 
 screen.connect_signal("removed", function(s)
-    naughty.notify({
-        title = "Screen Removed",
-        text = "Screen disconnected",
-        timeout = 5
-    })
+	naughty.notify({
+		title = "Screen Removed",
+		text = "Screen disconnected",
+		timeout = 5,
+	})
 end)
 -- }}}
 
