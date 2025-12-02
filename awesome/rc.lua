@@ -22,6 +22,7 @@ local rules = require("modules.rules")
 local scratchpad = require("modules.scratchpad")
 local autostart = require("modules.autostart")
 local widgets = require("modules.widgets")
+local tag_persist = require("modules.tag_persist")
 
 -- {{{ Error handling
 if awesome.startup_errors then
@@ -126,8 +127,8 @@ awful.screen.connect_for_each_screen(function(s)
     set_wallpaper(s)
 
     -- Get tags for this screen based on environment
-    local tags = env.get_tags(current_env, s.index, screen.count())
-    local default_layout = env.get_default_layout(current_env, s.index)
+    local tags = env.get_tags(current_env, s, screen.count())
+    local default_layout = env.get_default_layout(current_env, s)
 
     awful.tag(tags, s, default_layout)
 
@@ -157,44 +158,54 @@ awful.screen.connect_for_each_screen(function(s)
         buttons = tasklist_buttons
     }
 
-    -- Create systray (only on primary screen)
-    local systray = nil
-    if s == screen.primary then
-        systray = wibox.widget.systray()
-    end
+    -- Create wibar on all screens
+    s.mywibox = awful.wibar({
+        position = "top",
+        screen = s,
+        height = beautiful.wibar_height or 28
+    })
 
-    -- Create wibar (only on primary screen)
-    if s == screen.primary then
-        s.mywibox = awful.wibar({
-            position = "top",
-            screen = s,
-            height = beautiful.wibar_height or 28
-        })
+    -- Right widgets (systray only on primary screen)
+    local right_widgets = {
+        layout = wibox.layout.fixed.horizontal,
+        s.mylayoutbox,
+    }
 
-        s.mywibox:setup {
-            layout = wibox.layout.align.horizontal,
-            { -- Left widgets
-                layout = wibox.layout.fixed.horizontal,
-                s.mytaglist,
-                s.mypromptbox,
-            },
-            s.mytasklist, -- Middle widget
-            { -- Right widgets
-                layout = wibox.layout.fixed.horizontal,
-                widgets.network,
-                widgets.separator,
-                widgets.cpu,
-                widgets.separator,
-                widgets.memory,
-                widgets.separator,
-                widgets.temperature,
-                widgets.separator,
-                systray,
-                wibox.widget.textclock(" %Y-%m-%d %H:%M "),
-                s.mylayoutbox,
-            },
+    -- Primary screen gets full widgets
+    if s == screen.primary then
+        right_widgets = {
+            layout = wibox.layout.fixed.horizontal,
+            widgets.network,
+            widgets.separator,
+            widgets.cpu,
+            widgets.separator,
+            widgets.memory,
+            widgets.separator,
+            widgets.temperature,
+            widgets.separator,
+            wibox.widget.systray(),
+            wibox.widget.textclock(" %Y-%m-%d %H:%M "),
+            s.mylayoutbox,
+        }
+    else
+        -- Secondary screens get simple clock + layoutbox
+        right_widgets = {
+            layout = wibox.layout.fixed.horizontal,
+            wibox.widget.textclock(" %H:%M "),
+            s.mylayoutbox,
         }
     end
+
+    s.mywibox:setup {
+        layout = wibox.layout.align.horizontal,
+        { -- Left widgets
+            layout = wibox.layout.fixed.horizontal,
+            s.mytaglist,
+            s.mypromptbox,
+        },
+        s.mytasklist, -- Middle widget
+        right_widgets,
+    }
 end)
 -- }}}
 
@@ -245,7 +256,7 @@ screen.connect_signal("added", function(s)
     })
     -- Re-detect environment
     current_env = env.detect()
-    local tags = env.get_tags(current_env, s.index, screen.count())
+    local tags = env.get_tags(current_env, s, screen.count())
     awful.tag(tags, s, awful.layout.suit.tile)
 end)
 
@@ -263,6 +274,9 @@ scratchpad.init()
 
 -- Initialize widgets (网络、CPU、内存、温度)
 widgets.init()
+
+-- Restore dynamic tags
+tag_persist.restore()
 
 -- Run autostart applications
 autostart.run()

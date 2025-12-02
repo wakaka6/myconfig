@@ -64,7 +64,7 @@ theme.titlebar_fg_focus = colors.fg
 theme.titlebar_fg_normal = colors.comment
 
 -- Wibar
-theme.wibar_height = dpi(28)
+theme.wibar_height = dpi(22)
 theme.wibar_bg = colors.bg .. "E6"  -- slight transparency
 theme.wibar_fg = colors.fg
 

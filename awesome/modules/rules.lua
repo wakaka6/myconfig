@@ -6,10 +6,11 @@
 local awful = require("awful")
 local beautiful = require("beautiful")
 local keys = require("modules.keys")
+local env = require("env.detect")
 
 local M = {}
 
-function M.get(env)
+function M.get(current_env)
     local rules = {
         -- Default rule for all clients
         {
@@ -92,50 +93,66 @@ function M.get(env)
     }
 
     -- Environment-specific rules
-    if env == "office" then
-        -- Office: 3 screens
+    if current_env == "office" then
+        -- Office: 3 screens (根据角色匹配)
+        -- primary: 开发主力
+        -- secondary: 浏览器/聊天
+        -- tertiary: debug/db/远程
+
+        -- === secondary: 浏览器/聊天 ===
         table.insert(rules, {
-            rule = { class = "Google-chrome" },
-            properties = { screen = 2, tag = "web" }
+            rule_any = { class = { "Google-chrome", "Chromium", "firefox", "Firefox" } },
+            properties = {
+                screen = function() return env.get_screen_by_role(env.ROLE_SECONDARY) end,
+                tag = "web"
+            }
         })
         table.insert(rules, {
-            rule = { class = "Slack" },
-            properties = { screen = 2, tag = "chat" }
+            rule_any = { class = { "Slack", "discord", "Discord", "TelegramDesktop", "WeChat", "wechat", "feishu", "Feishu", "bytedance-feishu", "Lark" } },
+            properties = {
+                screen = function() return env.get_screen_by_role(env.ROLE_SECONDARY) end,
+                tag = "chat"
+            }
+        })
+
+        -- === tertiary: debug/数据库/远程 ===
+        table.insert(rules, {
+            rule_any = { class = { "DBeaver", "jetbrains-datagrip", "DataGrip", "Navicat", "pgadmin4" } },
+            properties = {
+                screen = function() return env.get_screen_by_role(env.ROLE_TERTIARY) end,
+                tag = "db"
+            }
         })
         table.insert(rules, {
-            rule = { class = "discord" },
-            properties = { screen = 2, tag = "chat" }
+            rule_any = { class = { "Remmina", "rdesktop", "xfreerdp", "Vncviewer", "virt-manager" } },
+            properties = {
+                screen = function() return env.get_screen_by_role(env.ROLE_TERTIARY) end,
+                tag = "rdp"
+            }
         })
-        table.insert(rules, {
-            rule_any = { class = { "Spotify", "spotify" } },
-            properties = { screen = 3, tag = "media" }
-        })
-        table.insert(rules, {
-            rule = { class = "obs" },
-            properties = { screen = 3, tag = "media" }
-        })
-    elseif env == "home" then
+
+        -- === primary: 开发主力 (自由使用，不设规则) ===
+
+    elseif current_env == "home" then
         -- Home: 2 screens
         table.insert(rules, {
-            rule = { class = "Google-chrome" },
-            properties = { screen = 1, tag = "web" }
+            rule_any = { class = { "Google-chrome", "Chromium", "firefox", "Firefox" } },
+            properties = {
+                screen = function() return env.get_screen_by_role(env.ROLE_SECONDARY) end,
+                tag = "web"
+            }
         })
         table.insert(rules, {
-            rule = { class = "Slack" },
-            properties = { screen = 2, tag = "chat" }
-        })
-        table.insert(rules, {
-            rule = { class = "discord" },
-            properties = { screen = 2, tag = "chat" }
-        })
-        table.insert(rules, {
-            rule_any = { class = { "Spotify", "spotify" } },
-            properties = { screen = 2, tag = "media" }
+            rule_any = { class = { "Slack", "discord", "Discord" } },
+            properties = {
+                screen = function() return env.get_screen_by_role(env.ROLE_SECONDARY) end,
+                tag = "chat"
+            }
         })
     else
         -- Single screen
         table.insert(rules, {
-            rule = { class = "Google-chrome" },
+            rule_any = { class = { "Google-chrome", "Chromium", "firefox", "Firefox" } },
             properties = { tag = "3" }
         })
     end

@@ -9,6 +9,7 @@ local naughty = require("naughty")
 local hotkeys_popup = require("awful.hotkeys_popup")
 local beautiful = require("beautiful")
 local scratchpad = require("modules.scratchpad")
+local tag_persist = require("modules.tag_persist")
 
 local M = {}
 
@@ -279,7 +280,7 @@ M.globalkeys = gears.table.join(
 	-- {{{ Tag navigation (like i3 workspaces)
 	awful.key({ modkey }, "Left", awful.tag.viewprev, { description = "view previous tag", group = "tag" }),
 	awful.key({ modkey }, "Right", awful.tag.viewnext, { description = "view next tag", group = "tag" }),
-	awful.key({ modkey }, "Escape", awful.tag.history.restore, { description = "go back", group = "tag" }),
+	awful.key({ modkey }, "Tab", awful.tag.history.restore, { description = "go back", group = "tag" }),
 	-- }}}
 
 	-- {{{ 动态 Tag 管理
@@ -290,11 +291,7 @@ M.globalkeys = gears.table.join(
 			textbox = awful.screen.focused().mypromptbox.widget,
 			exe_callback = function(name)
 				if name and #name > 0 then
-					local t = awful.tag.add(name, {
-						screen = awful.screen.focused(),
-						layout = awful.layout.suit.tile,
-					})
-					t:view_only()
+					tag_persist.create_tag(name)
 					naughty.notify({ text = "Created tag: " .. name, timeout = 2 })
 				end
 			end,
@@ -315,7 +312,7 @@ M.globalkeys = gears.table.join(
 			})
 		else
 			local tag_name = t.name
-			t:delete()
+			tag_persist.delete_tag(t)
 			naughty.notify({ text = "Deleted tag: " .. tag_name, timeout = 2 })
 		end
 	end, { description = "delete empty tag", group = "tag" }),
@@ -332,7 +329,7 @@ M.globalkeys = gears.table.join(
 			textbox = awful.screen.focused().mypromptbox.widget,
 			exe_callback = function(new_name)
 				if new_name and #new_name > 0 then
-					t.name = new_name
+					tag_persist.rename_tag(t, new_name)
 					naughty.notify({ text = "Renamed to: " .. new_name, timeout = 2 })
 				end
 			end,
@@ -642,8 +639,8 @@ M.globalkeys = gears.table.join(
 
 	awful.key({ modkey, "Shift" }, "e", awesome.quit, { description = "quit awesome", group = "awesome" }),
 
-	-- Lock screen (mod+Escape was used, but let's use mod+ctrl+l for safety)
-	awful.key({ modkey, "Control" }, "Escape", function()
+	-- Lock screen (mod+Escape)
+	awful.key({ modkey }, "Escape", function()
 		awful.spawn.with_shell("~/.config/i3/lock.sh")
 	end, { description = "lock screen", group = "awesome" }),
 
