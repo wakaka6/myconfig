@@ -299,6 +299,7 @@ awful.screen.connect_for_each_screen(function(s)
 			layout = wibox.layout.fixed.horizontal,
 			spacing = dpi(6),
 			widgets.network,
+			widgets.volume,
 			widgets.cpu,
 			widgets.memory,
 			widgets.temperature,

@@ -361,6 +361,70 @@ M.network = wibox.widget({
 })
 
 -- ============================================
+-- Volume Widget
+-- ============================================
+local vol_icon = create_icon("󰕾", colors.purple)
+local vol_bar = create_progressbar(colors.green)
+local vol_value = create_value_text()
+local vol_muted = false
+
+local function update_volume()
+	awful.spawn.easy_async_with_shell(
+		[[pactl get-sink-volume @DEFAULT_SINK@ 2>/dev/null | grep -oP '\d+(?=%)' | head -1]],
+		function(vol_stdout)
+			awful.spawn.easy_async_with_shell(
+				[[pactl get-sink-mute @DEFAULT_SINK@ 2>/dev/null | grep -oP '(?<=Mute: )\w+']],
+				function(mute_stdout)
+					local volume = tonumber(vol_stdout) or 0
+					local muted = mute_stdout:match("yes") ~= nil
+					vol_muted = muted
+
+					local icon = muted and "󰝟" or (volume > 50 and "󰕾" or (volume > 0 and "󰖀" or "󰕿"))
+					local color = muted and colors.red or colors.green
+
+					vol_icon:set_markup("<span foreground='" .. colors.purple .. "'>" .. icon .. "</span>")
+					vol_bar.color = color
+					vol_bar.value = volume
+					vol_value:set_markup(
+						"<span foreground='" .. color .. "'>" .. string.format("%2d%%", volume) .. "</span>"
+					)
+				end
+			)
+		end
+	)
+end
+
+M.volume = create_widget_container(vol_icon, vol_bar, vol_value)
+M.volume:buttons(gears.table.join(
+	awful.button({}, 1, function()
+		awful.spawn("pactl set-sink-mute @DEFAULT_SINK@ toggle")
+		gears.timer.start_new(0.1, function()
+			update_volume()
+			return false
+		end)
+	end),
+	awful.button({}, 3, function()
+		awful.spawn("pavucontrol")
+	end),
+	awful.button({}, 4, function()
+		awful.spawn("pactl set-sink-volume @DEFAULT_SINK@ +5%")
+		gears.timer.start_new(0.1, function()
+			update_volume()
+			return false
+		end)
+	end),
+	awful.button({}, 5, function()
+		awful.spawn("pactl set-sink-volume @DEFAULT_SINK@ -5%")
+		gears.timer.start_new(0.1, function()
+			update_volume()
+			return false
+		end)
+	end)
+))
+
+M.update_volume = update_volume
+
+-- ============================================
 -- Clock Widget
 -- ============================================
 M.clock = wibox.widget({
@@ -403,6 +467,7 @@ function M.init()
 	update_memory()
 	update_temperature()
 	update_network()
+	update_volume()
 
 	gears.timer({
 		timeout = 2,
@@ -412,6 +477,7 @@ function M.init()
 			update_cpu()
 			update_memory()
 			update_network()
+			update_volume()
 		end,
 	})
 

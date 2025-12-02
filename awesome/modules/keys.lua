@@ -10,6 +10,7 @@ local hotkeys_popup = require("awful.hotkeys_popup")
 local beautiful = require("beautiful")
 local scratchpad = require("modules.scratchpad")
 local tag_persist = require("modules.tag_persist")
+local claude = require("modules.claude")
 
 local M = {}
 
@@ -603,6 +604,18 @@ M.globalkeys = gears.table.join(
 	awful.key({ modkey }, "t", function()
 		scratchpad.toggle("translate")
 	end, { description = "toggle translate scratchpad", group = "scratchpad" }),
+
+	awful.key({ modkey, "Shift" }, "g", function()
+		scratchpad.toggle("claude")
+	end, { description = "toggle claude AI assistant", group = "scratchpad" }),
+
+	awful.key({ modkey }, "o", function()
+		scratchpad.toggle("notes")
+	end, { description = "toggle notes scratchpad", group = "scratchpad" }),
+
+	awful.key({ modkey }, "/", function()
+		claude.query()
+	end, { description = "query selected text with Claude", group = "scratchpad" }),
 	-- }}}
 
 	-- {{{ 窗口隐藏/恢复 (替代 i3 的 scratchpad hack)
@@ -775,7 +788,40 @@ M.globalkeys = gears.table.join(
 				naughty.notify({ text = "Exited gaps mode", timeout = 1 })
 			end
 		end)
-	end, { description = "enter gaps mode", group = "gaps" })
+	end, { description = "enter gaps mode", group = "gaps" }),
+	-- }}}
+
+	-- {{{ Volume control mode (like i3's $mod+v)
+	awful.key({ modkey }, "v", function()
+		local widgets = require("modules.widgets")
+		local vol_notification = naughty.notify({
+			title = "Volume Mode",
+			text = "k/+   volume up\nj/-   volume down\nm/0   mute toggle\nEsc   exit",
+			timeout = 0,
+		})
+
+		local grabber
+		grabber = awful.keygrabber.run(function(mod, key, event)
+			if event == "release" then
+				return
+			end
+
+			if key == "k" or key == "+" or key == "=" or key == "plus" or key == "equal" or key == "KP_Add" then
+				volume_control("up")
+				widgets.update_volume()
+			elseif key == "j" or key == "-" or key == "minus" or key == "KP_Subtract" then
+				volume_control("down")
+				widgets.update_volume()
+			elseif key == "m" or key == "0" or key == "KP_0" then
+				volume_control("mute")
+				widgets.update_volume()
+			elseif key == "Escape" or key == "Return" or key == "q" then
+				awful.keygrabber.stop(grabber)
+				naughty.destroy(vol_notification)
+				naughty.notify({ text = "Exited volume mode", timeout = 1 })
+			end
+		end)
+	end, { description = "enter volume mode", group = "media" })
 	-- }}}
 )
 
