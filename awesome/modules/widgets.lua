@@ -193,9 +193,7 @@ local function update_temperature()
 							elseif t > 60 then
 								color = colors.orange
 							end
-							temp_text:set_markup(
-								"<span foreground='" .. color .. "'>" .. t .. "°C</span>"
-							)
+							temp_text:set_markup("<span foreground='" .. color .. "'>" .. t .. "°C</span>")
 						end
 					end
 				)
@@ -249,13 +247,15 @@ local prev_rx = {}
 local prev_tx = {}
 
 local function format_speed(bytes_per_sec)
-	if bytes_per_sec > 1024 * 1024 then
-		return string.format("%.1fM", bytes_per_sec / 1024 / 1024)
-	elseif bytes_per_sec > 1024 then
-		return string.format("%.0fK", bytes_per_sec / 1024)
+	local str
+	if bytes_per_sec > 1000 * 1000 then
+		str = string.format("%.1fM", bytes_per_sec / 1024 / 1024)
+	elseif bytes_per_sec > 1000 then
+		str = string.format("%.0fK", bytes_per_sec / 1024)
 	else
-		return string.format("%.0fB", bytes_per_sec)
+		str = string.format("%.0fB", bytes_per_sec)
 	end
+	return string.format("%-4s", str)
 end
 
 local function update_network()
@@ -303,16 +303,16 @@ local function update_network()
 							result,
 							"<span foreground='"
 								.. colors.green
-								.. "'>󰈀 </span>"
-								.. ip
-								.. " <span foreground='"
-								.. colors.green
 								.. "'>󰇚 </span>"
 								.. format_speed(rx_speed)
 								.. " <span foreground='"
 								.. colors.yellow
 								.. "'>󰕒 </span>"
 								.. format_speed(tx_speed)
+								.. " <span foreground='"
+								.. colors.green
+								.. "'>󰈀 </span>"
+								.. ip
 						)
 					elseif iface_type == "wlan" then
 						table.insert(

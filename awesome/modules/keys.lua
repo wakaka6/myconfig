@@ -571,10 +571,18 @@ M.globalkeys = gears.table.join(
 	-- Number of master/column clients
 	awful.key({ modkey, "Control" }, "k", function()
 		awful.tag.incnmaster(1, nil, true)
+		local tag = awful.screen.focused().selected_tag
+		if tag then
+			naughty.notify({ text = "Master +1 → " .. tag.master_count, timeout = 1 })
+		end
 	end, { description = "increase master clients", group = "layout" }),
 
 	awful.key({ modkey, "Control" }, "j", function()
 		awful.tag.incnmaster(-1, nil, true)
+		local tag = awful.screen.focused().selected_tag
+		if tag then
+			naughty.notify({ text = "Master -1 → " .. tag.master_count, timeout = 1 })
+		end
 	end, { description = "decrease master clients", group = "layout" }),
 	-- }}}
 
