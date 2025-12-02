@@ -246,6 +246,7 @@ local net_text = wibox.widget({
 })
 
 local prev_rx = {}
+local prev_tx = {}
 
 local function format_speed(bytes_per_sec)
 	if bytes_per_sec > 1024 * 1024 then
@@ -261,14 +262,18 @@ local function update_network()
 	awful.spawn.easy_async_with_shell(
 		[[
         for iface in $(ls /sys/class/net/ | grep -v lo); do
+            case "$iface" in
+                docker*|br-*|veth*|lxd*|lxc*|virbr*) continue ;;
+            esac
             state=$(cat /sys/class/net/$iface/operstate 2>/dev/null)
             if [ "$state" = "up" ]; then
                 rx=$(cat /sys/class/net/$iface/statistics/rx_bytes 2>/dev/null)
+                tx=$(cat /sys/class/net/$iface/statistics/tx_bytes 2>/dev/null)
                 if [ -d "/sys/class/net/$iface/wireless" ]; then
-                    echo "wlan:$iface:$rx:"
+                    echo "wlan:$iface:$rx:$tx:"
                 else
                     ip=$(ip -4 addr show $iface 2>/dev/null | grep -oP '(?<=inet\s)\d+(\.\d+){3}' | head -1)
-                    echo "eth:$iface:$rx:$ip"
+                    echo "eth:$iface:$rx:$tx:$ip"
                 fi
             fi
         done
@@ -277,15 +282,21 @@ local function update_network()
 			local result = {}
 
 			for line in stdout:gmatch("[^\n]+") do
-				local iface_type, iface_name, rx, ip = line:match("(%w+):([%w_-]+):(%d+):(.*)")
+				local iface_type, iface_name, rx, tx, ip = line:match("(%w+):([%w_-]+):(%d+):(%d+):(.*)")
 				if iface_type then
 					rx = tonumber(rx) or 0
-					local speed = 0
+					tx = tonumber(tx) or 0
+					local rx_speed = 0
+					local tx_speed = 0
 
 					if prev_rx[iface_name] then
-						speed = (rx - prev_rx[iface_name]) / 2
+						rx_speed = (rx - prev_rx[iface_name]) / 2
+					end
+					if prev_tx[iface_name] then
+						tx_speed = (tx - prev_tx[iface_name]) / 2
 					end
 					prev_rx[iface_name] = rx
+					prev_tx[iface_name] = tx
 
 					if iface_type == "eth" and ip and ip ~= "" then
 						table.insert(
@@ -295,9 +306,13 @@ local function update_network()
 								.. "'>󰈀 </span>"
 								.. ip
 								.. " <span foreground='"
-								.. colors.cyan
+								.. colors.green
 								.. "'>󰇚 </span>"
-								.. format_speed(speed)
+								.. format_speed(rx_speed)
+								.. " <span foreground='"
+								.. colors.yellow
+								.. "'>󰕒 </span>"
+								.. format_speed(tx_speed)
 						)
 					elseif iface_type == "wlan" then
 						table.insert(
@@ -307,7 +322,11 @@ local function update_network()
 								.. "'>󰖩 </span><span foreground='"
 								.. colors.green
 								.. "'>󰇚 </span>"
-								.. format_speed(speed)
+								.. format_speed(rx_speed)
+								.. " <span foreground='"
+								.. colors.yellow
+								.. "'>󰕒 </span>"
+								.. format_speed(tx_speed)
 						)
 					end
 				end
