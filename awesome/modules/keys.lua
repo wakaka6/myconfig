@@ -605,7 +605,7 @@ M.globalkeys = gears.table.join(
 		scratchpad.toggle("translate")
 	end, { description = "toggle translate scratchpad", group = "scratchpad" }),
 
-	awful.key({ modkey, "Shift" }, "g", function()
+	awful.key({ modkey }, "g", function()
 		scratchpad.toggle("claude")
 	end, { description = "toggle claude AI assistant", group = "scratchpad" }),
 
@@ -748,8 +748,8 @@ M.globalkeys = gears.table.join(
 	-- }}}
 
 	-- {{{ Gaps control (i3-gaps style with mode)
-	-- Mod+g: 进入 gaps 模式
-	awful.key({ modkey }, "g", function()
+	-- Mod+Shift+g: 进入 gaps 模式
+	awful.key({ modkey, "Shift" }, "g", function()
 		local gaps_notification = naughty.notify({
 			title = "Gaps Mode",
 			text = "k/+   increase gap\nj/-   decrease gap\n0     remove gaps\nd     default gaps\nEsc   exit",

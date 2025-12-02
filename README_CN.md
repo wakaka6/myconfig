@@ -1,70 +1,69 @@
 # myconfig
 
-English | [简体中文](./README_CN.md)
+[English](./README.md) | 简体中文
 
-This project stores the configuration files for various software under linux.
-It helps me to quickly configure my linux desktop environment.
+本项目存储 Linux 下各种软件的配置文件，帮助我快速配置 Linux 桌面环境。
 
 <div align=center> <img src=".img/demo.png" width = 100%/> </div>
 
-## Quick start
+## 快速开始
 
-Clone this project to home directory. Note that this item cannot be deleted from home.
+将本项目克隆到 home 目录。注意：此项目不能从 home 目录删除。
 
 ```sh
 sudo pacman -Sy git paru python3 curl wget
 git clone --recursive https://github.com/wakaka6/myconfig.git $HOME/myconfig
-# if on virtual machine, use the following command to clone the repo
+# 如果在虚拟机上，使用以下命令克隆
 git clone -b vm --recursive https://github.com/wakaka6/myconfig.git $HOME/myconfig
 ```
 
-And then, install prerequirement software
+然后，安装前置软件
 
 ```sh
 paru -S the_silver_searcher neovim lazygit ripgrep fd delta fzf rofi tealdeer zoxide
 ```
 
-File Manager
+文件管理器
 
 ```sh
 paru -S thunar filezilla
 ```
 
-Beautify
+美化
 
 ```sh
 sudo pacman -S picom feh variety polybar-git arc-gtk-theme papirus-icon-theme adapta-gtk-theme arc-icon-theme
-# configure GTK theme
+# 配置 GTK 主题
 sudo pacman -S lxappearance
-# configure i3 theme
+# 配置 i3 主题
 sudo pacman -S kvantum
 ```
 
-shell
+Shell
 
 ```sh
 sudo pacman -S zsh starship
 ```
 
-Reinforce i3
+增强 i3
 
 ```sh
-# like bspwm to the spiral tiling
+# 类似 bspwm 的螺旋平铺
 paru -S autotiling
 
-# Visually focus windows by label
+# 通过标签可视化聚焦窗口
 paru -S wmfocus
 ```
 
-AwesomeWM (alternative to i3)
+AwesomeWM（i3 的替代方案）
 
 ```sh
 sudo pacman -S awesome
-# required dependencies
+# 必需依赖
 paru -S picom rofi alacritty xclip
 ```
 
-Nerd Font
+Nerd 字体
 
 ```sh
 paru -S ttf-unifont siji-git ttf-font-awesome
@@ -73,31 +72,31 @@ paru -S ttf-linux-libertine ttf-inconsolata ttf-joypixels ttf-twemoji-color noto
 
 paru -S ttf-jetbrains-mono-nerd
 
-# zh-CN
+# 中文字体
 paru -S wqy-bitmapfont wqy-microhei wqy-microhei-lite wqy-zenhei adobe-source-han-mono-cn-fonts adobe-source-han-sans-cn-fonts adobe-source-han-serif-cn-fonts
 ```
 
-If running on virtual machine, run the following command.
+如果在虚拟机上运行，执行以下命令
 
 ```sh
 pacman -S open-vm-tools-desktop
 ```
 
-About ranger prerequirement (optional)
+ranger 前置依赖（可选）
 
 ```sh
 pacman -S ranger highlight atool w3m poppler mediainfo ueberzug zathura-pdf-mupdf
 ```
 
-About yazi prerequirement (optional, recommended)
+yazi 前置依赖（可选，推荐）
 
-> yazi is better than ranger, faster.
+> yazi 比 ranger 更好，更快。
 
 ```sh
 pacman -S yazi ffmpeg 7zip jq poppler imagemagick ueberzugpp
 ```
 
-About Neovim prerequirement
+Neovim 前置依赖
 
 ```sh
 sudo pacman -S neovim python-pynvim
@@ -108,40 +107,40 @@ curl -sL install-node.now.sh/lts | bash
 sudo pacman -S xdotool
 ```
 
-Latex prerequirement
+LaTeX 前置依赖
 
 ```sh
 paru -S texlive texlive-lang biber
 ```
 
-A modern alternative to traditional software
+传统软件的现代替代
 
 ```sh
 sudo pacman -S lsd htop duf
 ```
 
-Other Software
+其他软件
 
 ```sh
 sudo pacman -S flameshot
 sudo pacman -S network-manager-applet
 sudo pacman -S libreoffice-still
-sudo pacman -S dunst # notify
-# translation software
+sudo pacman -S dunst # 通知
+# 翻译软件
 sudo pacman -S goldendict
 sudo pacman -S translate-shell
-sudo pacman -S remmina freerdp # RDP tools
+sudo pacman -S remmina freerdp # RDP 工具
 
-# Input method
-sudo pacman -S fcitx5-im #基础包组
-sudo pacman -S fcitx5-chinese-addons #官方中文输入引擎
-# sudo pacman -S fcitx5-anthy #日文输入引擎
-paru -S fcitx5-pinyin-moegirl #萌娘百科词库 由于中国大陆政府对github封锁，你在下载时可能需要使用魔法。
-sudo pacman -S fcitx5-pinyin-zhwiki #中文维基百科词库
-sudo pacman -S fcitx5-material-color #主题
+# 输入法
+sudo pacman -S fcitx5-im # 基础包组
+sudo pacman -S fcitx5-chinese-addons # 官方中文输入引擎
+# sudo pacman -S fcitx5-anthy # 日文输入引擎
+paru -S fcitx5-pinyin-moegirl # 萌娘百科词库
+sudo pacman -S fcitx5-pinyin-zhwiki # 中文维基百科词库
+sudo pacman -S fcitx5-material-color # 主题
 ```
 
-In the end, run this command
+最后，运行此命令
 
 ```sh
 cd ~/myconfig && ./auto_config.sh install && reboot
@@ -149,8 +148,8 @@ cd ~/myconfig && ./auto_config.sh install && reboot
 
 ## Claude Code
 
-Install Claude Code for AI-powered assistance. Refer to https://claude.com/product/claude-code for installation instructions.
+安装 Claude Code 以获得 AI 辅助功能。参考 https://claude.com/product/claude-code 获取安装说明。
 
-After installation, the awesome config provides quick access:
-- `mod+g` - Open Claude Code scratchpad
-- `mod+/` - Query selected text with Claude
+安装后，awesome 配置提供快捷访问：
+- `mod+g` - 打开 Claude Code 草稿本
+- `mod+/` - 使用 Claude 查询选中文本
