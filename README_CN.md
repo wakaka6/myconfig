@@ -37,6 +37,9 @@ sudo pacman -S picom feh variety polybar-git arc-gtk-theme papirus-icon-theme ad
 sudo pacman -S lxappearance
 # 配置 i3 主题
 sudo pacman -S kvantum
+
+# 图形化的 sudo 认证
+sudo pacman -S polkit-gnome
 ```
 
 Shell
@@ -151,5 +154,6 @@ cd ~/myconfig && ./auto_config.sh install && reboot
 安装 Claude Code 以获得 AI 辅助功能。参考 https://claude.com/product/claude-code 获取安装说明。
 
 安装后，awesome 配置提供快捷访问：
+
 - `mod+g` - 打开 Claude Code 草稿本
 - `mod+/` - 使用 Claude 查询选中文本

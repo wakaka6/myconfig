@@ -38,6 +38,9 @@ sudo pacman -S picom feh variety polybar-git arc-gtk-theme papirus-icon-theme ad
 sudo pacman -S lxappearance
 # configure i3 theme
 sudo pacman -S kvantum
+
+# polkit for graphical sudo
+sudo pacman -S polkit-gnome
 ```
 
 shell
@@ -152,5 +155,6 @@ cd ~/myconfig && ./auto_config.sh install && reboot
 Install Claude Code for AI-powered assistance. Refer to https://claude.com/product/claude-code for installation instructions.
 
 After installation, the awesome config provides quick access:
+
 - `mod+g` - Open Claude Code scratchpad
 - `mod+/` - Query selected text with Claude
