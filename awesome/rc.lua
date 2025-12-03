@@ -24,6 +24,12 @@ local autostart = require("modules.autostart")
 local widgets = require("modules.widgets")
 local tag_persist = require("modules.tag_persist")
 
+-- Naughty notification defaults (remove border)
+naughty.config.defaults.border_width = 0
+naughty.config.presets.low.border_width = 0
+naughty.config.presets.normal.border_width = 0
+naughty.config.presets.critical.border_width = 0
+
 -- {{{ Error handling
 if awesome.startup_errors then
 	naughty.notify({
