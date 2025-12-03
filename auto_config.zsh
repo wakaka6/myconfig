@@ -1,15 +1,16 @@
-#!/usr/bin/env bash
+#!/usr/bin/env zsh
 # Auto Configuration Script - A modular approach to dotfile management
 # Author: Auto Config Manager
-# Version: 3.1.0
+# Version: 3.2.0 - Zsh version (works on macOS and Linux)
 
-set -euo pipefail
+set -eo pipefail
 
 # ============================================================================
 # Configuration Section
 # ============================================================================
 
-readonly SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+readonly SCRIPT_DIR="${0:A:h}"
+readonly SCRIPT_NAME="${0:t}"
 readonly BACKUP_DIR="$HOME/.config-backup-$(date +%Y%m%d-%H%M%S)"
 readonly LOG_FILE="/tmp/auto-config-$(date +%Y%m%d-%H%M%S).log"
 
@@ -18,7 +19,6 @@ readonly RED='\033[0;31m'
 readonly GREEN='\033[0;32m'
 readonly YELLOW='\033[1;33m'
 readonly BLUE='\033[0;34m'
-readonly CYAN='\033[0;36m'
 readonly NC='\033[0m'
 
 # Global flags
@@ -26,32 +26,33 @@ FORCE_MODE=false
 SELECTED_PLUGINS=()
 
 # Standard symlink configurations: source -> target
-declare -A CONFIG_ITEMS=(
-    ["i3"]="$HOME/.config/i3"
-    ["i3status"]="$HOME/.config/i3status"
-    ["nvim"]="$HOME/.config/nvim"
-    ["zathura"]="$HOME/.config/zathura"
-    ["latexmk"]="$HOME/.config/latexmk"
-    ["ranger"]="$HOME/.config/ranger"
-    ["alacritty"]="$HOME/.config/alacritty"
-    ["kitty"]="$HOME/.config/kitty"
-    ["zsh"]="$HOME/.config/zsh"
-    ["rofi"]="$HOME/.config/rofi"
-    ["dunst"]="$HOME/.config/dunst"
-    ["picom"]="$HOME/.config/picom"
-    ["yazi"]="$HOME/.config/yazi"
-    ["gitui"]="$HOME/.config/gitui"
-    ["awesome"]="$HOME/.config/awesome"
+typeset -A CONFIG_ITEMS=(
+    [i3]="$HOME/.config/i3"
+    [i3status]="$HOME/.config/i3status"
+    [nvim]="$HOME/.config/nvim"
+    [zathura]="$HOME/.config/zathura"
+    [latexmk]="$HOME/.config/latexmk"
+    [ranger]="$HOME/.config/ranger"
+    [alacritty]="$HOME/.config/alacritty"
+    [kitty]="$HOME/.config/kitty"
+    [zsh]="$HOME/.config/zsh"
+    [rofi]="$HOME/.config/rofi"
+    [dunst]="$HOME/.config/dunst"
+    [picom]="$HOME/.config/picom"
+    [yazi]="$HOME/.config/yazi"
+    [gitui]="$HOME/.config/gitui"
+    [awesome]="$HOME/.config/awesome"
+    [polybar]="$HOME/.config/polybar"
 )
 
 # Special configurations: name -> "type:source:target"
 # Types: symlink, copy, generate
-declare -A SPECIAL_CONFIGS=(
-    ["lazygit"]="symlink:lazygit/config.yml:$HOME/.config/lazygit/config.yml"
-    ["tmux"]="symlink:.tmux.conf:$HOME/.tmux.conf"
-    ["vimrc"]="symlink:.vimrc:$HOME/.vimrc"
-    ["xprofile"]="copy:.xprofile:$HOME/.xprofile"
-    ["scratchpad"]="generate:scratchpad_content:$HOME/Documents/scratchpad/CLAUDE.md"
+typeset -A SPECIAL_CONFIGS=(
+    [lazygit]="symlink:lazygit/config.yml:$HOME/.config/lazygit/config.yml"
+    [tmux]="symlink:.tmux.conf:$HOME/.tmux.conf"
+    [vimrc]="symlink:.vimrc:$HOME/.vimrc"
+    [xprofile]="copy:.xprofile:$HOME/.xprofile"
+    [scratchpad]="generate:scratchpad_content:$HOME/Documents/scratchpad/CLAUDE.md"
 )
 
 # ============================================================================
@@ -64,10 +65,10 @@ log() {
     local message="$*"
 
     case "$level" in
-        INFO)    echo -e "${BLUE}[INFO]${NC} $message" | tee -a "$LOG_FILE" ;;
-        SUCCESS) echo -e "${GREEN}[SUCCESS]${NC} $message" | tee -a "$LOG_FILE" ;;
-        WARN)    echo -e "${YELLOW}[WARN]${NC} $message" | tee -a "$LOG_FILE" ;;
-        ERROR)   echo -e "${RED}[ERROR]${NC} $message" | tee -a "$LOG_FILE" ;;
+        INFO)    print -P "${BLUE}[INFO]${NC} $message" | tee -a "$LOG_FILE" ;;
+        SUCCESS) print -P "${GREEN}[SUCCESS]${NC} $message" | tee -a "$LOG_FILE" ;;
+        WARN)    print -P "${YELLOW}[WARN]${NC} $message" | tee -a "$LOG_FILE" ;;
+        ERROR)   print -P "${RED}[ERROR]${NC} $message" | tee -a "$LOG_FILE" ;;
     esac
 }
 
@@ -91,14 +92,10 @@ is_plugin_selected() {
 
 # Get all available plugin names
 get_all_plugins() {
-    local plugins=()
-    for key in "${!CONFIG_ITEMS[@]}"; do
-        plugins+=("$key")
-    done
-    for key in "${!SPECIAL_CONFIGS[@]}"; do
-        plugins+=("$key")
-    done
-    printf '%s\n' "${plugins[@]}" | sort -u
+    {
+        print -l "${(k)CONFIG_ITEMS[@]}"
+        print -l "${(k)SPECIAL_CONFIGS[@]}"
+    } | sort -u
 }
 
 # Ask user for confirmation, returns 0 for yes, 1 for no
@@ -110,7 +107,7 @@ confirm() {
         return 0
     fi
 
-    read -p "$message [y/N] " -n 1 -r
+    read -q "REPLY?$message [y/N] "
     echo
     [[ $REPLY =~ ^[Yy]$ ]]
 }
@@ -124,8 +121,7 @@ create_backup_dir() {
 
 backup_config() {
     local source=$1
-    local name
-    name=$(basename "$source")
+    local name=${source:t}
 
     if [[ -e "$source" && ! -L "$source" ]]; then
         create_backup_dir
@@ -134,6 +130,17 @@ backup_config() {
         return 0
     fi
     return 1
+}
+
+# Cross-platform readlink -f
+resolve_path() {
+    local path=$1
+    if [[ -e "$path" ]]; then
+        # Use zsh built-in :A modifier for absolute path resolution
+        echo "${path:A}"
+    else
+        echo "$path"
+    fi
 }
 
 # ============================================================================
@@ -155,8 +162,8 @@ create_symlink() {
     if [[ -e "$target" || -L "$target" ]]; then
         if [[ -L "$target" ]]; then
             local current_source
-            current_source=$(readlink -f "$target" 2>/dev/null || echo "unknown")
-            if [[ "$current_source" == "$(readlink -f "$source")" ]]; then
+            current_source=$(resolve_path "$target")
+            if [[ "$current_source" == "$(resolve_path "$source")" ]]; then
                 log INFO "Already linked correctly: $target"
                 return 0
             fi
@@ -178,8 +185,7 @@ create_symlink() {
     fi
 
     # Create parent directory if needed
-    local target_dir
-    target_dir=$(dirname "$target")
+    local target_dir=${target:h}
     if [[ ! -d "$target_dir" ]]; then
         mkdir -p "$target_dir"
         log INFO "Created directory: $target_dir"
@@ -208,8 +214,7 @@ copy_file() {
         fi
     fi
 
-    local target_dir
-    target_dir=$(dirname "$target")
+    local target_dir=${target:h}
     if [[ ! -d "$target_dir" ]]; then
         mkdir -p "$target_dir"
     fi
@@ -223,8 +228,7 @@ generate_file() {
     local content_func=$1
     local target=$2
 
-    local target_dir
-    target_dir=$(dirname "$target")
+    local target_dir=${target:h}
     if [[ ! -d "$target_dir" ]]; then
         mkdir -p "$target_dir"
         log SUCCESS "Created directory: $target_dir"
@@ -299,7 +303,7 @@ install_configs() {
     fi
 
     # Process standard configurations
-    for config in "${!CONFIG_ITEMS[@]}"; do
+    for config in "${(k)CONFIG_ITEMS[@]}"; do
         if ! is_plugin_selected "$config"; then
             continue
         fi
@@ -310,7 +314,7 @@ install_configs() {
     done
 
     # Process special configurations
-    for config in "${!SPECIAL_CONFIGS[@]}"; do
+    for config in "${(k)SPECIAL_CONFIGS[@]}"; do
         if ! is_plugin_selected "$config"; then
             continue
         fi
@@ -360,7 +364,7 @@ uninstall_configs() {
     fi
 
     # Remove standard configurations
-    for config in "${!CONFIG_ITEMS[@]}"; do
+    for config in "${(k)CONFIG_ITEMS[@]}"; do
         if ! is_plugin_selected "$config"; then
             continue
         fi
@@ -374,7 +378,7 @@ uninstall_configs() {
     done
 
     # Remove special configurations
-    for config in "${!SPECIAL_CONFIGS[@]}"; do
+    for config in "${(k)SPECIAL_CONFIGS[@]}"; do
         if ! is_plugin_selected "$config"; then
             continue
         fi
@@ -409,81 +413,86 @@ show_status() {
     echo "===================================="
     echo "Standard Configurations:"
 
-    for config in "${!CONFIG_ITEMS[@]}"; do
+    local config source target status_msg link_target
+    for config in "${(k)CONFIG_ITEMS[@]}"; do
         if ! is_plugin_selected "$config"; then
             continue
         fi
-        local source="$SCRIPT_DIR/$config"
-        local target="${CONFIG_ITEMS[$config]}"
-
-        printf "  %-15s: " "$config"
+        source="$SCRIPT_DIR/$config"
+        target="${CONFIG_ITEMS[$config]}"
 
         if [[ -L "$target" ]]; then
-            local link_target
-            link_target=$(readlink -f "$target" 2>/dev/null || echo "unknown")
-            if [[ "$link_target" == "$(readlink -f "$source" 2>/dev/null)" ]]; then
-                echo -e "${GREEN}✓ Linked${NC}"
+            link_target=$(resolve_path "$target")
+            if [[ "$link_target" == "$(resolve_path "$source")" ]]; then
+                status_msg="${GREEN}✓ Linked${NC}"
             else
-                echo -e "${YELLOW}⚠ Linked to different source${NC}"
+                status_msg="${YELLOW}⚠ Linked to different source${NC}"
             fi
         elif [[ -e "$target" ]]; then
-            echo -e "${YELLOW}⚠ Exists but not linked${NC}"
+            status_msg="${YELLOW}⚠ Exists but not linked${NC}"
         else
-            echo -e "${RED}✗ Not configured${NC}"
+            status_msg="${RED}✗ Not configured${NC}"
         fi
+        printf "  %-15s: %b\n" "$config" "$status_msg"
     done
 
     echo "------------------------------------"
     echo "Special Configurations:"
 
-    for config in "${!SPECIAL_CONFIGS[@]}"; do
+    local spec type rest source_part expected
+    for config in "${(k)SPECIAL_CONFIGS[@]}"; do
         if ! is_plugin_selected "$config"; then
             continue
         fi
-        local spec="${SPECIAL_CONFIGS[$config]}"
-        local type="${spec%%:*}"
-        local rest="${spec#*:}"
-        local source_part="${rest%%:*}"
-        local target="${rest#*:}"
-
-        printf "  %-15s: " "$config"
+        spec="${SPECIAL_CONFIGS[$config]}"
+        type="${spec%%:*}"
+        rest="${spec#*:}"
+        source_part="${rest%%:*}"
+        target="${rest#*:}"
 
         case "$type" in
             symlink)
                 if [[ -L "$target" ]]; then
-                    local link_target
-                    link_target=$(readlink -f "$target" 2>/dev/null || echo "unknown")
-                    local expected="$SCRIPT_DIR/$source_part"
-                    if [[ "$link_target" == "$(readlink -f "$expected" 2>/dev/null)" ]]; then
-                        echo -e "${GREEN}✓ Linked${NC}"
+                    link_target=$(resolve_path "$target")
+                    expected="$SCRIPT_DIR/$source_part"
+                    if [[ "$link_target" == "$(resolve_path "$expected")" ]]; then
+                        status_msg="${GREEN}✓ Linked${NC}"
                     else
-                        echo -e "${YELLOW}⚠ Linked to different source${NC}"
+                        status_msg="${YELLOW}⚠ Linked to different source${NC}"
                     fi
                 elif [[ -e "$target" ]]; then
-                    echo -e "${YELLOW}⚠ Exists but not linked${NC}"
+                    status_msg="${YELLOW}⚠ Exists but not linked${NC}"
                 else
-                    echo -e "${RED}✗ Not configured${NC}"
+                    status_msg="${RED}✗ Not configured${NC}"
                 fi
                 ;;
             copy|generate)
                 if [[ -f "$target" ]]; then
-                    echo -e "${GREEN}✓ Present${NC}"
+                    status_msg="${GREEN}✓ Present${NC}"
                 else
-                    echo -e "${RED}✗ Not present${NC}"
+                    status_msg="${RED}✗ Not present${NC}"
                 fi
                 ;;
         esac
+        printf "  %-15s: %b\n" "$config" "$status_msg"
     done
 
     echo "===================================="
 }
 
 show_help() {
+    local std_plugins=$(print -l "${(k)CONFIG_ITEMS[@]}" | sort | sed 's/^/    /')
+    local special_plugins=$(for p in "${(k)SPECIAL_CONFIGS[@]}"; do
+        local spec="${SPECIAL_CONFIGS[$p]}"
+        local type="${spec%%:*}"
+        echo "    $p ($type)"
+    done | sort)
+
     cat << EOF
-Auto Configuration Manager v3.1.0
+Auto Configuration Manager v3.2.0 (zsh)
 
 USAGE:
-    $0 [OPTIONS] [COMMAND]
+    $SCRIPT_NAME [OPTIONS] [COMMAND]
 
 COMMANDS:
     install     Install all configurations (default)
@@ -498,21 +507,17 @@ OPTIONS:
 
 AVAILABLE PLUGINS:
   Standard (symlink to ~/.config/):
-$(for p in $(printf '%s\n' "${!CONFIG_ITEMS[@]}" | sort); do echo "    $p"; done)
+$std_plugins
 
   Special:
-$(for p in $(printf '%s\n' "${!SPECIAL_CONFIGS[@]}" | sort); do
-    spec="${SPECIAL_CONFIGS[$p]}"
-    type="${spec%%:*}"
-    echo "    $p ($type)"
-done)
+$special_plugins
 
 EXAMPLES:
-    $0                          # Install all (interactive)
-    $0 -f install               # Force install all
-    $0 -p nvim -p zsh install   # Install only nvim and zsh
-    $0 -p awesome status        # Check status of awesome only
-    $0 uninstall                # Remove all configurations
+    $SCRIPT_NAME                          # Install all (interactive)
+    $SCRIPT_NAME -f install               # Force install all
+    $SCRIPT_NAME -p nvim -p zsh install   # Install only nvim and zsh
+    $SCRIPT_NAME -p awesome status        # Check status of awesome only
+    $SCRIPT_NAME uninstall                # Remove all configurations
 
 BACKUP:
     Existing configurations are backed up to: ~/.config-backup-<timestamp>

@@ -30,7 +30,7 @@ local scratchpads = {
 		sticky = false,
 	},
 	notes = {
-		command = "alacritty --class scratch_notes -e bash -c 'cd ~/Documents/scratchpad && nvim $(date +%Y-%m-%d).md'",
+		command = "alacritty --class scratch_notes -e bash -c 'd=~/Documents/scratchpad/$(date +%Y-%m-%d); mkdir -p $d && cd $d && nvim $(date +%Y-%m-%d)-note.md'",
 		instance = "scratch_notes",
 		width = 1250,
 		height = 850,
