@@ -41,8 +41,15 @@ function M.run()
 
 	-- === Run Always (exec_always) ===
 
-	-- Compositor
-	run_always("killall -q picom; sleep 0.5; picom -b --inactive-dim 0.02")
+	-- Compositor (auto-detect backend: glx for discrete GPU, xrender for integrated)
+	run_always([[
+		killall -q picom; sleep 0.5
+		if lspci | grep -iq 'nvidia\|amd.*radeon.*rx\|geforce'; then
+			picom -b --backend glx
+		else
+			picom -b --backend xrender
+		fi
+	]])
 
 	-- Input method
 	run_always("fcitx5 -d")
