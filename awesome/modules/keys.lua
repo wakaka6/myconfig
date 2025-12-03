@@ -711,6 +711,46 @@ M.globalkeys = gears.table.join(
 			naughty.notify({ text = "No hidden windows", timeout = 1 })
 		end
 	end, { description = "restore ALL hidden windows in current tag", group = "client" }),
+
+	-- Mod+space: 在 tiled 和 floating 窗口之间切换焦点
+	awful.key({ modkey }, "space", function()
+		local current = client.focus
+		if not current then
+			return
+		end
+
+		local s = awful.screen.focused()
+		local current_tag = s.selected_tag
+		if not current_tag then
+			return
+		end
+
+		-- 收集当前 tag 的可见窗口，分为 tiled 和 floating
+		local tiled_clients = {}
+		local floating_clients = {}
+
+		for _, c in ipairs(current_tag:clients()) do
+			if not c.minimized and c:isvisible() then
+				if c.floating then
+					table.insert(floating_clients, c)
+				else
+					table.insert(tiled_clients, c)
+				end
+			end
+		end
+
+		-- 当前窗口是浮动的，切换到 tiled 窗口
+		if current.floating then
+			if #tiled_clients > 0 then
+				tiled_clients[1]:emit_signal("request::activate", "client.focus.bytype", { raise = true })
+			end
+		else
+			-- 当前窗口是 tiled，切换到浮动窗口
+			if #floating_clients > 0 then
+				floating_clients[1]:emit_signal("request::activate", "client.focus.bytype", { raise = true })
+			end
+		end
+	end, { description = "toggle focus between tiled and floating", group = "client" }),
 	-- }}}
 
 	-- {{{ Volume control (media keys)
