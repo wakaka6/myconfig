@@ -32,8 +32,8 @@ local scratchpads = {
 	notes = {
 		command = "alacritty --class scratch_notes -e bash -c 'cd ~/Documents/scratchpad && nvim $(date +%Y-%m-%d).md'",
 		instance = "scratch_notes",
-		width = 1200,
-		height = 800,
+		width = 1250,
+		height = 850,
 		sticky = true,
 	},
 }
@@ -148,6 +148,8 @@ function M.toggle(name)
 			end
 		end
 
+		local on_current_screen = c.screen == current_screen
+
 		if c.hidden then
 			-- Show it
 			c.hidden = false
@@ -157,18 +159,15 @@ function M.toggle(name)
 			end
 			setup_scratchpad(c, config)
 			c:emit_signal("request::activate", "scratchpad", { raise = true })
-		elseif c == client.focus and on_current_tag then
-			-- Currently focused on current tag, hide it
+		elseif c:isvisible() and on_current_screen and (on_current_tag or config.sticky) then
+			-- Visible on current screen and tag, hide it
 			c.hidden = true
-		elseif not on_current_tag and not config.sticky then
-			-- Exists on another tag, move to current tag
-			c:move_to_screen(current_screen)
-			move_to_current_tag(c)
-			setup_scratchpad(c, config)
-			c:emit_signal("request::activate", "scratchpad", { raise = true })
 		else
-			-- Exists on current tag but not focused, bring to focus
+			-- Not on current screen or tag, move here
 			c:move_to_screen(current_screen)
+			if not config.sticky then
+				move_to_current_tag(c)
+			end
 			setup_scratchpad(c, config)
 			c:emit_signal("request::activate", "scratchpad", { raise = true })
 		end
