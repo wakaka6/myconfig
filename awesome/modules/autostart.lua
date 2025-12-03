@@ -41,13 +41,13 @@ function M.run()
 
 	-- === Run Always (exec_always) ===
 
-	-- Compositor (auto-detect backend: glx for discrete GPU, xrender for integrated)
+	-- Compositor (auto-detect: glx + blur for discrete GPU, xrender without blur for integrated)
 	run_always([[
 		killall -q picom; sleep 0.5
 		if lspci | grep -iq 'nvidia\|amd.*radeon.*rx\|geforce'; then
 			picom -b --backend glx
 		else
-			picom -b --backend xrender
+			picom -b --backend xrender --blur-method none
 		fi
 	]])
 
