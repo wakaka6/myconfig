@@ -439,24 +439,33 @@ M.globalkeys = gears.table.join(
 
 	-- Mod+Ctrl+f: 按名称搜索并切换 tag (rofi)
 	awful.key({ modkey, "Control" }, "f", function()
-		local s = awful.screen.focused()
+		-- 汇总所有屏幕的 tag，支持跨屏搜索
+		local tag_map = {}
 		local tags_list = ""
-		for i, t in ipairs(s.tags) do
-			local occupied = #t:clients() > 0 and " *" or ""
-			tags_list = tags_list .. string.format("%d: %s%s\n", i, t.name, occupied)
+		local idx = 1
+
+		for s in screen do
+			for _, t in ipairs(s.tags) do
+				local occupied = #t:clients() > 0 and " *" or ""
+				tags_list = tags_list .. string.format("%d: [S%d] %s%s\n", idx, s.index, t.name, occupied)
+				tag_map[tostring(idx)] = t
+				idx = idx + 1
+			end
 		end
 
 		awful.spawn.easy_async_with_shell(
 			string.format("echo -n '%s' | rofi -dmenu -i -p 'Switch to tag'", tags_list:gsub("'", "\\'")),
 			function(stdout)
 				local selected = stdout:gsub("\n", "")
-				local index = tonumber(selected:match("^(%d+):"))
-				if index and s.tags[index] then
-					s.tags[index]:view_only()
+				local index = selected:match("^(%d+):")
+				local target_tag = index and tag_map[index]
+				if target_tag then
+					awful.screen.focus(target_tag.screen)
+					target_tag:view_only()
 				end
 			end
 		)
-	end, { description = "search and switch tag (rofi)", group = "tag" }),
+	end, { description = "search and switch tag (rofi, all screens)", group = "tag" }),
 	-- }}}
 
 	-- {{{ Client focus (vim-style hjkl) - 智能跨屏幕
