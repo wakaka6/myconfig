@@ -2,6 +2,7 @@ local awful = require("awful")
 local naughty = require("naughty")
 local lgi = require("lgi")
 local GLib = lgi.GLib
+local agents = require("modules.agents")
 
 local M = {}
 
@@ -202,7 +203,7 @@ local MENU_ITEMS = {
 	{ icon = "󰗊", label = "翻译成中文" },
 	{ icon = "󰗊", label = "翻译成英文" },
 	{ icon = "󰦨", label = "总结要点" },
-	{ icon = "📥", label = "保存到笔记", action = "save" },
+	{ icon = "📥", label = "保存到笔记", agent_id = "save_notes" },
 }
 
 function M.query()
@@ -241,8 +242,8 @@ function M.query()
 
 			for i, item in ipairs(MENU_ITEMS) do
 				if choice:match(item.label) then
-					if item.action == "save" then
-						M.save_to_notes(selection)
+					if item.agent_id then
+						M.run_agent(item.agent_id, selection)
 					else
 						M.run_claude(selection, item.label)
 					end
@@ -280,56 +281,70 @@ function M.run_claude(selection, prompt)
 	end)
 end
 
-function M.save_to_notes(selection)
-	notify("正在保存笔记...")
+function M.run_agent(agent_id, selection)
+	local agent = agents.get(agent_id)
+	if not agent then
+		notify("未找到 Agent: " .. agent_id, { timeout = 3 })
+		return
+	end
+
+	notify("正在执行: " .. agent.label .. "...")
 
 	local date = os.date("%Y-%m-%d")
 	local save_dir = CONFIG.scratchpad_dir .. "/" .. date
-	local prompt = string.format(
-		[[目录: %s/
 
-任务：
-1. 用 head -20 读取目录中 .md 文件的 frontmatter（---包裹的 YAML）
-2. 根据 tags/title 判断新内容是否与某文件主题相关
-3. 相关：追加到该文件合适位置
-4. 无关：创建 %s-HHmm-标题.md
+	local ctx = {
+		date = date,
+		save_dir = save_dir,
+		selection = selection,
+	}
 
-笔记格式：
----
-title: 标题
-tags: [tag1, tag2]
-created: YYYY-MM-DD HH:mm
----
-总结要点，可用 mermaid 图表、列表、代码块等，只在有必要的情况下照搬原文。
+	local prompt = type(agent.prompt) == "function" and agent.prompt(ctx) or agent.prompt
+	local cfg = agent.config or {}
 
-只返回一行：操作的文件名（不含路径）]],
-		save_dir,
-		date
-	)
+	local opts = {}
+	if cfg.tools then
+		table.insert(opts, string.format('--allowedTools "%s"', cfg.tools))
+	end
+	if agent.system_prompt then
+		table.insert(opts, string.format("--system-prompt %s", safe_quote(agent.system_prompt)))
+	end
+	if cfg.max_turns then
+		table.insert(opts, string.format("--max-turns %d", cfg.max_turns))
+	end
 
 	local cmd = string.format(
-		[[echo %s | %s -p %s --allowedTools "Bash(mkdir:*,ls:*,head:*),Read,Write"]],
+		[[echo %s | %s -p %s %s]],
 		safe_quote(selection),
 		CLAUDE_BIN,
-		safe_quote(prompt)
+		safe_quote(prompt),
+		table.concat(opts, " ")
 	)
 
 	awful.spawn.easy_async_with_shell(cmd, function(stdout, stderr, _, exit_code)
 		local result = trim(strip_ansi(stdout))
 		if result ~= "" then
-			local file_path = save_dir .. "/" .. result
-			notify("已保存: " .. result .. "\n(点击打开)", {
-				timeout = 5,
-				run = function()
-					awful.spawn(string.format("alacritty -e nvim %s", safe_quote(file_path)))
-				end,
-			})
+			if agent.on_success then
+				local ret = agent.on_success(result, ctx)
+				if ret and ret.action == "open_editor" then
+					notify(ret.message .. "\n(点击打开)", {
+						timeout = 5,
+						run = function()
+							awful.spawn(string.format("alacritty -e nvim %s", safe_quote(ret.file_path)))
+						end,
+					})
+				else
+					notify(ret and ret.message or result, { timeout = 5 })
+				end
+			else
+				notify(result, { timeout = 5 })
+			end
 		else
 			local err = trim(strip_ansi(stderr))
 			if err == "" then
 				err = "exit code: " .. (exit_code or "?")
 			end
-			notify("保存失败: " .. err, { timeout = 5 })
+			notify("执行失败: " .. err, { timeout = 5 })
 		end
 	end)
 end
