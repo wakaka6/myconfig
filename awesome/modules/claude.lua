@@ -20,6 +20,7 @@ local CONFIG = {
 local function find_claude_bin()
 	local home = os.getenv("HOME")
 	local candidates = {
+		home .. "/.local/bin/claude",
 		home .. "/.claude/local/claude",
 		"/usr/local/bin/claude",
 		"/usr/bin/claude",

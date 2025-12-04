@@ -98,6 +98,15 @@ local function get_clients_in_direction(c, dir)
 	return dominated
 end
 
+-- Helper: 移动鼠标到屏幕中心
+local function move_mouse_to_screen_center(s)
+	local geo = s.geometry
+	mouse.coords({
+		x = geo.x + geo.width / 2,
+		y = geo.y + geo.height / 2
+	}, true)
+end
+
 -- Helper: 聚焦目标屏幕上的窗口（根据目标屏幕布局决定策略）
 local function focus_client_on_screen(target_screen, dir)
 	-- 优先：全屏窗口
@@ -122,12 +131,14 @@ local function focus_client_on_screen(target_screen, dir)
 				return
 			end
 		end
+		move_mouse_to_screen_center(target_screen)
 		return
 	end
 
 	-- tile/floating 布局：按进入方向选择边缘窗口
 	local clients = target_screen.clients
 	if #clients == 0 then
+		move_mouse_to_screen_center(target_screen)
 		return
 	end
 
