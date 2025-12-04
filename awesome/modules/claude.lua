@@ -334,4 +334,91 @@ created: YYYY-MM-DD HH:mm
 	end)
 end
 
+-- ═══════════════════════════════════════════════════════════════
+-- Claude Code Hook 通知
+-- ═══════════════════════════════════════════════════════════════
+
+local HOOK_EVENTS = {
+	Stop              = { icon = "󰄬", timeout = 3,  sound = false },
+	SubagentStop      = { icon = "󰜎", timeout = 3,  sound = false },
+	Notification      = { icon = "󰋼", timeout = 0,  sound = true  },
+	PermissionRequest = { icon = "󰌆", timeout = 0,  sound = true  },
+}
+
+local SOUND_CMD = "paplay /usr/share/sounds/freedesktop/stereo/message.oga"
+local LOG_FILE = os.getenv("HOME") .. "/.claude/hook_debug.log"
+
+local function log(msg)
+	local f = io.open(LOG_FILE, "a")
+	if f then
+		f:write(os.date("%H:%M:%S ") .. tostring(msg) .. "\n")
+		f:close()
+	end
+end
+
+local function b64decode(data)
+	local handle = io.popen("echo '" .. data .. "' | base64 -d")
+	if not handle then return nil end
+	local result = handle:read("*a")
+	handle:close()
+	return result
+end
+
+function M.hook(b64_json)
+	local json = b64decode(b64_json)
+	if not json or json == "" then
+		log("ERROR: json is nil or empty")
+		return
+	end
+
+	log("JSON: " .. json:gsub("\n", " "):sub(1, 200))
+
+	local event = parse_json_field(json, "hook_event_name")
+	log("event: [" .. tostring(event) .. "]")
+	if not event or event == "" then return end
+
+	local cwd = parse_json_field(json, "cwd")
+	local cfg = HOOK_EVENTS[event] or { icon = CONFIG.icon, timeout = 3, sound = false }
+
+	-- 根据事件类型提取消息（确保非空）
+	local message
+	if event == "Notification" then
+		local msg = parse_json_field(json, "message")
+		log("Notification msg: [" .. tostring(msg) .. "]")
+		message = (msg and msg ~= "") and msg or "等待输入"
+	elseif event == "PermissionRequest" then
+		local tool = parse_json_field(json, "tool_name")
+		log("PermissionRequest tool: [" .. tostring(tool) .. "]")
+		tool = (tool and tool ~= "") and tool or "unknown"
+		message = "请求授权: " .. tool
+	elseif event == "Stop" then
+		message = "任务完成"
+	elseif event == "SubagentStop" then
+		message = "子任务完成"
+	else
+		message = event
+	end
+
+	log("message: [" .. tostring(message) .. "]")
+
+	-- 格式：[项目名] 消息
+	local text = message
+	if cwd and cwd ~= "" then
+		local project = cwd:match("([^/]+)$")
+		if project and project ~= "" then
+			text = "[" .. project .. "] " .. message
+		end
+	end
+
+	if cfg.sound then
+		awful.spawn.with_shell(SOUND_CMD .. " &")
+	end
+
+	naughty.notify({
+		title = cfg.icon .. " Claude",
+		text = text,
+		timeout = cfg.timeout,
+	})
+end
+
 return M
