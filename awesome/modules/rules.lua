@@ -141,4 +141,6 @@ function M.get(current_env)
 	return rules
 end
 
+M.APP_RULES = APP_RULES
+
 return M

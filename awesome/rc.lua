@@ -405,6 +405,26 @@ client.connect_signal("manage", function(c)
 	if awesome.startup and not c.size_hints.user_position and not c.size_hints.program_position then
 		awful.placement.no_offscreen(c)
 	end
+
+	if awesome.startup then
+		return
+	end
+
+	local parent_screen_mod = require("modules.parent_screen")
+
+	if parent_screen_mod.is_app_rule_matched(c) then
+		return
+	end
+
+	if c.transient_for and c.transient_for.screen then
+		c:move_to_screen(c.transient_for.screen)
+		return
+	end
+
+	local target_screen = parent_screen_mod.get_parent_screen(c)
+	if target_screen and target_screen ~= c.screen then
+		c:move_to_screen(target_screen)
+	end
 end)
 
 -- Focus follows mouse

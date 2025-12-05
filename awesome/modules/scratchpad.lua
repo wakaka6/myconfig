@@ -225,4 +225,9 @@ function M.spawn_all()
 	end
 end
 
+M.INSTANCES = {}
+for _, config in pairs(scratchpads) do
+	M.INSTANCES[config.instance] = true
+end
+
 return M
