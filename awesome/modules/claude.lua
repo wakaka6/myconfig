@@ -172,60 +172,108 @@ end
 
 -- 显示结果
 local function show_result(result, session_id)
-	local items = { "1. 󰆏  复制到剪贴板" }
-	if session_id then
-		table.insert(items, "2. " .. CONFIG.icon .. "  继续对话")
-	end
-	table.insert(items, #items + 1 .. ". 󰅖  关闭")
+	local result_lines = select(2, result:gsub("\n", "\n")) + 1
+	local use_pager = result_lines > 15 or #result > 1000
 
-	local cmd = string.format(
-		[[echo -e "%s" | rofi -dmenu -i -p "%s " -mesg %s -theme-str '%s']],
-		table.concat(items, "\\n"),
-		CONFIG.icon,
-		safe_quote(result),
-		rofi_theme({ width = 700, lines = #items, spacing = 8, padding = 12 })
-	)
-
-	awful.spawn.easy_async_with_shell(cmd, function(choice)
-		choice = trim(choice)
-		if choice:match("复制") then
-			awful.spawn.with_shell("echo " .. safe_quote(result) .. " | xclip -selection clipboard")
-			notify("已复制到剪贴板")
-		elseif choice:match("继续对话") and session_id then
-			awful.spawn(string.format("alacritty -e %s --resume %s", CLAUDE_BIN, session_id))
+	if use_pager then
+		local tmpfile = os.tmpname()
+		local f = io.open(tmpfile, "w")
+		if f then
+			f:write(result)
+			f:close()
 		end
-	end)
+
+		local items = {
+			"1. 󰈈  在终端查看",
+			"2. 󰆏  复制到剪贴板",
+		}
+		if session_id then
+			table.insert(items, "3. " .. CONFIG.icon .. "  继续对话")
+		end
+		table.insert(items, #items + 1 .. ". 󰅖  关闭")
+
+		local preview = preview_text(result, 80)
+		local cmd = string.format(
+			[[echo -e "%s" | rofi -dmenu -i -p "%s " -mesg %s -theme-str '%s']],
+			table.concat(items, "\\n"),
+			CONFIG.icon,
+			safe_quote("📄 " .. preview .. " (" .. result_lines .. "行)"),
+			rofi_theme({ width = 700, lines = #items, spacing = 8, padding = 12 })
+		)
+
+		awful.spawn.easy_async_with_shell(cmd, function(choice)
+			choice = trim(choice)
+			if choice:match("终端查看") then
+				awful.spawn(string.format([[alacritty -e sh -c 'cat %s | less -R; rm %s']], tmpfile, tmpfile))
+			elseif choice:match("复制") then
+				awful.spawn.with_shell("cat " .. tmpfile .. " | xclip -selection clipboard && rm " .. tmpfile)
+				notify("已复制到剪贴板")
+			elseif choice:match("继续对话") and session_id then
+				awful.spawn(string.format("alacritty -e %s --resume %s", CLAUDE_BIN, session_id))
+				os.remove(tmpfile)
+			else
+				os.remove(tmpfile)
+			end
+		end)
+	else
+		local items = { "1. 󰆏  复制到剪贴板" }
+		if session_id then
+			table.insert(items, "2. " .. CONFIG.icon .. "  继续对话")
+		end
+		table.insert(items, #items + 1 .. ". 󰅖  关闭")
+
+		local cmd = string.format(
+			[[echo -e "%s" | rofi -dmenu -i -p "%s " -mesg %s -theme-str '%s']],
+			table.concat(items, "\\n"),
+			CONFIG.icon,
+			safe_quote(result),
+			rofi_theme({ width = 700, lines = #items, spacing = 8, padding = 12 })
+		)
+
+		awful.spawn.easy_async_with_shell(cmd, function(choice)
+			choice = trim(choice)
+			if choice:match("复制") then
+				awful.spawn.with_shell("echo " .. safe_quote(result) .. " | xclip -selection clipboard")
+				notify("已复制到剪贴板")
+			elseif choice:match("继续对话") and session_id then
+				awful.spawn(string.format("alacritty -e %s --resume %s", CLAUDE_BIN, session_id))
+			end
+		end)
+	end
 end
 
 -- 主菜单
 local MENU_ITEMS = {
+	{ icon = "🔍", label = "问我的笔记", agent_id = "ask_notes", input_mode = true },
+	{ icon = "📥", label = "保存到笔记", agent_id = "save_notes" },
 	{ icon = "󰭙", label = "解释一下" },
 	{ icon = "󰗊", label = "翻译成中文" },
 	{ icon = "󰗊", label = "翻译成英文" },
 	{ icon = "󰦨", label = "总结要点" },
-	{ icon = "📥", label = "保存到笔记", agent_id = "save_notes" },
 }
 
 function M.query()
 	get_clipboard(function(selection)
-		if selection == "" then
+		local menu = {}
+		for i, item in ipairs(MENU_ITEMS) do
+			if item.input_mode or selection ~= "" then
+				table.insert(menu, string.format("%d. %s  %s", i, item.icon, item.label))
+			end
+		end
+
+		if #menu == 0 then
 			notify("没有选中文本")
 			return
 		end
 
-		local menu = {}
-		for i, item in ipairs(MENU_ITEMS) do
-			table.insert(menu, string.format("%d. %s  %s", i, item.icon, item.label))
-		end
-
-		local preview = preview_text(selection, CONFIG.preview_max_chars)
+		local preview = selection ~= "" and preview_text(selection, CONFIG.preview_max_chars) or "输入问题..."
 		local cmd = string.format(
 			[[echo -e "%s" | rofi -dmenu -i -p "%s " -mesg %s -theme-str '%s']],
 			table.concat(menu, "\\n"),
 			CONFIG.icon,
 			safe_quote("󰄬 " .. preview),
 			rofi_theme({
-				lines = #MENU_ITEMS,
+				lines = #menu,
 				font_size = 20,
 				inputbar = "padding: 16px;",
 				msg_padding = 12,
@@ -240,10 +288,14 @@ function M.query()
 				return
 			end
 
-			for i, item in ipairs(MENU_ITEMS) do
+			for _, item in ipairs(MENU_ITEMS) do
 				if choice:match(item.label) then
 					if item.agent_id then
-						M.run_agent(item.agent_id, selection)
+						if item.input_mode then
+							M.ask_input(item.agent_id, selection)
+						else
+							M.run_agent(item.agent_id, selection)
+						end
 					else
 						M.run_claude(selection, item.label)
 					end
@@ -252,6 +304,52 @@ function M.query()
 			end
 			M.run_claude(selection, choice)
 		end)
+	end)
+end
+
+function M.ask_input(agent_id, context)
+	local agent = agents.get(agent_id)
+	if not agent then
+		notify("未找到 Agent: " .. agent_id)
+		return
+	end
+
+	local has_context = context and context ~= ""
+	local preview = has_context and preview_text(context, 40) or nil
+	local mesg_opt = preview and string.format("-mesg %s", safe_quote("📋 " .. preview)) or ""
+
+	local cmd = string.format(
+		[[rofi -dmenu -p "%s %s" %s -theme-str '%s']],
+		agent.icon or CONFIG.icon,
+		agent.label,
+		mesg_opt,
+		rofi_theme({
+			width = 800,
+			lines = 0,
+			inputbar = "padding: 16px; font: \"" .. CONFIG.font .. " 16\";",
+			msg_padding = 10,
+			msg_color = CONFIG.muted_color,
+			msg_font_size = 12,
+		})
+	)
+
+	awful.spawn.easy_async_with_shell(cmd, function(input)
+		input = trim(input)
+		if input == "" then
+			return
+		end
+
+		local include_clipboard = input:match("^%+") or input:match("^＋")
+		if include_clipboard then
+			input = input:gsub("^[%+＋]%s*", "")
+		end
+
+		local extra = { input = input }
+		if include_clipboard and has_context then
+			extra.context = context
+		end
+
+		M.run_agent(agent_id, input, extra)
 	end)
 end
 
@@ -281,7 +379,7 @@ function M.run_claude(selection, prompt)
 	end)
 end
 
-function M.run_agent(agent_id, selection)
+function M.run_agent(agent_id, selection, extra_ctx)
 	local agent = agents.get(agent_id)
 	if not agent then
 		notify("未找到 Agent: " .. agent_id, { timeout = 3 })
@@ -298,6 +396,11 @@ function M.run_agent(agent_id, selection)
 		save_dir = save_dir,
 		selection = selection,
 	}
+	if extra_ctx then
+		for k, v in pairs(extra_ctx) do
+			ctx[k] = v
+		end
+	end
 
 	local prompt = type(agent.prompt) == "function" and agent.prompt(ctx) or agent.prompt
 	local cfg = agent.config or {}
@@ -333,6 +436,8 @@ function M.run_agent(agent_id, selection)
 							awful.spawn(string.format("alacritty -e nvim %s", safe_quote(ret.file_path)))
 						end,
 					})
+				elseif ret and ret.action == "show_result" then
+					show_result(ret.message)
 				else
 					notify(ret and ret.message or result, { timeout = 5 })
 				end

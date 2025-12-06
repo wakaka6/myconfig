@@ -15,7 +15,7 @@ local function load_agent(name)
 	return nil
 end
 
-local agent_files = { "save_notes" }
+local agent_files = { "save_notes", "ask_notes" }
 
 for _, name in ipairs(agent_files) do
 	local agent = load_agent(name)
