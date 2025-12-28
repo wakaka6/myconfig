@@ -7,14 +7,16 @@ M.label = "保存到笔记"
 M.config = {
 	tools = "Bash(mkdir:*,ls:*,head:*),Read,Write",
 	output_format = "text",
-	max_turns = 5,
+	max_turns = 20,
 }
 
-M.system_prompt = [[你是一个笔记整理助手。你的任务是将用户提供的内容整理成结构化的 Markdown 笔记。
+M.system_prompt =
+	[[你是一个笔记整理助手。你的任务是将用户提供的内容整理成结构化的 Markdown 笔记。
 
 规则：
 - 总结要点，不要照搬原文（除非必要）
 - 可使用 mermaid 图表、列表、代码块等
+- 如果用户仅仅提供了URL, 你需要获取URL的内容在进行整理
 - 笔记需包含 frontmatter（title, tags, created）
 - 操作完成后只返回文件名（不含路径）]]
 
