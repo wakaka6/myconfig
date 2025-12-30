@@ -326,7 +326,7 @@ function M.ask_input(agent_id, context)
 		rofi_theme({
 			width = 800,
 			lines = 0,
-			inputbar = "padding: 16px; font: \"" .. CONFIG.font .. " 16\";",
+			inputbar = 'padding: 16px; font: "' .. CONFIG.font .. ' 16";',
 			msg_padding = 10,
 			msg_color = CONFIG.muted_color,
 			msg_font_size = 12,
@@ -459,14 +459,36 @@ end
 -- ═══════════════════════════════════════════════════════════════
 
 local HOOK_EVENTS = {
-	Stop              = { icon = "󰄬", timeout = 3,  sound = false },
-	SubagentStop      = { icon = "󰜎", timeout = 3,  sound = false },
-	Notification      = { icon = "󰋼", timeout = 0,  sound = true  },
-	PermissionRequest = { icon = "󰌆", timeout = 0,  sound = true  },
+	Stop = { icon = "󰄬", timeout = 0, sound = true, bg = nil, fg = nil },
+	SubagentStop = { icon = "󰜎", timeout = 3, sound = false, bg = nil, fg = nil },
+	Notification = { icon = "󰋼", timeout = 5, sound = true, bg = nil, fg = nil },
+	PermissionRequest = { icon = "󰌆", timeout = 0, sound = true, bg = "#ff5555", fg = "#f8f8f2" },
 }
 
 local SOUND_CMD = "paplay /usr/share/sounds/freedesktop/stereo/message.oga"
 local LOG_FILE = os.getenv("HOME") .. "/.claude/hook_debug.log"
+
+-- 通过 window ID 聚焦窗口（用于通知点击跳转）
+local function focus_window_by_id(window_id)
+	if not window_id or window_id == "" then
+		return false
+	end
+	local id = tonumber(window_id)
+	if not id then
+		return false
+	end
+
+	for _, c in ipairs(client.get()) do
+		if c.window == id then
+			if c.first_tag then
+				c.first_tag:view_only()
+			end
+			c:emit_signal("request::activate", "notification_click", { raise = true })
+			return true
+		end
+	end
+	return false
+end
 
 local function log(msg)
 	local f = io.open(LOG_FILE, "a")
@@ -478,7 +500,9 @@ end
 
 local function b64decode(data)
 	local handle = io.popen("echo '" .. data .. "' | base64 -d")
-	if not handle then return nil end
+	if not handle then
+		return nil
+	end
 	local result = handle:read("*a")
 	handle:close()
 	return result
@@ -491,18 +515,38 @@ function M.hook(b64_json)
 		return
 	end
 
-	log("JSON: " .. json:gsub("\n", " "):sub(1, 200))
+	log("JSON: " .. json:gsub("\n", " "))
 
 	local event = parse_json_field(json, "hook_event_name")
 	log("event: [" .. tostring(event) .. "]")
-	if not event or event == "" then return end
+	if not event or event == "" then
+		return
+	end
 
 	local cwd = parse_json_field(json, "cwd")
+	local window_id = parse_json_field(json, "window_id")
+	local last_message = parse_json_field(json, "last_message")
 	local cfg = HOOK_EVENTS[event] or { icon = CONFIG.icon, timeout = 3, sound = false }
 
-	-- 根据事件类型提取消息（确保非空）
+	log("window_id: [" .. tostring(window_id) .. "]")
+	log("last_message: [" .. tostring(last_message or "") .. "]")
+
+	-- 根据事件类型提取消息
 	local message
-	if event == "Notification" then
+	if event == "Stop" then
+		-- 任务完成：优先显示最后的回复内容
+		if last_message and last_message ~= "" then
+			message = last_message
+		else
+			message = "任务完成"
+		end
+	elseif event == "SubagentStop" then
+		if last_message and last_message ~= "" then
+			message = last_message
+		else
+			message = "子任务完成"
+		end
+	elseif event == "Notification" then
 		local msg = parse_json_field(json, "message")
 		log("Notification msg: [" .. tostring(msg) .. "]")
 		message = (msg and msg ~= "") and msg or "等待输入"
@@ -510,11 +554,12 @@ function M.hook(b64_json)
 		local tool = parse_json_field(json, "tool_name")
 		log("PermissionRequest tool: [" .. tostring(tool) .. "]")
 		tool = (tool and tool ~= "") and tool or "unknown"
-		message = "请求授权: " .. tool
-	elseif event == "Stop" then
-		message = "任务完成"
-	elseif event == "SubagentStop" then
-		message = "子任务完成"
+		-- 显示工具名和参数摘要
+		if last_message and last_message ~= "" then
+			message = "🔐 " .. tool .. "\n" .. last_message
+		else
+			message = "🔐 请求授权: " .. tool
+		end
 	else
 		message = event
 	end
@@ -530,15 +575,55 @@ function M.hook(b64_json)
 		end
 	end
 
+	log("text: [" .. tostring(text) .. "]")
+
+	-- 跳过空通知
+	if not text or text == "" then
+		log("ERROR: text is empty, skipping notification")
+		return
+	end
+
 	if cfg.sound then
 		awful.spawn.with_shell(SOUND_CMD .. " &")
 	end
 
-	naughty.notify({
-		title = cfg.icon .. " Claude",
-		text = text,
-		timeout = cfg.timeout,
-	})
+	log(
+		"NOTIFY: title=["
+			.. cfg.icon
+			.. " Claude] text=["
+			.. tostring(text)
+			.. "] timeout=["
+			.. tostring(cfg.timeout)
+			.. "] window_id=["
+			.. tostring(window_id)
+			.. "]"
+	)
+
+	local ok, err = pcall(function()
+		local notify_args = {
+			title = cfg.icon .. " Claude",
+			text = text,
+			timeout = cfg.timeout,
+			run = function(n)
+				focus_window_by_id(window_id)
+				naughty.destroy(n) -- 点击后关闭通知
+			end,
+		}
+		-- PermissionRequest 使用特殊颜色
+		if cfg.bg then
+			notify_args.bg = cfg.bg
+		end
+		if cfg.fg then
+			notify_args.fg = cfg.fg
+		end
+		naughty.notify(notify_args)
+	end)
+
+	if ok then
+		log("NOTIFY: called successfully")
+	else
+		log("NOTIFY: failed - " .. tostring(err))
+	end
 end
 
 return M
