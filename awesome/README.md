@@ -32,7 +32,8 @@ sudo pacman -S --needed \
     xss-lock \
     numlockx \
     ttf-jetbrains-mono \
-    noto-fonts-cjk
+    noto-fonts-cjk \
+    warpd  # 键盘鼠标控制
 ```
 
 ## 配置结构
@@ -125,6 +126,13 @@ sudo pacman -S --needed \
 | `Mod+t` | 翻译 Scratchpad |
 | `F1` | Flameshot 截图 |
 | `Mod+F1` | 显示快捷键帮助 |
+
+### 鼠标控制 (warpd)
+
+| 按键 | 功能 |
+|------|------|
+| `Mod+.` | Hint 模式（显示标签点击元素） |
+| `Mod+Shift+.` | Grid 模式（网格二分法定位） |
 
 ### 系统
 

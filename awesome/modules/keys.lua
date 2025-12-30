@@ -352,6 +352,15 @@ M.globalkeys = gears.table.join(
 	awful.key({ modkey }, "F1", hotkeys_popup.show_help, { description = "show help", group = "awesome" }),
 	-- }}}
 
+	-- {{{ Warpd (keyboard mouse control)
+	awful.key({ modkey }, ".", function()
+		awful.spawn("warpd --hint")
+	end, { description = "warpd hint mode", group = "mouse" }),
+	awful.key({ modkey, "Shift" }, ".", function()
+		awful.spawn("warpd --grid")
+	end, { description = "warpd grid mode", group = "mouse" }),
+	-- }}}
+
 	-- {{{ Alt-Tab 窗口切换器
 	-- Alt+Tab: rofi 窗口切换（推荐，美观）
 	awful.key({ "Mod1" }, "Tab", function()

@@ -63,7 +63,7 @@ AwesomeWM（i3 的替代方案）
 ```sh
 sudo pacman -S awesome
 # 必需依赖
-paru -S picom rofi alacritty xclip
+paru -S picom rofi alacritty xclip warpd
 ```
 
 Nerd 字体

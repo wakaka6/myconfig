@@ -64,7 +64,7 @@ AwesomeWM (alternative to i3)
 ```sh
 sudo pacman -S awesome
 # required dependencies
-paru -S picom rofi alacritty xclip
+paru -S picom rofi alacritty xclip warpd
 ```
 
 Nerd Font
