@@ -354,10 +354,10 @@ M.globalkeys = gears.table.join(
 
 	-- {{{ Warpd (keyboard mouse control)
 	awful.key({ modkey }, ".", function()
-		awful.spawn("warpd --hint")
+		awful.spawn("warpd --hint --oneshot")
 	end, { description = "warpd hint mode", group = "mouse" }),
 	awful.key({ modkey, "Shift" }, ".", function()
-		awful.spawn("warpd --grid")
+		awful.spawn("warpd --grid --oneshot")
 	end, { description = "warpd grid mode", group = "mouse" }),
 	-- }}}
 
