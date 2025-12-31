@@ -1,0 +1,9 @@
+scroll_down: d
+scroll_up: e
+buttons: u i o
+cursor_size: 15
+cursor_color: #ff79c6
+exit: esc C-q
+hint_exit: esc C-q
+grid_exit: esc C-q
+grid_keys: q w a s

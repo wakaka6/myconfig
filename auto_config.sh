@@ -52,6 +52,7 @@ declare -A SPECIAL_CONFIGS=(
     ["vimrc"]="symlink:.vimrc:$HOME/.vimrc"
     ["xprofile"]="copy:.xprofile:$HOME/.xprofile"
     ["scratchpad"]="generate:scratchpad_content:$HOME/Documents/scratchpad/CLAUDE.md"
+    ["warpd"]="symlink:warpd/config:$HOME/.config/warpd/config"
 )
 
 # ============================================================================

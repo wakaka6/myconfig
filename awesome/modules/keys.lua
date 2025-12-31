@@ -357,8 +357,25 @@ M.globalkeys = gears.table.join(
 		awful.spawn.with_shell("warpd --hint --oneshot --click 1")
 	end, { description = "warpd hint + click", group = "mouse" }),
 	awful.key({ modkey, "Shift" }, ".", function()
-		awful.spawn("warpd --grid")
+		local warpd_notify = naughty.notify({
+			title = "Warpd Grid Mode",
+			text = "方向键移动 | u/i/o 左/中/右键\nd/e 滚动 | Esc/C-q 退出",
+			timeout = 0,
+		})
+		awful.spawn.easy_async("warpd --grid", function()
+			naughty.destroy(warpd_notify)
+		end)
 	end, { description = "warpd grid mode", group = "mouse" }),
+	awful.key({ modkey, "Control" }, ".", function()
+		local warpd_notify = naughty.notify({
+			title = "Warpd Normal Mode",
+			text = "hjkl 移动 | u/i/o 左/中/右键\nd/e 滚动 | Esc/C-q 退出",
+			timeout = 0,
+		})
+		awful.spawn.easy_async("warpd --normal", function()
+			naughty.destroy(warpd_notify)
+		end)
+	end, { description = "warpd normal mode (scroll)", group = "mouse" }),
 	-- }}}
 
 	-- {{{ Alt-Tab 窗口切换器
