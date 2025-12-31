@@ -3,8 +3,12 @@
 -- 只提供通用接口，不包含任何 Agent 特有逻辑
 local awful = require("awful")
 local gears = require("gears")
+local json = require("lib.dkjson")
 
 local M = {}
+
+-- 持久化文件路径
+local PERSIST_FILE = gears.filesystem.get_cache_dir() .. "tracker_sessions.json"
 
 -- 支持的 agent 类型及其图标
 local AGENT_TYPES = {
@@ -65,6 +69,19 @@ local function focus_window_by_id(window_id)
 	return false
 end
 
+-- 验证窗口是否存在
+local function window_exists(window_id)
+	if not window_id then
+		return false
+	end
+	for _, c in ipairs(client.get()) do
+		if c.window == window_id then
+			return true
+		end
+	end
+	return false
+end
+
 -- 格式化时长显示
 local function format_duration(seconds)
 	local hours = math.floor(seconds / 3600)
@@ -75,6 +92,48 @@ local function format_duration(seconds)
 		return string.format("%d:%02d:%02d", hours, mins, secs)
 	else
 		return string.format("%02d:%02d", mins, secs)
+	end
+end
+
+-- 保存会话到文件
+local function save_sessions()
+	local file = io.open(PERSIST_FILE, "w")
+	if file then
+		file:write(json.encode(sessions))
+		file:close()
+	end
+end
+
+-- 从文件恢复会话
+local function restore_sessions()
+	local file = io.open(PERSIST_FILE, "r")
+	if not file then
+		return
+	end
+	local content = file:read("*a")
+	file:close()
+
+	if not content or content == "" then
+		return
+	end
+
+	local saved = json.decode(content)
+	if type(saved) ~= "table" then
+		return
+	end
+
+	-- 恢复会话时验证窗口存在性，只恢复有效会话
+	for agent_id, session in pairs(saved) do
+		if agent_id and type(session) == "table" then
+			if session.window_id and window_exists(session.window_id) then
+				sessions[agent_id] = session
+			end
+		end
+	end
+
+	-- 如有恢复的会话，通知订阅者
+	if next(sessions) then
+		notify_subscribers()
 	end
 end
 
@@ -102,10 +161,24 @@ function M.register(agent_id, window_id, project, agent_type)
 	end
 end
 
+-- 验证会话有效性（兜底：无 window_id 或窗口不存在则移除）
+local function validate_session(agent_id)
+	local session = sessions[agent_id]
+	if not session then
+		return false
+	end
+	if not session.window_id or not window_exists(session.window_id) then
+		sessions[agent_id] = nil
+		notify_subscribers()
+		return false
+	end
+	return true
+end
+
 ---设置为运行中状态
 ---@param agent_id string
 function M.set_running(agent_id)
-	if sessions[agent_id] then
+	if validate_session(agent_id) then
 		sessions[agent_id].state = "running"
 		notify_subscribers()
 	end
@@ -114,7 +187,7 @@ end
 ---设置为空闲状态
 ---@param agent_id string
 function M.set_idle(agent_id)
-	if sessions[agent_id] then
+	if validate_session(agent_id) then
 		sessions[agent_id].state = "idle"
 		notify_subscribers()
 	end
@@ -123,7 +196,7 @@ end
 ---设置为待审批状态
 ---@param agent_id string
 function M.set_pending(agent_id)
-	if sessions[agent_id] then
+	if validate_session(agent_id) then
 		sessions[agent_id].state = "pending"
 		notify_subscribers()
 	end
@@ -230,6 +303,17 @@ end
 
 ---初始化模块
 function M.init()
+	-- 使用 startup 信号恢复会话
+	-- AwesomeWM 进入事件循环时，所有窗口已被管理
+	awesome.connect_signal("startup", function()
+		restore_sessions()
+	end)
+
+	-- 在 awesome 退出/重载前保存会话
+	awesome.connect_signal("exit", function()
+		save_sessions()
+	end)
+
 	-- 监听窗口关闭事件，清理该窗口的所有会话（备用机制）
 	client.connect_signal("unmanage", function(c)
 		local wid = c.window
