@@ -103,7 +103,7 @@ local function move_mouse_to_screen_center(s)
 	local geo = s.geometry
 	mouse.coords({
 		x = geo.x + geo.width / 2,
-		y = geo.y + geo.height / 2
+		y = geo.y + geo.height / 2,
 	}, true)
 end
 
@@ -354,10 +354,10 @@ M.globalkeys = gears.table.join(
 
 	-- {{{ Warpd (keyboard mouse control)
 	awful.key({ modkey }, ".", function()
-		awful.spawn("warpd --hint --oneshot")
-	end, { description = "warpd hint mode", group = "mouse" }),
+		awful.spawn.with_shell("warpd --hint --oneshot --click 1")
+	end, { description = "warpd hint + click", group = "mouse" }),
 	awful.key({ modkey, "Shift" }, ".", function()
-		awful.spawn("warpd --grid --oneshot")
+		awful.spawn("warpd --grid")
 	end, { description = "warpd grid mode", group = "mouse" }),
 	-- }}}
 
