@@ -357,11 +357,11 @@ M.globalkeys = gears.table.join(
 		awful.spawn.with_shell("warpd --hint --oneshot --click 1")
 	end, { description = "warpd hint + click", group = "mouse" }),
 	awful.key({ modkey, "Shift" }, ".", function()
-		-- 点击屏幕右上角通知区域
-		local s = awful.screen.focused()
+		-- 点击主屏幕右上角通知区域
+		local s = screen.primary
 		local x = s.geometry.x + s.geometry.width - 200 -- 距右边200px
 		local y = s.geometry.y + 100 -- 距顶部100px
-		awful.spawn.with_shell(string.format("xdotool mousemove --sync %d %d && xdotool click 1", x, y))
+		awful.spawn.with_shell(string.format("xdotool mousemove %d %d click --clearmodifiers 1", x, y))
 	end, { description = "click notification area", group = "mouse" }),
 	awful.key({ modkey, "Control" }, ".", function()
 		local warpd_notify = naughty.notify({
