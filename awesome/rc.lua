@@ -21,6 +21,7 @@ local keys = require("modules.keys")
 local rules = require("modules.rules")
 local scratchpad = require("modules.scratchpad")
 local claude = require("modules.claude")
+local tracker = require("modules.tracker")
 local autostart = require("modules.autostart")
 local widgets = require("modules.widgets")
 local tag_persist = require("modules.tag_persist")
@@ -306,6 +307,7 @@ awful.screen.connect_for_each_screen(function(s)
 		right_widgets = {
 			layout = wibox.layout.fixed.horizontal,
 			spacing = dpi(6),
+			widgets.agent_tracker,
 			widgets.network,
 			widgets.volume,
 			widgets.cpu,
@@ -470,6 +472,9 @@ scratchpad.init()
 
 -- Initialize Claude notifications (聚焦窗口时自动关闭对应通知)
 claude.init()
+
+-- Initialize agent tracker (追踪所有 agent 会话)
+tracker.init()
 
 -- Initialize widgets (网络、CPU、内存、温度)
 widgets.init()

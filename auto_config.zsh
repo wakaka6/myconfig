@@ -46,7 +46,7 @@ typeset -A CONFIG_ITEMS=(
 )
 
 # Special configurations: name -> "type:source:target"
-# Types: symlink, copy, generate
+# Types: symlink, copy, generate, merge
 typeset -A SPECIAL_CONFIGS=(
     [lazygit]="symlink:lazygit/config.yml:$HOME/.config/lazygit/config.yml"
     [tmux]="symlink:.tmux.conf:$HOME/.tmux.conf"
@@ -54,6 +54,8 @@ typeset -A SPECIAL_CONFIGS=(
     [xprofile]="copy:.xprofile:$HOME/.xprofile"
     [scratchpad]="generate:scratchpad_content:$HOME/Documents/scratchpad/CLAUDE.md"
     [warpd]="symlink:warpd/config:$HOME/.config/warpd/config"
+    [claude-scripts]="symlink:claude/scripts:$HOME/.claude/scripts"
+    [claude-hooks]="merge:claude/hooks.json:$HOME/.claude/settings.json"
 )
 
 # ============================================================================
@@ -248,6 +250,46 @@ generate_file() {
     log SUCCESS "Generated: $target"
 }
 
+# Merge JSON file into target (deep merge)
+merge_json() {
+    local source=$1
+    local target=$2
+
+    if [[ ! -f "$source" ]]; then
+        log ERROR "Source JSON not found: $source"
+        return 1
+    fi
+
+    if ! command_exists jq; then
+        log ERROR "jq is required for JSON merge. Please install jq."
+        return 1
+    fi
+
+    local target_dir=${target:h}
+    if [[ ! -d "$target_dir" ]]; then
+        mkdir -p "$target_dir"
+        log SUCCESS "Created directory: $target_dir"
+    fi
+
+    if [[ -f "$target" ]]; then
+        # Deep merge: source overwrites target for matching keys
+        local merged
+        merged=$(jq -s '.[0] * .[1]' "$target" "$source" 2>/dev/null)
+        if [[ $? -eq 0 && -n "$merged" ]]; then
+            backup_config "$target"
+            echo "$merged" > "$target"
+            log SUCCESS "Merged: $source -> $target"
+        else
+            log ERROR "Failed to merge JSON files"
+            return 1
+        fi
+    else
+        # Target doesn't exist, just copy the source
+        cp "$source" "$target"
+        log SUCCESS "Created: $target (from $source)"
+    fi
+}
+
 # ============================================================================
 # Content Generators
 # ============================================================================
@@ -336,6 +378,9 @@ install_configs() {
             generate)
                 generate_file "$source_part" "$target"
                 ;;
+            merge)
+                merge_json "$SCRIPT_DIR/$source_part" "$target"
+                ;;
             *)
                 log ERROR "Unknown config type: $type"
                 ;;
@@ -402,6 +447,10 @@ uninstall_configs() {
                         log SUCCESS "Removed: $target"
                     fi
                 fi
+                ;;
+            merge)
+                log WARN "Merge config '$config' cannot be auto-removed from $target"
+                log INFO "Please manually remove the merged content if needed"
                 ;;
         esac
     done
@@ -472,6 +521,18 @@ show_status() {
                     status_msg="${GREEN}✓ Present${NC}"
                 else
                     status_msg="${RED}✗ Not present${NC}"
+                fi
+                ;;
+            merge)
+                if [[ -f "$target" ]]; then
+                    # Check if hooks key exists in target
+                    if command_exists jq && jq -e '.hooks' "$target" >/dev/null 2>&1; then
+                        status_msg="${GREEN}✓ Merged${NC}"
+                    else
+                        status_msg="${YELLOW}⚠ Target exists but hooks not merged${NC}"
+                    fi
+                else
+                    status_msg="${RED}✗ Target not present${NC}"
                 fi
                 ;;
         esac

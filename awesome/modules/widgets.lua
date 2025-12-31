@@ -9,6 +9,7 @@ local gears = require("gears")
 local beautiful = require("beautiful")
 local xresources = require("beautiful.xresources")
 local dpi = xresources.apply_dpi
+local tracker = require("modules.tracker")
 
 local M = {}
 
@@ -460,6 +461,233 @@ M.spacer = wibox.widget({
 })
 
 -- ============================================
+-- Agent Tracker Widget
+-- ============================================
+-- Running indicator (green)
+local running_text = wibox.widget({
+	markup = "<span foreground='" .. colors.comment .. "'>󰓕 0</span>",
+	font = "JetBrainsMono Nerd Font 11",
+	widget = wibox.widget.textbox,
+})
+
+-- Idle indicator (gray)
+local idle_text = wibox.widget({
+	markup = "<span foreground='" .. colors.comment .. "'>󰏤 0</span>",
+	font = "JetBrainsMono Nerd Font 11",
+	widget = wibox.widget.textbox,
+})
+
+-- Pending indicator (yellow)
+local pending_text = wibox.widget({
+	markup = "<span foreground='" .. colors.comment .. "'>󰌆 0</span>",
+	font = "JetBrainsMono Nerd Font 11",
+	widget = wibox.widget.textbox,
+})
+
+-- Session list container for popup
+local session_list = wibox.widget({
+	layout = wibox.layout.fixed.vertical,
+	spacing = dpi(4),
+})
+
+-- Popup for showing all sessions
+local agent_popup = awful.popup({
+	widget = {
+		{
+			{
+				markup = "<span foreground='" .. colors.purple .. "' font_weight='bold'>󰚩 Agent Sessions</span>",
+				font = "JetBrainsMono Nerd Font 11",
+				widget = wibox.widget.textbox,
+			},
+			{
+				{
+					forced_height = dpi(1),
+					bg = colors.selection,
+					widget = wibox.container.background,
+				},
+				top = dpi(6),
+				bottom = dpi(6),
+				widget = wibox.container.margin,
+			},
+			session_list,
+			layout = wibox.layout.fixed.vertical,
+		},
+		margins = dpi(12),
+		widget = wibox.container.margin,
+	},
+	bg = colors.bg .. "F0",
+	border_color = colors.selection,
+	border_width = dpi(1),
+	shape = function(cr, w, h)
+		gears.shape.rounded_rect(cr, w, h, dpi(8))
+	end,
+	visible = false,
+	ontop = true,
+})
+
+-- Update session list in popup
+local function update_session_list()
+	session_list:reset()
+
+	local sessions = tracker.get_active_sessions()
+
+	if #sessions == 0 then
+		session_list:add(wibox.widget({
+			markup = "<span foreground='" .. colors.comment .. "'>No active sessions</span>",
+			font = "JetBrainsMono Nerd Font 10",
+			widget = wibox.widget.textbox,
+		}))
+		return
+	end
+
+	for _, session in ipairs(sessions) do
+		-- State icon and color
+		local state_icon, state_color
+		if session.state == "running" then
+			state_icon = "󰓕"
+			state_color = colors.green
+		elseif session.state == "pending" then
+			state_icon = "󰌆"
+			state_color = colors.yellow
+		else -- idle
+			state_icon = "󰏤"
+			state_color = colors.cyan
+		end
+
+		local item = wibox.widget({
+			{
+				{
+					-- State icon
+					{
+						markup = "<span foreground='" .. state_color .. "'>" .. state_icon .. "</span>",
+						font = "JetBrainsMono Nerd Font 11",
+						widget = wibox.widget.textbox,
+					},
+					-- Agent icon
+					{
+						markup = "<span foreground='" .. colors.purple .. "'>" .. session.agent_icon .. "</span>",
+						font = "JetBrainsMono Nerd Font 11",
+						widget = wibox.widget.textbox,
+					},
+					-- Project name
+					{
+						markup = "<span foreground='" .. colors.fg .. "'>" .. session.project .. "</span>",
+						font = "JetBrainsMono Nerd Font 10",
+						widget = wibox.widget.textbox,
+					},
+					-- Duration
+					{
+						markup = "<span foreground='" .. colors.comment .. "'>" .. session.duration_str .. "</span>",
+						font = "JetBrainsMono Nerd Font 10",
+						widget = wibox.widget.textbox,
+					},
+					layout = wibox.layout.fixed.horizontal,
+					spacing = dpi(8),
+				},
+				left = dpi(4),
+				right = dpi(4),
+				top = dpi(2),
+				bottom = dpi(2),
+				widget = wibox.container.margin,
+			},
+			bg = colors.selection .. "80",
+			shape = function(cr, w, h)
+				gears.shape.rounded_rect(cr, w, h, dpi(4))
+			end,
+			widget = wibox.container.background,
+		})
+
+		-- Click to focus session window
+		item:buttons(gears.table.join(awful.button({}, 1, function()
+			tracker.focus_session(session.agent_id)
+			agent_popup.visible = false
+		end)))
+
+		-- Hover effect
+		item:connect_signal("mouse::enter", function()
+			item.bg = colors.selection
+		end)
+		item:connect_signal("mouse::leave", function()
+			item.bg = colors.selection .. "80"
+		end)
+
+		session_list:add(item)
+	end
+end
+
+-- Update tracker widget display
+local function update_tracker_widget()
+	local running = tracker.get_running_count()
+	local idle = tracker.get_idle_count()
+	local pending = tracker.get_pending_count()
+
+	-- Running (green when active)
+	local running_color = running > 0 and colors.green or colors.comment
+	running_text:set_markup("<span foreground='" .. running_color .. "'>󰓕 " .. running .. "</span>")
+
+	-- Idle (gray/cyan when active)
+	local idle_color = idle > 0 and colors.cyan or colors.comment
+	idle_text:set_markup("<span foreground='" .. idle_color .. "'>󰏤 " .. idle .. "</span>")
+
+	-- Pending (yellow when active)
+	local pending_color = pending > 0 and colors.yellow or colors.comment
+	pending_text:set_markup("<span foreground='" .. pending_color .. "'>󰌆 " .. pending .. "</span>")
+
+	-- Also update popup content if visible
+	if agent_popup.visible then
+		update_session_list()
+	end
+end
+
+M.agent_tracker = wibox.widget({
+	{
+		{
+			{
+				running_text,
+				idle_text,
+				pending_text,
+				layout = wibox.layout.fixed.horizontal,
+				spacing = dpi(8),
+			},
+			left = dpi(6),
+			right = dpi(6),
+			top = dpi(2),
+			bottom = dpi(2),
+			widget = wibox.container.margin,
+		},
+		bg = colors.selection .. "80",
+		shape = function(cr, w, h)
+			gears.shape.rounded_rect(cr, w, h, dpi(4))
+		end,
+		widget = wibox.container.background,
+	},
+	widget = wibox.container.background,
+})
+
+-- Click to toggle popup
+M.agent_tracker:buttons(gears.table.join(awful.button({}, 1, function()
+	if agent_popup.visible then
+		agent_popup.visible = false
+	else
+		update_session_list()
+		-- 在 widget 下方显示 popup
+		agent_popup.screen = awful.screen.focused()
+		awful.placement.next_to(agent_popup, {
+			preferred_positions = { "bottom" },
+			preferred_anchors = { "middle" },
+			geometry = mouse.current_widget_geometry,
+			offset = { y = dpi(5) },
+		})
+		agent_popup.visible = true
+	end
+end)))
+
+-- Hide popup when clicking outside
+client.connect_signal("button::press", function()
+	agent_popup.visible = false
+end)
+
+-- ============================================
 -- Initialize timers
 -- ============================================
 function M.init()
@@ -468,6 +696,10 @@ function M.init()
 	update_temperature()
 	update_network()
 	update_volume()
+	update_tracker_widget()
+
+	-- Subscribe to tracker state changes
+	tracker.subscribe(update_tracker_widget)
 
 	gears.timer({
 		timeout = 2,
