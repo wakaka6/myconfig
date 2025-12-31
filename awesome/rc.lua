@@ -20,6 +20,7 @@ local env = require("envws.detect")
 local keys = require("modules.keys")
 local rules = require("modules.rules")
 local scratchpad = require("modules.scratchpad")
+local claude = require("modules.claude")
 local autostart = require("modules.autostart")
 local widgets = require("modules.widgets")
 local tag_persist = require("modules.tag_persist")
@@ -466,6 +467,9 @@ end)
 
 -- Initialize scratchpads
 scratchpad.init()
+
+-- Initialize Claude notifications (聚焦窗口时自动关闭对应通知)
+claude.init()
 
 -- Initialize widgets (网络、CPU、内存、温度)
 widgets.init()

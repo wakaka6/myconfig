@@ -1,10 +1,14 @@
 local awful = require("awful")
 local naughty = require("naughty")
+local gears = require("gears")
 local lgi = require("lgi")
 local GLib = lgi.GLib
 local agents = require("modules.agents")
 
 local M = {}
+
+-- 存储活跃通知和对应的 window_id，用于聚焦时自动关闭
+local active_notifications = {}
 
 -- 配置
 local CONFIG = {
@@ -480,6 +484,10 @@ local function focus_window_by_id(window_id)
 
 	for _, c in ipairs(client.get()) do
 		if c.window == id then
+			-- 如果窗口被隐藏（如 scratch 窗口），先显示它
+			if c.hidden then
+				c.hidden = false
+			end
 			if c.first_tag then
 				c.first_tag:view_only()
 			end
@@ -600,12 +608,14 @@ function M.hook(b64_json)
 	)
 
 	local ok, err = pcall(function()
+		local wid = tonumber(window_id)
 		local notify_args = {
 			title = cfg.icon .. " Claude",
 			text = text,
 			timeout = cfg.timeout,
 			run = function(n)
 				focus_window_by_id(window_id)
+				active_notifications[n] = nil
 				naughty.destroy(n) -- 点击后关闭通知
 			end,
 		}
@@ -616,7 +626,15 @@ function M.hook(b64_json)
 		if cfg.fg then
 			notify_args.fg = cfg.fg
 		end
-		naughty.notify(notify_args)
+		local n = naughty.notify(notify_args)
+		-- 保存通知引用，用于聚焦时自动关闭
+		if n and wid then
+			active_notifications[n] = wid
+			-- 通知被销毁时清理引用
+			n:connect_signal("destroyed", function()
+				active_notifications[n] = nil
+			end)
+		end
 	end)
 
 	if ok then
@@ -624,6 +642,24 @@ function M.hook(b64_json)
 	else
 		log("NOTIFY: failed - " .. tostring(err))
 	end
+end
+
+-- 初始化：设置窗口聚焦时自动关闭对应通知
+function M.init()
+	client.connect_signal("focus", function(c)
+		for notification, wid in pairs(active_notifications) do
+			if c.window == wid then
+				-- 聚焦到对应窗口时，3秒后关闭通知
+				gears.timer.start_new(3, function()
+					if active_notifications[notification] then
+						active_notifications[notification] = nil
+						naughty.destroy(notification)
+					end
+					return false -- 不重复执行
+				end)
+			end
+		end
+	end)
 end
 
 return M
