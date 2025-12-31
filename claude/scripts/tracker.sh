@@ -1,18 +1,32 @@
 #!/bin/bash
 # Claude Agent Tracker Hook
 # 职责：将 Claude 事件转换为明确的 tracker 接口调用
-# 所有事件都经过 tracker 追踪，便于调试和分析
+# 使用 Claude 进程 PID 作为主键，session_id 作为 metadata
 set -u
 
 json=$(cat)
 [ -z "$json" ] && exit 0
 
-# Claude 用 session_id 作为 agent_id
-agent_id=$(echo "$json" | jq -r '.session_id // empty')
-[ -z "$agent_id" ] && exit 0
+# 查找 Claude 主进程 PID（遍历进程树向上查找）
+find_claude_pid() {
+    local pid=$$
+    while [ "$pid" -gt 1 ]; do
+        local comm=$(cat /proc/$pid/comm 2>/dev/null)
+        if [[ "$comm" == "claude" ]]; then
+            echo "$pid"
+            return 0
+        fi
+        # 获取父进程 PID（stat 文件第 4 个字段）
+        pid=$(awk '{print $4}' /proc/$pid/stat 2>/dev/null)
+    done
+    return 1
+}
 
-json_wid=$(echo "$json" | jq -r '.window_id // empty')
-window_id="${json_wid:-${ALACRITTY_WINDOW_ID:-}}"
+claude_pid=$(find_claude_pid)
+[ -z "$claude_pid" ] && exit 0
+
+# session_id 作为 metadata 传递
+session_id=$(echo "$json" | jq -r '.session_id // empty')
 
 event=$(echo "$json" | jq -r '.hook_event_name // empty')
 cwd=$(echo "$json" | jq -r '.cwd // empty')
@@ -31,29 +45,31 @@ case "$event" in
     # === 会话生命周期 ===
     SessionStart)
         # 注册新会话，初始状态 idle
-        awesome-client "$tracker.register('$agent_id', '$window_id', '$project', 'claude')"
+        # metadata 包含 claude_session_id
+        metadata="{claude_session_id='$session_id'}"
+        awesome-client "$tracker.register($claude_pid, '$project', 'claude', $metadata)"
         ;;
     SessionEnd)
         # [REMOVE] 会话结束，移除
-        awesome-client "$tracker.remove('$agent_id')"
+        awesome-client "$tracker.remove($claude_pid)"
         ;;
 
     # === 触发 RUNNING 状态的事件 ===
     UserPromptSubmit)
         # [RUNNING] 用户提交问题 → 开始工作
-        awesome-client "$tracker.set_running('$agent_id')"
+        awesome-client "$tracker.set_running($claude_pid)"
         ;;
 
     # === 触发 IDLE 状态的事件 ===
     Stop)
         # [IDLE] 主 agent 完成响应，等待用户输入
-        awesome-client "$tracker.set_idle('$agent_id')"
+        awesome-client "$tracker.set_idle($claude_pid)"
         ;;
 
     # === 触发 PENDING 状态的事件 ===
     PermissionRequest)
         # [PENDING] 等待用户审批
-        awesome-client "$tracker.set_pending('$agent_id')"
+        awesome-client "$tracker.set_pending($claude_pid)"
         ;;
 
     # === 仅追踪，不改变状态的事件 ===

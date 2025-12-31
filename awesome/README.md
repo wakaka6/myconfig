@@ -11,6 +11,7 @@
 - **Scratchpad 支持** - 下拉式浮动窗口
 - **动态 Tag 管理** - 创建/删除/重命名工作空间
 - **i3-gaps 风格** - 支持窗口间距调整
+- **Agent 追踪** - 状态栏实时显示 Claude/Codex 等 AI Agent 会话状态
 
 ## 依赖
 
@@ -31,6 +32,7 @@ sudo pacman -S --needed \
     alacritty \
     xss-lock \
     numlockx \
+    xdotool \
     ttf-jetbrains-mono \
     noto-fonts-cjk \
     warpd  # 键盘鼠标控制
@@ -47,11 +49,17 @@ sudo pacman -S --needed \
 │   ├── keys.lua           # 快捷键配置
 │   ├── rules.lua          # 窗口规则
 │   ├── scratchpad.lua     # 下拉窗口
-│   ├── widgets.lua        # 系统监控组件
+│   ├── widgets.lua        # 系统监控组件（含 Agent 追踪器）
+│   ├── tracker.lua        # 通用 Agent 会话追踪
+│   ├── claude.lua         # Claude 通知处理
+│   ├── tag_persist.lua    # 动态 Tag 持久化
 │   └── autostart.lua      # 自启动程序
-└── themes/
-    └── dracula/
-        └── theme.lua      # Dracula 主题
+├── themes/
+│   └── dracula/
+│       └── theme.lua      # Dracula 主题
+└── docs/
+    └── claude-integration/
+        └── README.md      # Claude 集成文档
 ```
 
 ## 快捷键

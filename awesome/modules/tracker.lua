@@ -1,6 +1,6 @@
 -- Agent Session Tracker
 -- 通用 agent 会话追踪模块
--- 只提供通用接口，不包含任何 Agent 特有逻辑
+-- 使用 pid（进程 PID）作为主键，window_id 异步缓存
 local awful = require("awful")
 local gears = require("gears")
 local json = require("lib.dkjson")
@@ -19,15 +19,19 @@ local AGENT_TYPES = {
 }
 
 -- 会话记录表
--- sessions[agent_id] = {
---     agent_id = string,      -- 由 hook 脚本生成的唯一标识
---     window_id = number,     -- 用于聚焦窗口
---     agent_type = string,    -- "claude" | "codex" | "copilot" | ...
+-- sessions[pid] = {
+--     pid = number,              -- 主键：Agent 进程 PID
+--     agent_type = string,       -- "claude" | "codex" | "copilot" | ...
 --     project = string,
 --     started_at = number,
---     state = "running" | "idle" | "pending"
+--     state = "running" | "idle" | "pending",
+--     description = string,      -- 任务描述（可选）
+--     metadata = {},             -- agent 类型特有的元数据
 -- }
 local sessions = {}
+
+-- pid -> window_id 缓存（异步更新）
+local window_cache = {}
 
 -- 订阅者列表
 local subscribers = {}
@@ -44,18 +48,64 @@ local function notify_subscribers()
 	end
 end
 
+-- 验证进程是否存在（同步，但 /proc 读取极快）
+local function process_exists(pid)
+	if not pid then
+		return false
+	end
+	return gears.filesystem.file_readable("/proc/" .. pid .. "/stat")
+end
+
+-- 异步更新单个 pid 的 window_id 缓存
+local function update_window_cache_for_pid(pid, callback)
+	if not pid or not process_exists(pid) then
+		window_cache[pid] = nil
+		if callback then
+			callback(nil)
+		end
+		return
+	end
+
+	-- 使用 shell 脚本遍历进程树查找窗口
+	local cmd = string.format(
+		[[
+		pid=%d
+		while [ "$pid" -gt 1 ]; do
+			wid=$(xdotool search --pid "$pid" 2>/dev/null | head -1)
+			if [ -n "$wid" ]; then
+				echo "$wid"
+				exit 0
+			fi
+			pid=$(awk '{print $4}' /proc/$pid/stat 2>/dev/null)
+		done
+	]],
+		pid
+	)
+
+	awful.spawn.easy_async_with_shell(cmd, function(stdout)
+		local wid = tonumber(stdout:match("(%d+)"))
+		window_cache[pid] = wid
+		if callback then
+			callback(wid)
+		end
+	end)
+end
+
+-- 异步更新所有会话的 window_id 缓存
+local function update_all_window_cache()
+	for pid, _ in pairs(sessions) do
+		update_window_cache_for_pid(pid)
+	end
+end
+
 -- 通过 window ID 聚焦窗口
 local function focus_window_by_id(window_id)
 	if not window_id then
 		return false
 	end
-	local id = tonumber(window_id)
-	if not id then
-		return false
-	end
 
 	for _, c in ipairs(client.get()) do
-		if c.window == id then
+		if c.window == window_id then
 			if c.hidden then
 				c.hidden = false
 			end
@@ -63,19 +113,6 @@ local function focus_window_by_id(window_id)
 				c.first_tag:view_only()
 			end
 			c:emit_signal("request::activate", "tracker", { raise = true })
-			return true
-		end
-	end
-	return false
-end
-
--- 验证窗口是否存在
-local function window_exists(window_id)
-	if not window_id then
-		return false
-	end
-	for _, c in ipairs(client.get()) do
-		if c.window == window_id then
 			return true
 		end
 	end
@@ -122,53 +159,75 @@ local function restore_sessions()
 		return
 	end
 
-	-- 恢复会话时验证窗口存在性，只恢复有效会话
-	for agent_id, session in pairs(saved) do
-		if agent_id and type(session) == "table" then
-			if session.window_id and window_exists(session.window_id) then
-				sessions[agent_id] = session
-			end
+	-- 恢复会话时验证进程存在性
+	for pid_str, session in pairs(saved) do
+		local pid = tonumber(pid_str)
+		if pid and type(session) == "table" and process_exists(pid) then
+			sessions[pid] = session
 		end
 	end
 
-	-- 如有恢复的会话，通知订阅者
+	-- 异步更新窗口缓存
+	update_all_window_cache()
+
 	if next(sessions) then
 		notify_subscribers()
 	end
 end
 
----注册新会话（首次出现时调用）
----@param agent_id string 由 hook 脚本生成的唯一标识
----@param window_id string|number 窗口 ID
----@param project string 项目名
----@param agent_type string agent 类型
-function M.register(agent_id, window_id, project, agent_type)
-	if not agent_id or agent_id == "" then
-		return
+-- 清理无效会话
+local function cleanup_invalid_sessions()
+	local changed = false
+	for pid, _ in pairs(sessions) do
+		if not process_exists(pid) then
+			sessions[pid] = nil
+			window_cache[pid] = nil
+			changed = true
+		end
 	end
-	local wid = tonumber(window_id)
-
-	if not sessions[agent_id] then
-		sessions[agent_id] = {
-			agent_id = agent_id,
-			window_id = wid,
-			agent_type = agent_type or "default",
-			project = project or "unknown",
-			started_at = os.time(),
-			state = "idle", -- 新会话默认 idle
-		}
+	if changed then
 		notify_subscribers()
 	end
 end
 
--- 验证会话有效性（兜底：无 window_id 或窗口不存在则移除）
-local function validate_session(agent_id)
-	local session = sessions[agent_id]
+---注册新会话（首次出现时调用）
+---@param pid number Agent 进程 PID
+---@param project string 项目名
+---@param agent_type string agent 类型
+---@param metadata table|nil agent 类型特有的元数据
+function M.register(pid, project, agent_type, metadata)
+	pid = tonumber(pid)
+	if not pid then
+		return
+	end
+
+	if not sessions[pid] then
+		sessions[pid] = {
+			pid = pid,
+			agent_type = agent_type or "default",
+			project = project or "unknown",
+			started_at = os.time(),
+			state = "idle",
+			description = nil,
+			metadata = metadata or {},
+		}
+		-- 异步获取 window_id
+		update_window_cache_for_pid(pid, function()
+			notify_subscribers()
+		end)
+	end
+end
+
+-- 验证会话有效性
+local function validate_session(pid)
+	pid = tonumber(pid)
+	local session = sessions[pid]
 	if not session then
 		return false
 	end
-	if not session.window_id or not window_exists(session.window_id) then
-		sessions[agent_id] = nil
+	if not process_exists(pid) then
+		sessions[pid] = nil
+		window_cache[pid] = nil
 		notify_subscribers()
 		return false
 	end
@@ -176,37 +235,53 @@ local function validate_session(agent_id)
 end
 
 ---设置为运行中状态
----@param agent_id string
-function M.set_running(agent_id)
-	if validate_session(agent_id) then
-		sessions[agent_id].state = "running"
+---@param pid number
+function M.set_running(pid)
+	pid = tonumber(pid)
+	if validate_session(pid) then
+		sessions[pid].state = "running"
 		notify_subscribers()
 	end
 end
 
 ---设置为空闲状态
----@param agent_id string
-function M.set_idle(agent_id)
-	if validate_session(agent_id) then
-		sessions[agent_id].state = "idle"
+---@param pid number
+function M.set_idle(pid)
+	pid = tonumber(pid)
+	if validate_session(pid) then
+		sessions[pid].state = "idle"
 		notify_subscribers()
 	end
 end
 
 ---设置为待审批状态
----@param agent_id string
-function M.set_pending(agent_id)
-	if validate_session(agent_id) then
-		sessions[agent_id].state = "pending"
+---@param pid number
+function M.set_pending(pid)
+	pid = tonumber(pid)
+	if validate_session(pid) then
+		sessions[pid].state = "pending"
+		notify_subscribers()
+	end
+end
+
+---设置任务描述
+---@param pid number
+---@param description string
+function M.set_description(pid, description)
+	pid = tonumber(pid)
+	if validate_session(pid) then
+		sessions[pid].description = description
 		notify_subscribers()
 	end
 end
 
 ---移除会话
----@param agent_id string
-function M.remove(agent_id)
-	if agent_id and sessions[agent_id] then
-		sessions[agent_id] = nil
+---@param pid number
+function M.remove(pid)
+	pid = tonumber(pid)
+	if pid and sessions[pid] then
+		sessions[pid] = nil
+		window_cache[pid] = nil
 		notify_subscribers()
 	end
 end
@@ -253,23 +328,24 @@ function M.get_active_sessions()
 	local result = {}
 	local now = os.time()
 
-	for aid, session in pairs(sessions) do
+	for pid, session in pairs(sessions) do
 		local config = get_agent_config(session.agent_type)
 		table.insert(result, {
-			agent_id = aid,
-			window_id = session.window_id,
+			pid = pid,
+			window_id = window_cache[pid], -- 从缓存读取
 			agent_type = session.agent_type,
 			agent_icon = config.icon,
 			agent_name = config.name,
 			project = session.project,
+			description = session.description,
 			started_at = session.started_at,
 			duration = now - session.started_at,
 			duration_str = format_duration(now - session.started_at),
 			state = session.state,
+			metadata = session.metadata,
 		})
 	end
 
-	-- 按开始时间排序（最新的在前）
 	table.sort(result, function(a, b)
 		return a.started_at > b.started_at
 	end)
@@ -278,13 +354,26 @@ function M.get_active_sessions()
 end
 
 ---聚焦会话窗口
----@param agent_id string
+---@param pid number
 ---@return boolean
-function M.focus_session(agent_id)
-	local session = sessions[agent_id]
-	if session and session.window_id then
-		return focus_window_by_id(session.window_id)
+function M.focus_session(pid)
+	pid = tonumber(pid)
+	if not pid then
+		return false
 	end
+
+	-- 优先使用缓存
+	local window_id = window_cache[pid]
+	if window_id then
+		return focus_window_by_id(window_id)
+	end
+
+	-- 缓存未命中，异步获取后聚焦
+	update_window_cache_for_pid(pid, function(wid)
+		if wid then
+			focus_window_by_id(wid)
+		end
+	end)
 	return false
 end
 
@@ -301,10 +390,16 @@ function M.get_agent_icon(agent_type)
 	return get_agent_config(agent_type).icon
 end
 
+---获取 window_id（供外部使用）
+---@param pid number
+---@return number|nil
+function M.get_window_id(pid)
+	return window_cache[tonumber(pid)]
+end
+
 ---初始化模块
 function M.init()
 	-- 使用 startup 信号恢复会话
-	-- AwesomeWM 进入事件循环时，所有窗口已被管理
 	awesome.connect_signal("startup", function()
 		restore_sessions()
 	end)
@@ -314,20 +409,15 @@ function M.init()
 		save_sessions()
 	end)
 
-	-- 监听窗口关闭事件，清理该窗口的所有会话（备用机制）
-	client.connect_signal("unmanage", function(c)
-		local wid = c.window
-		local changed = false
-		for aid, session in pairs(sessions) do
-			if session.window_id == wid then
-				sessions[aid] = nil
-				changed = true
-			end
-		end
-		if changed then
-			notify_subscribers()
-		end
-	end)
+	-- 定期清理无效会话并更新窗口缓存
+	gears.timer({
+		timeout = 30,
+		autostart = true,
+		callback = function()
+			cleanup_invalid_sessions()
+			update_all_window_cache()
+		end,
+	})
 end
 
 return M

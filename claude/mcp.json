@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "tracker": {
+      "command": "python3",
+      "args": ["~/.claude/mcp/tracker-server.py"]
+    }
+  }
+}

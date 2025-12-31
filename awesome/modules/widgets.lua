@@ -619,8 +619,8 @@ local function update_session_list()
 				state_color = colors.cyan
 			end
 
-			-- 获取窗口标题
-			local title = get_window_title(session.window_id)
+			-- 优先使用 description，没有则使用窗口标题
+			local title = session.description or get_window_title(session.window_id)
 			local title_display = truncate_text(title, 40)
 
 			local item = wibox.widget({
@@ -679,7 +679,7 @@ local function update_session_list()
 
 			-- Click to focus session window
 			item:buttons(gears.table.join(awful.button({}, 1, function()
-				tracker.focus_session(session.agent_id)
+				tracker.focus_session(session.pid)
 				agent_popup.visible = false
 			end)))
 
