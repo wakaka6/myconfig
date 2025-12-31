@@ -525,7 +525,45 @@ local agent_popup = awful.popup({
 	ontop = true,
 })
 
--- Update session list in popup
+-- 根据 window_id 获取窗口所在的 tag 名称
+local function get_window_tag(window_id)
+	if not window_id then
+		return nil
+	end
+	for _, c in ipairs(client.get()) do
+		if c.window == window_id then
+			local tag = c.first_tag
+			return tag and tag.name or nil
+		end
+	end
+	return nil
+end
+
+-- 根据 window_id 获取窗口标题
+local function get_window_title(window_id)
+	if not window_id then
+		return nil
+	end
+	for _, c in ipairs(client.get()) do
+		if c.window == window_id then
+			return c.name
+		end
+	end
+	return nil
+end
+
+-- 截断过长的文本
+local function truncate_text(text, max_len)
+	if not text then
+		return ""
+	end
+	if #text <= max_len then
+		return text
+	end
+	return text:sub(1, max_len - 3) .. "..."
+end
+
+-- Update session list in popup (按 tag 分组)
 local function update_session_list()
 	session_list:reset()
 
@@ -540,78 +578,121 @@ local function update_session_list()
 		return
 	end
 
+	-- 按 tag 分组
+	local groups = {}
+	local group_order = {}
 	for _, session in ipairs(sessions) do
-		-- State icon and color
-		local state_icon, state_color
-		if session.state == "running" then
-			state_icon = "󰓕"
-			state_color = colors.green
-		elseif session.state == "pending" then
-			state_icon = "󰌆"
-			state_color = colors.yellow
-		else -- idle
-			state_icon = "󰏤"
-			state_color = colors.cyan
+		local tag_name = get_window_tag(session.window_id) or "unknown"
+		if not groups[tag_name] then
+			groups[tag_name] = {}
+			table.insert(group_order, tag_name)
 		end
+		table.insert(groups[tag_name], session)
+	end
 
-		local item = wibox.widget({
+	-- 按分组显示
+	for _, tag_name in ipairs(group_order) do
+		-- Tag 标题
+		session_list:add(wibox.widget({
 			{
-				{
-					-- State icon
-					{
-						markup = "<span foreground='" .. state_color .. "'>" .. state_icon .. "</span>",
-						font = "JetBrainsMono Nerd Font 11",
-						widget = wibox.widget.textbox,
-					},
-					-- Agent icon
-					{
-						markup = "<span foreground='" .. colors.purple .. "'>" .. session.agent_icon .. "</span>",
-						font = "JetBrainsMono Nerd Font 11",
-						widget = wibox.widget.textbox,
-					},
-					-- Project name
-					{
-						markup = "<span foreground='" .. colors.fg .. "'>" .. session.project .. "</span>",
-						font = "JetBrainsMono Nerd Font 10",
-						widget = wibox.widget.textbox,
-					},
-					-- Duration
-					{
-						markup = "<span foreground='" .. colors.comment .. "'>" .. session.duration_str .. "</span>",
-						font = "JetBrainsMono Nerd Font 10",
-						widget = wibox.widget.textbox,
-					},
-					layout = wibox.layout.fixed.horizontal,
-					spacing = dpi(8),
-				},
-				left = dpi(4),
-				right = dpi(4),
-				top = dpi(2),
-				bottom = dpi(2),
-				widget = wibox.container.margin,
+				markup = "<span foreground='" .. colors.cyan .. "' font_weight='bold'>󰓹 " .. tag_name .. "</span>",
+				font = "JetBrainsMono Nerd Font 10",
+				widget = wibox.widget.textbox,
 			},
-			bg = colors.selection .. "80",
-			shape = function(cr, w, h)
-				gears.shape.rounded_rect(cr, w, h, dpi(4))
-			end,
-			widget = wibox.container.background,
-		})
+			top = dpi(4),
+			bottom = dpi(2),
+			widget = wibox.container.margin,
+		}))
 
-		-- Click to focus session window
-		item:buttons(gears.table.join(awful.button({}, 1, function()
-			tracker.focus_session(session.agent_id)
-			agent_popup.visible = false
-		end)))
+		-- 该 tag 下的 sessions
+		for _, session in ipairs(groups[tag_name]) do
+			-- State icon and color
+			local state_icon, state_color
+			if session.state == "running" then
+				state_icon = "󰓕"
+				state_color = colors.green
+			elseif session.state == "pending" then
+				state_icon = "󰌆"
+				state_color = colors.yellow
+			else -- idle
+				state_icon = "󰏤"
+				state_color = colors.cyan
+			end
 
-		-- Hover effect
-		item:connect_signal("mouse::enter", function()
-			item.bg = colors.selection
-		end)
-		item:connect_signal("mouse::leave", function()
-			item.bg = colors.selection .. "80"
-		end)
+			-- 获取窗口标题
+			local title = get_window_title(session.window_id)
+			local title_display = truncate_text(title, 40)
 
-		session_list:add(item)
+			local item = wibox.widget({
+				{
+					{
+						-- 第一行：状态、图标、项目、时长
+						{
+							-- State icon
+							{
+								markup = "<span foreground='" .. state_color .. "'>" .. state_icon .. "</span>",
+								font = "JetBrainsMono Nerd Font 11",
+								widget = wibox.widget.textbox,
+							},
+							-- Agent icon
+							{
+								markup = "<span foreground='" .. colors.purple .. "'>" .. session.agent_icon .. "</span>",
+								font = "JetBrainsMono Nerd Font 11",
+								widget = wibox.widget.textbox,
+							},
+							-- Project name
+							{
+								markup = "<span foreground='" .. colors.fg .. "'>" .. session.project .. "</span>",
+								font = "JetBrainsMono Nerd Font 10",
+								widget = wibox.widget.textbox,
+							},
+							-- Duration
+							{
+								markup = "<span foreground='" .. colors.comment .. "'>" .. session.duration_str .. "</span>",
+								font = "JetBrainsMono Nerd Font 10",
+								widget = wibox.widget.textbox,
+							},
+							layout = wibox.layout.fixed.horizontal,
+							spacing = dpi(8),
+						},
+						-- 第二行：窗口标题
+						{
+							markup = "<span foreground='" .. colors.comment .. "'>  " .. title_display .. "</span>",
+							font = "JetBrainsMono Nerd Font 9",
+							widget = wibox.widget.textbox,
+						},
+						layout = wibox.layout.fixed.vertical,
+						spacing = dpi(2),
+					},
+					left = dpi(12), -- 缩进，显示层级关系
+					right = dpi(4),
+					top = dpi(4),
+					bottom = dpi(4),
+					widget = wibox.container.margin,
+				},
+				bg = colors.selection .. "80",
+				shape = function(cr, w, h)
+					gears.shape.rounded_rect(cr, w, h, dpi(4))
+				end,
+				widget = wibox.container.background,
+			})
+
+			-- Click to focus session window
+			item:buttons(gears.table.join(awful.button({}, 1, function()
+				tracker.focus_session(session.agent_id)
+				agent_popup.visible = false
+			end)))
+
+			-- Hover effect
+			item:connect_signal("mouse::enter", function()
+				item.bg = colors.selection
+			end)
+			item:connect_signal("mouse::leave", function()
+				item.bg = colors.selection .. "80"
+			end)
+
+			session_list:add(item)
+		end
 	end
 end
 
