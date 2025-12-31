@@ -357,15 +357,12 @@ M.globalkeys = gears.table.join(
 		awful.spawn.with_shell("warpd --hint --oneshot --click 1")
 	end, { description = "warpd hint + click", group = "mouse" }),
 	awful.key({ modkey, "Shift" }, ".", function()
-		local warpd_notify = naughty.notify({
-			title = "Warpd Grid Mode",
-			text = "方向键移动 | u/i/o 左/中/右键\nd/e 滚动 | Esc/C-q 退出",
-			timeout = 0,
-		})
-		awful.spawn.easy_async("warpd --grid", function()
-			naughty.destroy(warpd_notify)
-		end)
-	end, { description = "warpd grid mode", group = "mouse" }),
+		-- 点击屏幕右上角通知区域
+		local s = awful.screen.focused()
+		local x = s.geometry.x + s.geometry.width - 200 -- 距右边200px
+		local y = s.geometry.y + 100 -- 距顶部100px
+		awful.spawn.with_shell(string.format("xdotool mousemove --sync %d %d && xdotool click 1", x, y))
+	end, { description = "click notification area", group = "mouse" }),
 	awful.key({ modkey, "Control" }, ".", function()
 		local warpd_notify = naughty.notify({
 			title = "Warpd Normal Mode",

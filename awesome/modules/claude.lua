@@ -4,6 +4,7 @@ local gears = require("gears")
 local lgi = require("lgi")
 local GLib = lgi.GLib
 local agents = require("modules.agents")
+local json = require("lib.dkjson")
 
 local M = {}
 
@@ -124,14 +125,13 @@ local function notify(text, opts)
 	})
 end
 
-local function parse_json_field(json, field)
-	if not json then
+local function parse_json_field(json_str, field)
+	if not json_str then
 		return nil
 	end
-	local pattern = '"' .. field .. '"%s*:%s*"(.-)"'
-	local match = json:match(pattern)
-	if match then
-		return match:gsub("\\n", "\n"):gsub("\\t", "\t"):gsub('\\"', '"'):gsub("\\\\", "\\")
+	local data = json.decode(json_str)
+	if type(data) == "table" then
+		return data[field]
 	end
 	return nil
 end
@@ -630,10 +630,12 @@ function M.hook(b64_json)
 		-- 保存通知引用，用于聚焦时自动关闭
 		if n and wid then
 			active_notifications[n] = wid
-			-- 通知被销毁时清理引用
-			n:connect_signal("destroyed", function()
-				active_notifications[n] = nil
-			end)
+			-- 通知被销毁时清理引用（检查方法是否存在）
+			if n.connect_signal then
+				n:connect_signal("destroyed", function()
+					active_notifications[n] = nil
+				end)
+			end
 		end
 	end)
 

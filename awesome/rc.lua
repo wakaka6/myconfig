@@ -479,7 +479,10 @@ tracker.init()
 -- Initialize widgets (网络、CPU、内存、温度)
 widgets.init()
 
--- Restore dynamic tags
+-- Initialize tag persistence (监听窗口创建事件)
+tag_persist.init()
+
+-- Restore dynamic tags (必须同步执行，否则窗口会被分配到默认 tag)
 tag_persist.restore()
 
 -- Run autostart applications
