@@ -275,6 +275,29 @@ function M.set_description(pid, description)
 	end
 end
 
+---设置会话笔记
+---@param pid number
+---@param notes string
+function M.set_notes(pid, notes)
+	pid = tonumber(pid)
+	if validate_session(pid) then
+		sessions[pid].notes = notes
+		save_sessions()
+		notify_subscribers()
+	end
+end
+
+---获取会话笔记
+---@param pid number
+---@return string|nil
+function M.get_notes(pid)
+	pid = tonumber(pid)
+	if pid and sessions[pid] then
+		return sessions[pid].notes
+	end
+	return nil
+end
+
 ---移除会话
 ---@param pid number
 function M.remove(pid)
@@ -338,6 +361,7 @@ function M.get_active_sessions()
 			agent_name = config.name,
 			project = session.project,
 			description = session.description,
+			notes = session.notes,
 			started_at = session.started_at,
 			duration = now - session.started_at,
 			duration_str = format_duration(now - session.started_at),

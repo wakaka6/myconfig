@@ -523,6 +523,7 @@ local agent_popup = awful.popup({
 	end,
 	visible = false,
 	ontop = true,
+	minimum_width = dpi(520),
 })
 
 -- 根据 window_id 获取窗口所在的 tag 名称
@@ -561,6 +562,32 @@ local function truncate_text(text, max_len)
 		return text
 	end
 	return text:sub(1, max_len - 3) .. "..."
+end
+
+-- 安全的 shell 引用（单引号内只需处理单引号本身）
+local function shell_quote(s)
+	if s == nil or s == "" then
+		return "''"
+	end
+	return "'" .. s:gsub("'", "'\"'\"'") .. "'"
+end
+
+-- 编辑会话笔记 (使用 rofi 支持中文输入)
+local function edit_session_note(session)
+	agent_popup.visible = false
+	local existing = session.notes or ""
+	-- rofi dmenu 需要 stdin，-normal-window 防止失焦关闭
+	local cmd = "echo '' | rofi -dmenu -normal-window -p '📝 笔记' -l 0 -filter " .. shell_quote(existing)
+	-- 延迟执行避免焦点竞争
+	gears.timer.start_new(0.05, function()
+		awful.spawn.easy_async_with_shell(cmd, function(stdout)
+			local input = stdout:gsub("^%s*(.-)%s*$", "%1")
+			if input ~= "" then
+				tracker.set_notes(session.pid, input)
+			end
+		end)
+		return false
+	end)
 end
 
 -- Update session list in popup (按 tag 分组)
@@ -621,50 +648,100 @@ local function update_session_list()
 
 			-- 优先使用 description，没有则使用窗口标题
 			local title = session.description or get_window_title(session.window_id)
-			local title_display = truncate_text(title, 40)
+			local title_display = truncate_text(title, 50)
+
+			-- 笔记显示内容
+			local notes_display = session.notes and session.notes ~= ""
+					and "<span foreground='" .. colors.fg .. "'>" .. truncate_text(session.notes, 30) .. "</span>"
+				or "<span foreground='" .. colors.comment .. "' style='italic'>右键添加...</span>"
 
 			local item = wibox.widget({
 				{
 					{
-						-- 第一行：状态、图标、项目、时长
+						-- 左侧：会话信息
 						{
-							-- State icon
 							{
-								markup = "<span foreground='" .. state_color .. "'>" .. state_icon .. "</span>",
-								font = "JetBrainsMono Nerd Font 11",
-								widget = wibox.widget.textbox,
+								-- 第一行：状态、图标、项目、时长
+								{
+									-- State icon
+									{
+										markup = "<span foreground='"
+											.. state_color
+											.. "'>"
+											.. state_icon
+											.. "</span>",
+										font = "JetBrainsMono Nerd Font 11",
+										widget = wibox.widget.textbox,
+									},
+									-- Agent icon
+									{
+										markup = "<span foreground='"
+											.. colors.purple
+											.. "'>"
+											.. session.agent_icon
+											.. "</span>",
+										font = "JetBrainsMono Nerd Font 11",
+										widget = wibox.widget.textbox,
+									},
+									-- Project name
+									{
+										markup = "<span foreground='"
+											.. colors.fg
+											.. "'>"
+											.. session.project
+											.. "</span>",
+										font = "JetBrainsMono Nerd Font 10",
+										widget = wibox.widget.textbox,
+									},
+									-- Duration
+									{
+										markup = "<span foreground='"
+											.. colors.comment
+											.. "'>"
+											.. session.duration_str
+											.. "</span>",
+										font = "JetBrainsMono Nerd Font 10",
+										widget = wibox.widget.textbox,
+									},
+									layout = wibox.layout.fixed.horizontal,
+									spacing = dpi(6),
+								},
+								-- 第二行：窗口标题
+								{
+									markup = "<span foreground='"
+										.. colors.comment
+										.. "'>  "
+										.. title_display
+										.. "</span>",
+									font = "JetBrainsMono Nerd Font 9",
+									widget = wibox.widget.textbox,
+								},
+								layout = wibox.layout.fixed.vertical,
+								spacing = dpi(2),
 							},
-							-- Agent icon
-							{
-								markup = "<span foreground='" .. colors.purple .. "'>" .. session.agent_icon .. "</span>",
-								font = "JetBrainsMono Nerd Font 11",
-								widget = wibox.widget.textbox,
-							},
-							-- Project name
-							{
-								markup = "<span foreground='" .. colors.fg .. "'>" .. session.project .. "</span>",
-								font = "JetBrainsMono Nerd Font 10",
-								widget = wibox.widget.textbox,
-							},
-							-- Duration
-							{
-								markup = "<span foreground='" .. colors.comment .. "'>" .. session.duration_str .. "</span>",
-								font = "JetBrainsMono Nerd Font 10",
-								widget = wibox.widget.textbox,
-							},
-							layout = wibox.layout.fixed.horizontal,
-							spacing = dpi(8),
+							forced_width = dpi(380),
+							widget = wibox.container.constraint,
 						},
-						-- 第二行：窗口标题
+						-- 分隔线
 						{
-							markup = "<span foreground='" .. colors.comment .. "'>  " .. title_display .. "</span>",
-							font = "JetBrainsMono Nerd Font 9",
-							widget = wibox.widget.textbox,
+							forced_width = dpi(1),
+							bg = colors.selection,
+							widget = wibox.container.background,
 						},
-						layout = wibox.layout.fixed.vertical,
-						spacing = dpi(2),
+						-- 右侧：笔记区域
+						{
+							{
+								markup = notes_display,
+								font = "JetBrainsMono Nerd Font 9",
+								widget = wibox.widget.textbox,
+							},
+							left = dpi(8),
+							right = dpi(4),
+							widget = wibox.container.margin,
+						},
+						layout = wibox.layout.fixed.horizontal,
 					},
-					left = dpi(12), -- 缩进，显示层级关系
+					left = dpi(12),
 					right = dpi(4),
 					top = dpi(4),
 					bottom = dpi(4),
@@ -677,11 +754,16 @@ local function update_session_list()
 				widget = wibox.container.background,
 			})
 
-			-- Click to focus session window
-			item:buttons(gears.table.join(awful.button({}, 1, function()
-				tracker.focus_session(session.pid)
-				agent_popup.visible = false
-			end)))
+			-- 左键聚焦窗口，右键编辑笔记
+			item:buttons(gears.table.join(
+				awful.button({}, 1, function()
+					tracker.focus_session(session.pid)
+					agent_popup.visible = false
+				end),
+				awful.button({}, 3, function()
+					edit_session_note(session)
+				end)
+			))
 
 			-- Hover effect
 			item:connect_signal("mouse::enter", function()
