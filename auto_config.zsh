@@ -56,6 +56,7 @@ typeset -A SPECIAL_CONFIGS=(
     [warpd]="symlink:warpd/config:$HOME/.config/warpd/config"
     [claude-scripts]="symlink:claude/scripts:$HOME/.claude/scripts"
     [claude-hooks]="merge:claude/hooks.json:$HOME/.claude/settings.json"
+    [claude-hooks-tmux]="merge:claude/hooks-tmux.json:$HOME/.claude/settings.json"
 )
 
 # ============================================================================

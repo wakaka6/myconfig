@@ -210,3 +210,4 @@ zsh/.zsh_history
 zsh/.zhistory
 zsh/.zimrc
 zsh/.zcompcache
+/zsh/.zshrc.pre-zim
