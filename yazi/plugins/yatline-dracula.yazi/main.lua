@@ -10,8 +10,9 @@ local dracula_palette = {
 	cyan = "#8be9fd", -- Dracula cyan
 	green = "#50fa7b", -- Dracula green
 	orange = "#ffb86c", -- Dracula orange
-	pink = "#ff79c6", -- Dracula pink
-	purple = "#bd93f9", -- Dracula purple
+		pink = "#ff79c6", -- Dracula pink
+		magenta = "#ff79c6", -- Dracula magenta
+		purple = "#bd93f9", -- Dracula purple
 	red = "#ff5555", -- Dracula red
 	yellow = "#f1fa8c", -- Dracula yellow
 }
@@ -48,12 +49,12 @@ local function dracula_theme()
 		cut = { icon = "", fg = palette.red }, -- Using red for cut items
 
 		total = { icon = "󰮍", fg = palette.yellow }, -- Using yellow for totals
-		succ = { icon = "", fg = palette.green }, -- Using green for success
-		fail = { icon = "", fg = palette.red }, -- Using red for failures
-		found = { icon = "󰮕", fg = palette.cyan }, -- Using cyan for found items
-		processed = { icon = "󰐍", fg = palette.orange }, -- Using orange for processed items
-	}
-end
+			success = { icon = "", fg = palette.green }, -- Using green for success
+			failed = { icon = "", fg = palette.red }, -- Using red for failures
+			files = { icon = "", fg = palette.blue }, -- Using blue for files
+			filtereds = { icon = "", fg = palette.magenta }, -- Using magenta for filtered files
+		}
+	end
 
 return {
 	setup = function()

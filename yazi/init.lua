@@ -56,10 +56,14 @@ Header:children_add(function()
 	return ui.Span(ya.user_name() .. "@" .. ya.host_name() .. ":"):fg("green")
 end, 500, Header.LEFT)
 
-require("git"):setup()
+pcall(function()
+	require("git"):setup()
+end)
 
 if os.getenv("NVIM") then
-	require("toggle-pane"):entry("min-preview")
+	pcall(function()
+		require("toggle-pane"):entry("min-preview")
+	end)
 end
 
 -- You can configure your bookmarks by lua language
@@ -86,7 +90,8 @@ table.insert(bookmarks, {
 	key = "d",
 })
 
-require("yamb"):setup({
+pcall(function()
+	require("yamb"):setup({
 	-- Optional, the path ending with path seperator represents folder.
 	bookmarks = bookmarks,
 	-- Optional, recieve notification everytime you jump.
@@ -98,4 +103,5 @@ require("yamb"):setup({
 	-- Optional, the path of bookmarks
 	path = (ya.target_family() == "windows" and os.getenv("APPDATA") .. "\\yazi\\config\\bookmark")
 		or (os.getenv("HOME") .. "/.config/yazi/bookmark"),
-})
+	})
+end)

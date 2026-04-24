@@ -24,14 +24,14 @@ prepend_keymap = [
   { on = [
     "'",
     "a",
-  ], run = "plugin yamb --args=save", desc = "Add bookmark" },
+  ], run = "plugin yamb save", desc = "Add bookmark" },
   { on = [
     "<C-g>",
-  ], run = "plugin yamb --args=jump_by_fzf", desc = "Jump bookmark by fzf" },
+  ], run = "plugin yamb jump_by_fzf", desc = "Jump bookmark by fzf" },
   { on = [
     "'",
     "d",
-  ], run = "plugin yamb --args=delete_by_key", desc = "Delete bookmark by key" },
+  ], run = "plugin yamb delete_by_key", desc = "Delete bookmark by key" },
 
   # archive
   { on = [
@@ -102,7 +102,7 @@ keymap = [
 
   # Open file
   { on = "o", run = "open", desc = "Open selected files" },
-  { on = "E", run = 'shell --block -- ${EDITOR:-nvim} "$@"', desc = "Edit selected files" },
+  { on = "E", run = 'shell --block -- ${EDITOR:-nvim} %s', desc = "Edit selected files" },
   { on = "O", run = "open --interactive", desc = "Open selected files interactively" },
   { on = "<S-Enter>", run = "open --interactive", desc = "Open selected files interactively" },
 

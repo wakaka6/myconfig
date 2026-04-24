@@ -40,13 +40,13 @@ hash = "d6f60c24d8c0cf57a855bf46115b2502"
 
 [[plugin.deps]]
 use = "wakaka6/yatline-dracula"
-rev = "598ea29"
-hash = "303f8ca9084dbdd15c640b1f7388f54d"
+rev = "0c235ef"
+hash = "bf4102b8f0500c7c33d1a349093b09b0"
 
 [[plugin.deps]]
 use = "imsi32/yatline"
-rev = "88bd1c5"
-hash = "981acbe9b758b1af3a8154c932bb936d"
+rev = "c5d4b48"
+hash = "e6e98d12b1648d1894c2b560d85eeaa7"
 
 [[plugin.deps]]
 use = "yazi-rs/plugins:piper"

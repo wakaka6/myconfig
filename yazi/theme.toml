@@ -6,19 +6,17 @@
 "$schema" = "https://yazi-rs.github.io/schemas/theme.json"
 
 [flavor]
-
 dark = "dracula"
 
+[app]
+overall = { bg = "#282a36" }
+
 [mgr]
-
-# hovered
-preview_hovered = { fg = "#f8f8f2", bg = "#44475a" }
-
-# tab
 tab_width = 12
-
-# Border
 border_symbol = " "
+
+[indicator]
+preview = { fg = "#f8f8f2", bg = "#44475a" }
 
 [filetype]
 
