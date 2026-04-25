@@ -36,9 +36,9 @@ gui:
   showCommandLog: true
   commandLogSize: 8
 git:
-  paging:
-    colorArg: always
-    pager: delta --dark --paging=never --24-bit-color=never --syntax-theme="OneHalfDark"
+  pagers:
+    - colorArg: always
+      pager: delta --dark --paging=never --24-bit-color=never --syntax-theme="OneHalfDark"
   commit:
     signOff: false
   merging:

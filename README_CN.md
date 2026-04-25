@@ -2,158 +2,171 @@
 
 [English](./README.md) | 简体中文
 
-本项目存储 Linux 下各种软件的配置文件，帮助我快速配置 Linux 桌面环境。
+这是我的日常终端和桌面环境 dotfiles。当前仓库同时支持 macOS 和 Arch
+Linux，并通过安装 profile 区分平台，避免在 macOS 上默认安装 Linux
+窗口管理器配置。
+
+仓库建议固定放在 `$HOME/myconfig`，因为配置文件会以符号链接指回这个目录。
 
 <div align=center> <img src=".img/demo.png" width = 100%/> </div>
 
-## 快速开始
+## macOS
 
-将本项目克隆到 home 目录。注意：此项目不能从 home 目录删除。
+克隆仓库：
 
 ```sh
-sudo pacman -Sy git paru python3 curl wget
-git clone --recursive https://github.com/wakaka6/myconfig.git $HOME/myconfig
-# 如果在虚拟机上，使用以下命令克隆
-git clone -b vm --recursive https://github.com/wakaka6/myconfig.git $HOME/myconfig
+git clone --recursive https://github.com/wakaka6/myconfig.git "$HOME/myconfig"
+cd "$HOME/myconfig"
 ```
 
-然后，安装前置软件
+安装基础工具：
 
 ```sh
-paru -S the_silver_searcher neovim lazygit ripgrep fd delta fzf rofi tealdeer zoxide
+brew install neovim tmux starship zoxide fd ripgrep fzf git-delta bat tree \
+  yazi ffmpeg sevenzip poppler imagemagick chafa resvg jq \
+  gitui lazygit lsd highlight atool w3m mediainfo exiftool mpv cmake go
+
+brew install --cask kitty font-jetbrains-mono-nerd
 ```
 
-文件管理器
+安装 macOS 默认配置：
 
 ```sh
-paru -S thunar filezilla
+./auto_config.zsh --profile macos install
 ```
 
-美化
+macOS profile 只会链接：
 
-```sh
-sudo pacman -S picom feh variety polybar-git arc-gtk-theme papirus-icon-theme adapta-gtk-theme arc-icon-theme
-# 配置 GTK 主题
-sudo pacman -S lxappearance
-# 配置 i3 主题
-sudo pacman -S kvantum
-
-# 图形化的 sudo 认证
-sudo pacman -S polkit-gnome
+```text
+zsh nvim tmux vimrc yazi lazygit gitui kitty skhd amethyst
 ```
 
-Shell
+它会刻意跳过 `i3`、`awesome`、`polybar`、`picom`、`rofi`、`dunst`、
+`zathura`、`alacritty` 等 Linux 桌面配置，也不会配置 Claude Code。
+
+### macOS 窗口管理
+
+macOS 默认推荐 Amethyst 做平铺窗口管理，skhd 只负责应用启动和 Space 切换：
 
 ```sh
-sudo pacman -S zsh starship
+brew install --cask amethyst
+brew install koekeishiya/formulae/skhd
+./auto_config.zsh -p amethyst -p skhd install
+skhd --start-service
+open -a Amethyst
 ```
 
-增强 i3
+需要在系统设置里给 Amethyst 和 skhd 授予辅助功能权限。
+
+yabai 作为高级可选方案保留：
 
 ```sh
-# 类似 bspwm 的螺旋平铺
-paru -S autotiling
-
-# 通过标签可视化聚焦窗口
-paru -S wmfocus
+brew install koekeishiya/formulae/yabai koekeishiya/formulae/skhd jq
+./auto_config.zsh -p yabai -p skhd install
+yabai --start-service
+skhd --start-service
 ```
 
-AwesomeWM（i3 的替代方案）
+启用前先看 [yabai/README.md](./yabai/README.md)。新版 macOS 上，移动窗口到
+Space 等功能可能需要额外权限或 scripting addition。
+
+## Arch Linux
+
+克隆仓库：
 
 ```sh
+sudo pacman -Sy git python3 curl wget
+git clone --recursive https://github.com/wakaka6/myconfig.git "$HOME/myconfig"
+```
+
+安装常用工具：
+
+```sh
+paru -S the_silver_searcher neovim lazygit ripgrep fd delta fzf tealdeer zoxide
+sudo pacman -S zsh starship lsd htop duf
+```
+
+安装 Linux 默认配置：
+
+```sh
+cd "$HOME/myconfig"
+./auto_config.zsh --profile linux install
+```
+
+Linux profile 包含终端/编辑器配置，以及 `i3`、`awesome`、`polybar`、`picom`、
+`rofi`、`dunst`、`zathura`、`warpd` 等 Linux 桌面配置。Claude Code 配置不在默认
+profile 中，需要时手动指定安装。
+
+桌面相关软件：
+
+```sh
+sudo pacman -S picom feh variety lxappearance kvantum polkit-gnome
+paru -S polybar-git rofi alacritty xclip warpd autotiling wmfocus
 sudo pacman -S awesome
-# 必需依赖
-paru -S picom rofi alacritty xclip warpd
 ```
 
-Nerd 字体
+字体：
 
 ```sh
-paru -S ttf-unifont siji-git ttf-font-awesome
-
-paru -S ttf-linux-libertine ttf-inconsolata ttf-joypixels ttf-twemoji-color noto-fonts-emoji ttf-liberation ttf-droid
-
-paru -S ttf-jetbrains-mono-nerd
-
-# 中文字体
-paru -S wqy-bitmapfont wqy-microhei wqy-microhei-lite wqy-zenhei adobe-source-han-mono-cn-fonts adobe-source-han-sans-cn-fonts adobe-source-han-serif-cn-fonts
+paru -S ttf-jetbrains-mono-nerd ttf-unifont siji-git ttf-font-awesome
+paru -S wqy-bitmapfont wqy-microhei wqy-microhei-lite wqy-zenhei \
+  adobe-source-han-mono-cn-fonts adobe-source-han-sans-cn-fonts \
+  adobe-source-han-serif-cn-fonts
 ```
 
-如果在虚拟机上运行，执行以下命令
+Yazi 预览依赖：
 
 ```sh
-pacman -S open-vm-tools-desktop
+sudo pacman -S yazi ffmpeg 7zip jq poppler imagemagick ueberzugpp
 ```
 
-ranger 前置依赖（可选）
+Neovim 依赖：
 
 ```sh
-pacman -S ranger highlight atool w3m poppler mediainfo ueberzug zathura-pdf-mupdf
+sudo pacman -S neovim python-pynvim python-pip xdotool
+pip install pynvim jedi
 ```
 
-yazi 前置依赖（可选，推荐）
-
-> yazi 比 ranger 更好，更快。
+可选软件：
 
 ```sh
-pacman -S yazi ffmpeg 7zip jq poppler imagemagick ueberzugpp
-```
-
-Neovim 前置依赖
-
-```sh
-sudo pacman -S neovim python-pynvim
-sudo pacman -S python-pip
-pip install pynvim
-pip install jedi
-curl -sL install-node.now.sh/lts | bash
-sudo pacman -S xdotool
-```
-
-LaTeX 前置依赖
-
-```sh
+sudo pacman -S thunar filezilla flameshot network-manager-applet libreoffice-still dunst
+sudo pacman -S ranger highlight atool w3m poppler mediainfo zathura-pdf-mupdf
 paru -S texlive texlive-lang biber
+sudo pacman -S translate-shell remmina freerdp
 ```
 
-传统软件的现代替代
+虚拟机环境：
 
 ```sh
-sudo pacman -S lsd htop duf
+sudo pacman -S open-vm-tools-desktop
 ```
 
-其他软件
+## 安装脚本用法
+
+主要使用 zsh 版本：
 
 ```sh
-sudo pacman -S flameshot
-sudo pacman -S network-manager-applet
-sudo pacman -S libreoffice-still
-sudo pacman -S dunst # 通知
-# 翻译软件
-sudo pacman -S goldendict
-sudo pacman -S translate-shell
-sudo pacman -S remmina freerdp # RDP 工具
-
-# 输入法
-sudo pacman -S fcitx5-im # 基础包组
-sudo pacman -S fcitx5-chinese-addons # 官方中文输入引擎
-# sudo pacman -S fcitx5-anthy # 日文输入引擎
-paru -S fcitx5-pinyin-moegirl # 萌娘百科词库
-sudo pacman -S fcitx5-pinyin-zhwiki # 中文维基百科词库
-sudo pacman -S fcitx5-material-color # 主题
+./auto_config.zsh list
+./auto_config.zsh --profile macos list
+./auto_config.zsh --profile linux list
+./auto_config.zsh -p yazi -p tmux install
 ```
 
-最后，运行此命令
+Profiles：
 
-```sh
-cd ~/myconfig && ./auto_config.sh install && reboot
-```
+- `macos`：保守的 macOS 默认配置。
+- `linux`：Linux 桌面默认配置。
+- `common`：跨平台终端/编辑器基础配置。
+- `all`：所有已知配置项。
+
+使用 `-p` 时会绕过 profile，只处理指定配置项。
 
 ## Claude Code
 
-安装 Claude Code 以获得 AI 辅助功能。参考 https://claude.com/product/claude-code 获取安装说明。
+Claude Code 相关配置是可选项，不在 macOS 或 Linux 默认 profile 中。只有确定需要
+这套集成时再显式安装：
 
-安装后，awesome 配置提供快捷访问：
-
-- `mod+g` - 打开 Claude Code 草稿本
-- `mod+/` - 使用 Claude 查询选中文本
+```sh
+./auto_config.zsh -p claude-scripts -p claude-hooks -p claude-hooks-tmux install
+```

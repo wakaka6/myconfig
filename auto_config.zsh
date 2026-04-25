@@ -24,6 +24,7 @@ readonly NC='\033[0m'
 # Global flags
 FORCE_MODE=false
 SELECTED_PLUGINS=()
+PROFILE=""
 
 # Standard symlink configurations: source -> target
 typeset -A CONFIG_ITEMS=(
@@ -45,7 +46,6 @@ typeset -A CONFIG_ITEMS=(
     [polybar]="$HOME/.config/polybar"
     [yabai]="$HOME/.config/yabai"
     [skhd]="$HOME/.config/skhd"
-    [amethyst]="$HOME/.config/amethyst"
 )
 
 # Special configurations: name -> "type:source:target"
@@ -54,6 +54,7 @@ typeset -A SPECIAL_CONFIGS=(
     [lazygit]="symlink:lazygit/config.yml:$HOME/.config/lazygit/config.yml"
     [tmux]="symlink:.tmux.conf:$HOME/.tmux.conf"
     [vimrc]="symlink:.vimrc:$HOME/.vimrc"
+    [amethyst]="symlink:amethyst/amethyst.yml:$HOME/.amethyst.yml"
     [xprofile]="copy:.xprofile:$HOME/.xprofile"
     [scratchpad]="generate:scratchpad_content:$HOME/Documents/scratchpad/CLAUDE.md"
     [warpd]="symlink:warpd/config:$HOME/.config/warpd/config"
@@ -61,6 +62,38 @@ typeset -A SPECIAL_CONFIGS=(
     [claude-hooks]="merge:claude/hooks.json:$HOME/.claude/settings.json"
     [claude-hooks-tmux]="merge:claude/hooks-tmux.json:$HOME/.claude/settings.json"
 )
+
+profile_for_platform() {
+    case "$(uname -s)" in
+        Darwin) echo "macos" ;;
+        Linux) echo "linux" ;;
+        *) echo "common" ;;
+    esac
+}
+
+profile_contains() {
+    local profile=$1
+    local plugin=$2
+
+    case "$profile" in
+        macos)
+            [[ " zsh nvim tmux vimrc yazi lazygit gitui kitty skhd amethyst " == *" $plugin "* ]]
+            ;;
+        linux)
+            [[ " zsh nvim tmux vimrc yazi lazygit gitui kitty i3 i3status awesome polybar picom rofi dunst zathura ranger latexmk alacritty xprofile warpd scratchpad " == *" $plugin "* ]]
+            ;;
+        common)
+            [[ " zsh nvim tmux vimrc yazi lazygit gitui kitty " == *" $plugin "* ]]
+            ;;
+        all)
+            return 0
+            ;;
+        *)
+            log ERROR "Unknown profile: $profile"
+            return 1
+            ;;
+    esac
+}
 
 # ============================================================================
 # Utility Functions
@@ -87,7 +120,8 @@ command_exists() {
 is_plugin_selected() {
     local plugin=$1
     if [[ ${#SELECTED_PLUGINS[@]} -eq 0 ]]; then
-        return 0
+        profile_contains "$PROFILE" "$plugin"
+        return $?
     fi
     for p in "${SELECTED_PLUGINS[@]}"; do
         if [[ "$p" == "$plugin" ]]; then
@@ -345,6 +379,7 @@ install_configs() {
     log INFO "Starting configuration installation..."
     log INFO "Script directory: $SCRIPT_DIR"
     log INFO "Force mode: $FORCE_MODE"
+    log INFO "Profile: $PROFILE"
     if [[ ${#SELECTED_PLUGINS[@]} -gt 0 ]]; then
         log INFO "Selected plugins: ${SELECTED_PLUGINS[*]}"
     fi
@@ -409,6 +444,7 @@ install_configs() {
 
 uninstall_configs() {
     log INFO "Starting configuration removal..."
+    log INFO "Profile: $PROFILE"
     if [[ ${#SELECTED_PLUGINS[@]} -gt 0 ]]; then
         log INFO "Selected plugins: ${SELECTED_PLUGINS[*]}"
     fi
@@ -464,6 +500,7 @@ uninstall_configs() {
 
 show_status() {
     log INFO "Configuration Status Report"
+    log INFO "Profile: $PROFILE"
     echo "===================================="
     echo "Standard Configurations:"
 
@@ -546,6 +583,24 @@ show_status() {
     echo "===================================="
 }
 
+show_plugins() {
+    echo "Profile: $PROFILE"
+    echo "Standard configurations:"
+    for config in "${(ok)CONFIG_ITEMS[@]}"; do
+        if is_plugin_selected "$config"; then
+            echo "  $config"
+        fi
+    done
+    echo "Special configurations:"
+    for config in "${(ok)SPECIAL_CONFIGS[@]}"; do
+        if is_plugin_selected "$config"; then
+            local spec="${SPECIAL_CONFIGS[$config]}"
+            local type="${spec%%:*}"
+            echo "  $config ($type)"
+        fi
+    done
+}
+
 show_help() {
     local std_plugins=$(print -l "${(k)CONFIG_ITEMS[@]}" | sort | sed 's/^/    /')
     local special_plugins=$(for p in "${(k)SPECIAL_CONFIGS[@]}"; do
@@ -564,11 +619,13 @@ COMMANDS:
     install     Install all configurations (default)
     uninstall   Remove all symlinks and generated files
     status      Show current configuration status
+    list        List configurations selected by the active profile/filter
     help        Show this help message
 
 OPTIONS:
     -f, --force             Force overwrite without asking
     -p, --plugin <name>     Only process specified plugin(s), can be used multiple times
+    --profile <name>        Use profile: macos, linux, common, all
     -h, --help              Show this help message
 
 AVAILABLE PLUGINS:
@@ -579,9 +636,12 @@ $std_plugins
 $special_plugins
 
 EXAMPLES:
-    $SCRIPT_NAME                          # Install all (interactive)
-    $SCRIPT_NAME -f install               # Force install all
+    $SCRIPT_NAME                          # Install current platform profile
+    $SCRIPT_NAME --profile macos install  # Install macOS-safe defaults
+    $SCRIPT_NAME --profile linux install  # Install Linux desktop defaults
+    $SCRIPT_NAME --profile all install    # Install every known configuration
     $SCRIPT_NAME -p nvim -p zsh install   # Install only nvim and zsh
+    $SCRIPT_NAME --profile macos list     # List macOS defaults
     $SCRIPT_NAME -p awesome status        # Check status of awesome only
     $SCRIPT_NAME uninstall                # Remove all configurations
 
@@ -600,6 +660,7 @@ EOF
 
 main() {
     local command="install"
+    PROFILE="$(profile_for_platform)"
 
     while [[ $# -gt 0 ]]; do
         case "$1" in
@@ -615,11 +676,19 @@ main() {
                 SELECTED_PLUGINS+=("$2")
                 shift 2
                 ;;
+            --profile)
+                if [[ -z "${2:-}" ]]; then
+                    log ERROR "Missing profile name after $1"
+                    exit 1
+                fi
+                PROFILE="$2"
+                shift 2
+                ;;
             -h|--help)
                 show_help
                 exit 0
                 ;;
-            install|uninstall|status|help)
+            install|uninstall|status|list|help)
                 command=$1
                 shift
                 ;;
@@ -644,6 +713,9 @@ main() {
             ;;
         status)
             show_status
+            ;;
+        list)
+            show_plugins
             ;;
         help)
             show_help

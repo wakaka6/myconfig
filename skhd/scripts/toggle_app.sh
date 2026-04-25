@@ -16,7 +16,7 @@ if [[ "$front_app" == "$app" && ( -z "$title_hint" || "$front_title" == *"$title
     exit 0
 fi
 
-if [[ "$app" == "Alacritty" && -n "$title_hint" ]]; then
+if [[ "$app" == "iTerm2" && -n "$title_hint" ]]; then
     window_id="$(
         yabai -m query --windows 2>/dev/null \
             | jq -r --arg app "$app" --arg title "$title_hint" \
@@ -31,13 +31,13 @@ if [[ "$app" == "Alacritty" && -n "$title_hint" ]]; then
     if [[ -z "$window_id" ]]; then
         case "$title_hint" in
             translate)
-                open -na Alacritty --args --title translate -e zsh -lc 'trans -shell -t zh -4 -sp'
+                open -na iTerm --args zsh -lc 'trans -shell -t zh -4 -sp'
                 ;;
             AItrans)
-                open -na Alacritty --args --title AItrans -e zsh -lc '${GOPATH:-$HOME/go}/bin/chatgpt -d -p translator'
+                open -na iTerm --args zsh -lc '${GOPATH:-$HOME/go}/bin/chatgpt -d -p translator'
                 ;;
             *)
-                open -na Alacritty --args --title "$title_hint"
+                open -na iTerm
                 ;;
         esac
     fi

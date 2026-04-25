@@ -1,6 +1,10 @@
 # yabai + skhd
 
-This setup ports the important parts of the old i3 config to macOS:
+This is an advanced optional macOS window-management setup. The default macOS
+profile uses Amethyst + skhd instead because it needs fewer privileges and is
+closer to a reliable daily setup on recent macOS releases.
+
+Use this setup if you specifically want yabai's BSP tree behavior:
 
 - `alt+h/j/k/l`: focus windows
 - `alt+shift+h/j/k/l`: move windows in the tree
@@ -8,13 +12,13 @@ This setup ports the important parts of the old i3 config to macOS:
 - `alt+shift+1..0`: move the focused window to a Space
 - `alt+r`: resize mode
 - `alt+shift+g`: gaps mode
-- `alt+return`: iTerm2
+- `alt+return`: iTerm
 - `alt+d`: launcher
 
 Install and start:
 
 ```sh
-brew install asmvik/formulae/yabai asmvik/formulae/skhd jq
+brew install koekeishiya/formulae/yabai koekeishiya/formulae/skhd jq
 ./auto_config.zsh -p yabai -p skhd install
 chmod +x ~/.config/yabai/yabairc ~/.config/skhd/scripts/toggle_app.sh
 yabai --start-service

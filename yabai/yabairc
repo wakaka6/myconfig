@@ -74,8 +74,8 @@ yabai -m rule --add app="^Passwords$" manage=off grid=8:8:2:1:4:6
 yabai -m rule --add app="^WeChat$" manage=off grid=8:8:1:1:6:6
 yabai -m rule --add app="^(WeChat|Telegram|Discord|Feishu|飞书|Lark)$" title="^(Preferences|Settings|About|.*Call.*|.*Meeting.*|.*语音.*|.*视频.*|.*会议.*).*" manage=off
 
-# Scratchpad-style apps. Toggle them from skhd with alt+t / alt+shift+t.
+# Scratchpad-style apps. Toggle them from skhd with custom shortcuts if needed.
 yabai -m rule --add app="^ChatGPT$" manage=off grid=8:8:1:1:6:6
-yabai -m rule --add app="^Alacritty$" title="^(translate|AItrans|ChatGPT)$" manage=off grid=8:8:1:1:6:6
+yabai -m rule --add app="^iTerm2?$" title="^(translate|AItrans|ChatGPT)$" manage=off grid=8:8:1:1:6:6
 
 echo "yabai configuration loaded"

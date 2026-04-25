@@ -2,159 +2,177 @@
 
 English | [简体中文](./README_CN.md)
 
-This project stores the configuration files for various software under linux.
-It helps me to quickly configure my linux desktop environment.
+Dotfiles for my daily terminal and desktop setup. The repository now supports
+both macOS and Arch Linux; each platform has its own install profile so Linux
+window-manager configs are not installed on macOS by default.
+
+The repo is expected to live at `$HOME/myconfig` because most config symlinks
+point back into this directory.
 
 <div align=center> <img src=".img/demo.png" width = 100%/> </div>
 
-## Quick start
+## macOS
 
-Clone this project to home directory. Note that this item cannot be deleted from home.
+Clone the repo:
 
 ```sh
-sudo pacman -Sy git paru python3 curl wget
-git clone --recursive https://github.com/wakaka6/myconfig.git $HOME/myconfig
-# if on virtual machine, use the following command to clone the repo
-git clone -b vm --recursive https://github.com/wakaka6/myconfig.git $HOME/myconfig
+git clone --recursive https://github.com/wakaka6/myconfig.git "$HOME/myconfig"
+cd "$HOME/myconfig"
 ```
 
-And then, install prerequirement software
+Install the core tools:
 
 ```sh
-paru -S the_silver_searcher neovim lazygit ripgrep fd delta fzf rofi tealdeer zoxide
+brew install neovim tmux starship zoxide fd ripgrep fzf git-delta bat tree \
+  yazi ffmpeg sevenzip poppler imagemagick chafa resvg jq \
+  gitui lazygit lsd highlight atool w3m mediainfo exiftool mpv cmake go
+
+brew install --cask kitty font-jetbrains-mono-nerd
 ```
 
-File Manager
+Install the default macOS config profile:
 
 ```sh
-paru -S thunar filezilla
+./auto_config.zsh --profile macos install
 ```
 
-Beautify
+The macOS profile links only:
 
-```sh
-sudo pacman -S picom feh variety polybar-git arc-gtk-theme papirus-icon-theme adapta-gtk-theme arc-icon-theme
-# configure GTK theme
-sudo pacman -S lxappearance
-# configure i3 theme
-sudo pacman -S kvantum
-
-# polkit for graphical sudo
-sudo pacman -S polkit-gnome
+```text
+zsh nvim tmux vimrc yazi lazygit gitui kitty skhd amethyst
 ```
 
-shell
+It intentionally skips Linux desktop configs such as `i3`, `awesome`, `polybar`,
+`picom`, `rofi`, `dunst`, `zathura`, and `alacritty`, and it does not configure
+Claude Code.
+
+### macOS Window Management
+
+The recommended macOS setup is Amethyst for tiling plus skhd for application and
+Space shortcuts:
 
 ```sh
-sudo pacman -S zsh starship
+brew install --cask amethyst
+brew install koekeishiya/formulae/skhd
+./auto_config.zsh -p amethyst -p skhd install
+skhd --start-service
+open -a Amethyst
 ```
 
-Reinforce i3
+Grant Accessibility permission to Amethyst and skhd in System Settings.
+
+yabai is available as an advanced optional setup:
 
 ```sh
-# like bspwm to the spiral tiling
-paru -S autotiling
-
-# Visually focus windows by label
-paru -S wmfocus
+brew install koekeishiya/formulae/yabai koekeishiya/formulae/skhd jq
+./auto_config.zsh -p yabai -p skhd install
+yabai --start-service
+skhd --start-service
 ```
 
-AwesomeWM (alternative to i3)
+See [yabai/README.md](./yabai/README.md) before enabling it, especially on newer
+macOS versions where Space-moving features may need extra permissions or the
+scripting addition.
+
+## Arch Linux
+
+Clone the repo:
 
 ```sh
+sudo pacman -Sy git python3 curl wget
+git clone --recursive https://github.com/wakaka6/myconfig.git "$HOME/myconfig"
+```
+
+Install common tools:
+
+```sh
+paru -S the_silver_searcher neovim lazygit ripgrep fd delta fzf tealdeer zoxide
+sudo pacman -S zsh starship lsd htop duf
+```
+
+Install the default Linux profile:
+
+```sh
+cd "$HOME/myconfig"
+./auto_config.zsh --profile linux install
+```
+
+The Linux profile includes the terminal/editor configs and Linux desktop pieces
+such as `i3`, `awesome`, `polybar`, `picom`, `rofi`, `dunst`, `zathura`, and
+`warpd`. Claude Code config is not part of the default profile; install those
+entries explicitly if needed.
+
+Desktop packages:
+
+```sh
+sudo pacman -S picom feh variety lxappearance kvantum polkit-gnome
+paru -S polybar-git rofi alacritty xclip warpd autotiling wmfocus
 sudo pacman -S awesome
-# required dependencies
-paru -S picom rofi alacritty xclip warpd
 ```
 
-Nerd Font
+Fonts:
 
 ```sh
-paru -S ttf-unifont siji-git ttf-font-awesome
-
-paru -S ttf-linux-libertine ttf-inconsolata ttf-joypixels ttf-twemoji-color noto-fonts-emoji ttf-liberation ttf-droid
-
-paru -S ttf-jetbrains-mono-nerd
-
-# zh-CN
-paru -S wqy-bitmapfont wqy-microhei wqy-microhei-lite wqy-zenhei adobe-source-han-mono-cn-fonts adobe-source-han-sans-cn-fonts adobe-source-han-serif-cn-fonts
+paru -S ttf-jetbrains-mono-nerd ttf-unifont siji-git ttf-font-awesome
+paru -S wqy-bitmapfont wqy-microhei wqy-microhei-lite wqy-zenhei \
+  adobe-source-han-mono-cn-fonts adobe-source-han-sans-cn-fonts \
+  adobe-source-han-serif-cn-fonts
 ```
 
-If running on virtual machine, run the following command.
+Yazi preview dependencies:
 
 ```sh
-pacman -S open-vm-tools-desktop
+sudo pacman -S yazi ffmpeg 7zip jq poppler imagemagick ueberzugpp
 ```
 
-About ranger prerequirement (optional)
+Neovim dependencies:
 
 ```sh
-pacman -S ranger highlight atool w3m poppler mediainfo ueberzug zathura-pdf-mupdf
+sudo pacman -S neovim python-pynvim python-pip xdotool
+pip install pynvim jedi
 ```
 
-About yazi prerequirement (optional, recommended)
-
-> yazi is better than ranger, faster.
+Optional software:
 
 ```sh
-pacman -S yazi ffmpeg 7zip jq poppler imagemagick ueberzugpp
-```
-
-About Neovim prerequirement
-
-```sh
-sudo pacman -S neovim python-pynvim
-sudo pacman -S python-pip
-pip install pynvim
-pip install jedi
-curl -sL install-node.now.sh/lts | bash
-sudo pacman -S xdotool
-```
-
-Latex prerequirement
-
-```sh
+sudo pacman -S thunar filezilla flameshot network-manager-applet libreoffice-still dunst
+sudo pacman -S ranger highlight atool w3m poppler mediainfo zathura-pdf-mupdf
 paru -S texlive texlive-lang biber
+sudo pacman -S translate-shell remmina freerdp
 ```
 
-A modern alternative to traditional software
+If running in a virtual machine:
 
 ```sh
-sudo pacman -S lsd htop duf
+sudo pacman -S open-vm-tools-desktop
 ```
 
-Other Software
+## Installer Usage
+
+The zsh installer is the primary script:
 
 ```sh
-sudo pacman -S flameshot
-sudo pacman -S network-manager-applet
-sudo pacman -S libreoffice-still
-sudo pacman -S dunst # notify
-# translation software
-sudo pacman -S goldendict
-sudo pacman -S translate-shell
-sudo pacman -S remmina freerdp # RDP tools
-
-# Input method
-sudo pacman -S fcitx5-im #基础包组
-sudo pacman -S fcitx5-chinese-addons #官方中文输入引擎
-# sudo pacman -S fcitx5-anthy #日文输入引擎
-paru -S fcitx5-pinyin-moegirl #萌娘百科词库 由于中国大陆政府对github封锁，你在下载时可能需要使用魔法。
-sudo pacman -S fcitx5-pinyin-zhwiki #中文维基百科词库
-sudo pacman -S fcitx5-material-color #主题
+./auto_config.zsh list
+./auto_config.zsh --profile macos list
+./auto_config.zsh --profile linux list
+./auto_config.zsh -p yazi -p tmux install
 ```
 
-In the end, run this command
+Profiles:
 
-```sh
-cd ~/myconfig && ./auto_config.sh install && reboot
-```
+- `macos`: conservative macOS defaults.
+- `linux`: Linux desktop defaults.
+- `common`: terminal/editor-only shared defaults.
+- `all`: every known config entry.
+
+Use `-p` to bypass the profile and install only specific entries.
 
 ## Claude Code
 
-Install Claude Code for AI-powered assistance. Refer to https://claude.com/product/claude-code for installation instructions.
+Claude Code-related config is optional and not installed by the macOS or Linux
+default profiles. Install it explicitly only on machines where you want this
+integration:
 
-After installation, the awesome config provides quick access:
-
-- `mod+g` - Open Claude Code scratchpad
-- `mod+/` - Query selected text with Claude
+```sh
+./auto_config.zsh -p claude-scripts -p claude-hooks -p claude-hooks-tmux install
+```

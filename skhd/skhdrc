@@ -3,11 +3,22 @@
 # Amethyst owns window layout/focus shortcuts. skhd only handles application
 # launching, closing, and macOS Space switching.
 
-alt - return : open -na iTerm || open -na iTerm2 || open -na Terminal
+alt - return : open -na /Applications/iTerm.app || open -na /Applications/Utilities/Terminal.app
+alt - 0x24   : open -na /Applications/iTerm.app || open -na /Applications/Utilities/Terminal.app
+alt - 0x4C   : open -na /Applications/iTerm.app || open -na /Applications/Utilities/Terminal.app
+lalt - return : open -na /Applications/iTerm.app || open -na /Applications/Utilities/Terminal.app
+lalt - 0x24   : open -na /Applications/iTerm.app || open -na /Applications/Utilities/Terminal.app
+ralt - return : open -na /Applications/iTerm.app || open -na /Applications/Utilities/Terminal.app
+ralt - 0x24   : open -na /Applications/iTerm.app || open -na /Applications/Utilities/Terminal.app
 alt - d      : open /System/Applications/Apps.app
 alt - c      : open -a "Google Chrome" || open -a Safari
 
-alt + shift - q : osascript -e 'tell application "System Events" to keystroke "w" using command down'
+alt + shift - q    : "$HOME/.config/skhd/scripts/close_front_window.sh"
+alt + shift - 0x0C : "$HOME/.config/skhd/scripts/close_front_window.sh"
+lalt + shift - q    : "$HOME/.config/skhd/scripts/close_front_window.sh"
+lalt + shift - 0x0C : "$HOME/.config/skhd/scripts/close_front_window.sh"
+ralt + shift - q    : "$HOME/.config/skhd/scripts/close_front_window.sh"
+ralt + shift - 0x0C : "$HOME/.config/skhd/scripts/close_front_window.sh"
 alt - escape    : pmset displaysleepnow
 alt + shift - c : skhd --reload
 alt + shift - r : osascript -e 'tell application "Amethyst" to quit'; open -a Amethyst; skhd --reload
