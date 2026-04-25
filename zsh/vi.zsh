@@ -18,6 +18,7 @@ bindkey '^D' delete-char
 bindkey '^K' kill-line
 bindkey '^U' backward-kill-line
 bindkey '^P' up-line-or-history
+bindkey -M viins '\ef' forward-word
 
 function zle-keymap-select {
 	if [[ ${KEYMAP} == vicmd ]] || [[ $1 = 'block' ]]; then
@@ -42,4 +43,3 @@ _fix_cursor() {
 precmd_functions+=(_fix_cursor)
 
 KEYTIMEOUT=1
-

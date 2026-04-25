@@ -153,8 +153,8 @@ screen-padding-right: 8
 
 mouse-follows-focus: false
 focus-follows-mouse: false
-enables-layout-hud: true
-enables-layout-hud-on-space-change: true
+enables-layout-hud: false
+enables-layout-hud-on-space-change: false
 enables-window-count-hud: false
 window-resize-step: 5
 ignore-menu-bar: false
