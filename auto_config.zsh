@@ -43,6 +43,9 @@ typeset -A CONFIG_ITEMS=(
     [gitui]="$HOME/.config/gitui"
     [awesome]="$HOME/.config/awesome"
     [polybar]="$HOME/.config/polybar"
+    [yabai]="$HOME/.config/yabai"
+    [skhd]="$HOME/.config/skhd"
+    [amethyst]="$HOME/.config/amethyst"
 )
 
 # Special configurations: name -> "type:source:target"

@@ -1,0 +1,161 @@
+# dwm-like Amethyst configuration.
+#
+# Amethyst provides the dynamic master/stack layout directly, so it is a better
+# fit than trying to emulate dwm on top of yabai's BSP tree.
+
+layouts:
+  - tall
+  - wide
+  - fullscreen
+  - column
+
+mod1:
+  - option
+
+mod2:
+  - option
+  - shift
+
+# Layout selection / cycling.
+cycle-layout:
+  mod: mod2
+  key: space
+cycle-layout-backward: false
+select-tall-layout:
+  mod: mod1
+  key: a
+select-wide-layout:
+  mod: mod1
+  key: w
+select-fullscreen-layout:
+  mod: mod1
+  key: f
+select-column-layout:
+  mod: mod2
+  key: v
+
+# dwm-style main/stack controls.
+shrink-main:
+  mod: mod1
+  key: h
+expand-main:
+  mod: mod1
+  key: l
+focus-ccw:
+  mod: mod1
+  key: j
+focus-cw:
+  mod: mod1
+  key: k
+swap-ccw:
+  mod: mod2
+  key: j
+swap-cw:
+  mod: mod2
+  key: k
+focus-main:
+  mod: mod1
+  key: m
+swap-main:
+  mod: mod2
+  key: enter
+increase-main:
+  mod: mod1
+  key: ","
+decrease-main:
+  mod: mod1
+  key: "."
+
+# Screens.
+focus-screen-ccw:
+  mod: mod1
+  key: p
+focus-screen-cw:
+  mod: mod1
+  key: n
+swap-screen-ccw:
+  mod: mod2
+  key: h
+swap-screen-cw:
+  mod: mod2
+  key: l
+
+# Move focused window to macOS Spaces. Space focus is handled by skhd.
+throw-space-1:
+  mod: mod2
+  key: "1"
+throw-space-2:
+  mod: mod2
+  key: "2"
+throw-space-3:
+  mod: mod2
+  key: "3"
+throw-space-4:
+  mod: mod2
+  key: "4"
+throw-space-5:
+  mod: mod2
+  key: "5"
+throw-space-6:
+  mod: mod2
+  key: "6"
+throw-space-7:
+  mod: mod2
+  key: "7"
+throw-space-8:
+  mod: mod2
+  key: "8"
+throw-space-9:
+  mod: mod2
+  key: "9"
+throw-space-10:
+  mod: mod2
+  key: "0"
+throw-space-left:
+  mod: mod2
+  key: left
+throw-space-right:
+  mod: mod2
+  key: right
+
+# Floating / reflow.
+toggle-float:
+  mod: mod1
+  key: t
+toggle-tiling:
+  mod: mod2
+  key: t
+reevaluate-windows:
+  mod: mod1
+  key: z
+relaunch-amethyst:
+  mod: mod2
+  key: r
+display-current-layout:
+  mod: mod1
+  key: i
+
+# Behavior.
+new-windows-to-main: true
+restore-layouts-on-launch: true
+follow-space-thrown-windows: true
+float-small-windows: true
+small-window-size: 500
+floating-is-blacklist: true
+floating: []
+
+window-margins: true
+window-margin-size: 10
+screen-padding-top: 8
+screen-padding-bottom: 8
+screen-padding-left: 8
+screen-padding-right: 8
+
+mouse-follows-focus: false
+focus-follows-mouse: false
+enables-layout-hud: true
+enables-layout-hud-on-space-change: true
+enables-window-count-hud: false
+window-resize-step: 5
+ignore-menu-bar: false
+debug-layout-info: false

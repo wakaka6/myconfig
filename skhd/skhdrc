@@ -1,0 +1,29 @@
+# Companion shortcuts for Amethyst.
+#
+# Amethyst owns window layout/focus shortcuts. skhd only handles application
+# launching, closing, and macOS Space switching.
+
+alt - return : open -na iTerm || open -na iTerm2 || open -na Terminal
+alt - d      : open /System/Applications/Apps.app
+alt - c      : open -a "Google Chrome" || open -a Safari
+
+alt + shift - q : osascript -e 'tell application "System Events" to keystroke "w" using command down'
+alt - escape    : pmset displaysleepnow
+alt + shift - c : skhd --reload
+alt + shift - r : osascript -e 'tell application "Amethyst" to quit'; open -a Amethyst; skhd --reload
+
+# Direct Space switching. These send the standard macOS Control+number keys;
+# enable "Switch to Desktop N" in Mission Control shortcuts if macOS ignores them.
+alt - 1 : osascript -e 'tell application "System Events" to key code 18 using control down'
+alt - 2 : osascript -e 'tell application "System Events" to key code 19 using control down'
+alt - 3 : osascript -e 'tell application "System Events" to key code 20 using control down'
+alt - 4 : osascript -e 'tell application "System Events" to key code 21 using control down'
+alt - 5 : osascript -e 'tell application "System Events" to key code 23 using control down'
+alt - 6 : osascript -e 'tell application "System Events" to key code 22 using control down'
+alt - 7 : osascript -e 'tell application "System Events" to key code 26 using control down'
+alt - 8 : osascript -e 'tell application "System Events" to key code 28 using control down'
+alt - 9 : osascript -e 'tell application "System Events" to key code 25 using control down'
+alt - 0 : osascript -e 'tell application "System Events" to key code 29 using control down'
+
+alt - n : osascript -e 'tell application "System Events" to key code 123 using control down'
+alt - p : osascript -e 'tell application "System Events" to key code 124 using control down'

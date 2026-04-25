@@ -42,6 +42,9 @@ declare -A CONFIG_ITEMS=(
     ["yazi"]="$HOME/.config/yazi"
     ["gitui"]="$HOME/.config/gitui"
     ["awesome"]="$HOME/.config/awesome"
+    ["yabai"]="$HOME/.config/yabai"
+    ["skhd"]="$HOME/.config/skhd"
+    ["amethyst"]="$HOME/.config/amethyst"
 )
 
 # Special configurations: name -> "type:source:target"
