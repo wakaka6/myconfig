@@ -46,6 +46,7 @@ typeset -A CONFIG_ITEMS=(
     [polybar]="$HOME/.config/polybar"
     [yabai]="$HOME/.config/yabai"
     [skhd]="$HOME/.config/skhd"
+    [hammerspoon]="$HOME/.hammerspoon"
 )
 
 # Special configurations: name -> "type:source:target"
@@ -77,7 +78,7 @@ profile_contains() {
 
     case "$profile" in
         macos)
-            [[ " zsh nvim tmux vimrc yazi lazygit gitui kitty skhd amethyst " == *" $plugin "* ]]
+            [[ " zsh nvim tmux vimrc yazi lazygit gitui kitty skhd hammerspoon amethyst " == *" $plugin "* ]]
             ;;
         linux)
             [[ " zsh nvim tmux vimrc yazi lazygit gitui kitty i3 i3status awesome polybar picom rofi dunst zathura ranger latexmk alacritty xprofile warpd scratchpad " == *" $plugin "* ]]

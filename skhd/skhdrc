@@ -11,14 +11,13 @@ lalt - 0x24   : open -na /Applications/iTerm.app || open -na /Applications/Utili
 ralt - return : open -na /Applications/iTerm.app || open -na /Applications/Utilities/Terminal.app
 ralt - 0x24   : open -na /Applications/iTerm.app || open -na /Applications/Utilities/Terminal.app
 alt - d      : open /System/Applications/Apps.app
-alt - c      : open -a "Google Chrome" || open -a Safari
+# Chrome focus is handled by Hammerspoon; skhd does not reliably capture alt+c
+# on all keyboard/input-source combinations.
 
-alt + shift - q    : "$HOME/.config/skhd/scripts/close_front_window.sh"
-alt + shift - 0x0C : "$HOME/.config/skhd/scripts/close_front_window.sh"
-lalt + shift - q    : "$HOME/.config/skhd/scripts/close_front_window.sh"
-lalt + shift - 0x0C : "$HOME/.config/skhd/scripts/close_front_window.sh"
-ralt + shift - q    : "$HOME/.config/skhd/scripts/close_front_window.sh"
-ralt + shift - 0x0C : "$HOME/.config/skhd/scripts/close_front_window.sh"
+alt - 0x32 : osascript -e 'tell application "System Events" to key code 40 using {option down, shift down}'
+
+# Application quit is handled by Hammerspoon so alt+shift+q exits the
+# frontmost app instead of falling back to app-specific minimize behavior.
 alt - escape    : pmset displaysleepnow
 alt + shift - c : skhd --reload
 alt + shift - r : osascript -e 'tell application "Amethyst" to quit'; open -a Amethyst; skhd --reload

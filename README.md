@@ -27,7 +27,7 @@ brew install neovim tmux starship zoxide fd ripgrep fzf git-delta bat tree \
   yazi ffmpeg sevenzip poppler imagemagick chafa resvg jq \
   gitui lazygit lsd highlight atool w3m mediainfo exiftool mpv cmake go
 
-brew install --cask kitty font-jetbrains-mono-nerd
+brew install --cask kitty font-jetbrains-mono-nerd hammerspoon
 ```
 
 Install the default macOS config profile:
@@ -39,7 +39,7 @@ Install the default macOS config profile:
 The macOS profile links only:
 
 ```text
-zsh nvim tmux vimrc yazi lazygit gitui kitty skhd amethyst
+zsh nvim tmux vimrc yazi lazygit gitui kitty skhd hammerspoon amethyst
 ```
 
 It intentionally skips Linux desktop configs such as `i3`, `awesome`, `polybar`,
@@ -48,18 +48,21 @@ Claude Code.
 
 ### macOS Window Management
 
-The recommended macOS setup is Amethyst for tiling plus skhd for application and
-Space shortcuts:
+The recommended macOS setup is Amethyst for tiling, skhd for application and
+Space shortcuts, and Hammerspoon for input-source and app/window actions:
 
 ```sh
 brew install --cask amethyst
+brew install --cask hammerspoon
 brew install koekeishiya/formulae/skhd
-./auto_config.zsh -p amethyst -p skhd install
+./auto_config.zsh -p amethyst -p skhd -p hammerspoon install
 skhd --start-service
 open -a Amethyst
+open -a Hammerspoon
 ```
 
-Grant Accessibility permission to Amethyst and skhd in System Settings.
+Grant Accessibility permission to Amethyst, skhd, and Hammerspoon in System
+Settings.
 
 yabai is available as an advanced optional setup:
 

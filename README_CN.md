@@ -26,7 +26,7 @@ brew install neovim tmux starship zoxide fd ripgrep fzf git-delta bat tree \
   yazi ffmpeg sevenzip poppler imagemagick chafa resvg jq \
   gitui lazygit lsd highlight atool w3m mediainfo exiftool mpv cmake go
 
-brew install --cask kitty font-jetbrains-mono-nerd
+brew install --cask kitty font-jetbrains-mono-nerd hammerspoon
 ```
 
 安装 macOS 默认配置：
@@ -38,7 +38,7 @@ brew install --cask kitty font-jetbrains-mono-nerd
 macOS profile 只会链接：
 
 ```text
-zsh nvim tmux vimrc yazi lazygit gitui kitty skhd amethyst
+zsh nvim tmux vimrc yazi lazygit gitui kitty skhd hammerspoon amethyst
 ```
 
 它会刻意跳过 `i3`、`awesome`、`polybar`、`picom`、`rofi`、`dunst`、
@@ -46,17 +46,20 @@ zsh nvim tmux vimrc yazi lazygit gitui kitty skhd amethyst
 
 ### macOS 窗口管理
 
-macOS 默认推荐 Amethyst 做平铺窗口管理，skhd 只负责应用启动和 Space 切换：
+macOS 默认推荐 Amethyst 做平铺窗口管理，skhd 负责应用启动和 Space 切换，
+Hammerspoon 负责输入法和应用/窗口动作：
 
 ```sh
 brew install --cask amethyst
+brew install --cask hammerspoon
 brew install koekeishiya/formulae/skhd
-./auto_config.zsh -p amethyst -p skhd install
+./auto_config.zsh -p amethyst -p skhd -p hammerspoon install
 skhd --start-service
 open -a Amethyst
+open -a Hammerspoon
 ```
 
-需要在系统设置里给 Amethyst 和 skhd 授予辅助功能权限。
+需要在系统设置里给 Amethyst、skhd 和 Hammerspoon 授予辅助功能权限。
 
 yabai 作为高级可选方案保留：
 
