@@ -15,12 +15,27 @@ return {
 		vim.api.nvim_set_keymap("n", "dsm", "<Plug>(vimtex-env-delete-math)", { noremap = true, silent = true })
 		-- Use `tsm` to toggle surrounding math (replacing the default shorcut `ts$`)
 		vim.api.nvim_set_keymap("n", "tsm", "<Plug>(vimtex-env-toggle-math)", { noremap = true, silent = true })
-		-- Viewer method
-		vim.g.vimtex_view_method = "zathura"
 
-		-- Or with a generic interface
-		vim.g.vimtex_view_general_viewer = "okular"
-		vim.g.vimtex_view_general_options = "--unique file:@pdf\\#src:@line@tex"
+		if vim.fn.has("macunix") == 1 then
+			if vim.fn.executable("/Applications/Skim.app/Contents/SharedSupport/displayline") == 1 then
+				vim.g.vimtex_view_method = "skim"
+			else
+				vim.g.vimtex_view_method = "general"
+				vim.g.vimtex_view_general_viewer = "open"
+				vim.g.vimtex_view_general_options = "@pdf"
+			end
+		elseif vim.fn.executable("zathura") == 1 then
+			vim.g.vimtex_view_method = "zathura"
+		elseif vim.fn.executable("okular") == 1 then
+			vim.g.vimtex_view_method = "general"
+			vim.g.vimtex_view_general_viewer = "okular"
+			vim.g.vimtex_view_general_options = "--unique file:@pdf\\#src:@line@tex"
+		else
+			vim.g.vimtex_view_method = "general"
+			vim.g.vimtex_view_general_viewer = "xdg-open"
+			vim.g.vimtex_view_general_options = "@pdf"
+		end
+
 		vim.g.vimtex_compiler_method = "latexmk"
 
 		vim.g.vimtex_compiler_latexmk = {
