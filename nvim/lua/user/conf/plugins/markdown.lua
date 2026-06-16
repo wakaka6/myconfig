@@ -99,7 +99,7 @@ return {
 				embed_image_as_base64 = false,
 				prompt_for_file_name = false,
 				drag_and_drop = {
-					insert_mode = true,
+					enabled = false,
 				},
 			},
 
@@ -120,8 +120,18 @@ $CURSOR]],
 			},
 		},
 		keys = {
-			-- suggested keymap
-			{ "<leader>p", "<cmd>PasteImage<cr>", desc = "Paste image from system clipboard" },
+			{
+				"<leader>p",
+				function()
+					local clipboard = require("img-clip.clipboard")
+					if not clipboard.content_is_image() then
+						vim.notify("Clipboard does not contain an image.", vim.log.levels.WARN)
+						return
+					end
+					require("img-clip.paste").paste_image_from_clipboard()
+				end,
+				desc = "Paste image from system clipboard",
+			},
 		},
 	},
 }
