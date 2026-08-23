@@ -39,7 +39,7 @@ Install the default macOS config profile:
 The macOS profile links only:
 
 ```text
-zsh nvim tmux vimrc yazi lazygit gitui kitty skhd hammerspoon amethyst
+zsh nvim tmux vimrc yazi lazygit gitui kitty herdr hammerspoon amethyst
 ```
 
 It intentionally skips Linux desktop configs such as `i3`, `awesome`, `polybar`,
@@ -48,21 +48,18 @@ Claude Code.
 
 ### macOS Window Management
 
-The recommended macOS setup is Amethyst for tiling, skhd for application and
-Space shortcuts, and Hammerspoon for input-source and app/window actions:
+The recommended macOS setup is Amethyst for tiling and Hammerspoon for global
+hotkeys, app actions, Space shortcuts, and input-source handling:
 
 ```sh
 brew install --cask amethyst
 brew install --cask hammerspoon
-brew install koekeishiya/formulae/skhd
-./auto_config.zsh -p amethyst -p skhd -p hammerspoon install
-skhd --start-service
+./auto_config.zsh -p amethyst -p hammerspoon install
 open -a Amethyst
 open -a Hammerspoon
 ```
 
-Grant Accessibility permission to Amethyst, skhd, and Hammerspoon in System
-Settings.
+Grant Accessibility permission to Amethyst and Hammerspoon in System Settings.
 
 yabai is available as an advanced optional setup:
 

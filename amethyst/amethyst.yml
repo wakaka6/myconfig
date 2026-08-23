@@ -80,7 +80,7 @@ swap-screen-cw:
   mod: mod2
   key: l
 
-# Move focused window to macOS Spaces. Space focus is handled by skhd.
+# Move focused window to macOS Spaces. Space focus uses native Mission Control shortcuts.
 throw-space-1:
   mod: mod2
   key: "1"
@@ -142,7 +142,37 @@ follow-space-thrown-windows: true
 float-small-windows: true
 small-window-size: 500
 floating-is-blacklist: true
-floating: []
+floating:
+  - id: com.1password.safari
+    window-titles: []
+  - id: com.1password.1password
+    window-titles: []
+  - id: com.apple.systempreferences
+    window-titles: []
+  - id: com.apple.ActivityMonitor
+    window-titles: []
+  - id: com.apple.calculator
+    window-titles: []
+  - id: com.apple.Dictionary
+    window-titles: []
+  - id: com.eusoft.eudic
+    window-titles: []
+  - id: org.openvpn.client.app
+    window-titles: []
+  - id: com.liguangming.Shadowrocket
+    window-titles: []
+  - id: com.tencent.LemonLite
+    window-titles: []
+  - id: com.chitaner.Longshot
+    window-titles: []
+  - id: com.tencent.meeting
+    window-titles: []
+  - id: com.ccswitch.desktop
+    window-titles: []
+  - id: pl.maketheweb.TopNotch
+    window-titles: []
+  - id: com.henrikruscon.Alcove
+    window-titles: []
 
 window-margins: true
 window-margin-size: 10

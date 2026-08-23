@@ -1,0 +1,21 @@
+[keys]
+# Keep the same prefix and Vim-style pane navigation as tmux.
+prefix = "ctrl+b"
+focus_pane_left = "prefix+h"
+focus_pane_down = "prefix+j"
+focus_pane_up = "prefix+k"
+focus_pane_right = "prefix+l"
+
+# Match the custom tmux split keys: + splits side by side, = stacks panes.
+split_vertical = "prefix+plus"
+split_horizontal = "prefix+="
+
+# Match tmux's direct Alt+1..9 tab switching.
+switch_tab = "alt+1..9"
+
+# tmux uses prefix+r to reload; keep resize mode on the shifted variant.
+reload_config = "prefix+r"
+resize_mode = "prefix+shift+r"
+
+[ui]
+agent_panel_sort = "spaces"

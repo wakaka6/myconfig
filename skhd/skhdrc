@@ -1,26 +1,4 @@
-# Companion shortcuts for Amethyst.
+# Deprecated: current macOS hotkeys live in ../hammerspoon/init.lua.
 #
-# Amethyst owns window layout/focus shortcuts. skhd only handles application
-# launching, closing, and macOS Space switching.
-
-alt - return : open -na /Applications/iTerm.app || open -na /Applications/Utilities/Terminal.app
-alt - 0x24   : open -na /Applications/iTerm.app || open -na /Applications/Utilities/Terminal.app
-alt - 0x4C   : open -na /Applications/iTerm.app || open -na /Applications/Utilities/Terminal.app
-lalt - return : open -na /Applications/iTerm.app || open -na /Applications/Utilities/Terminal.app
-lalt - 0x24   : open -na /Applications/iTerm.app || open -na /Applications/Utilities/Terminal.app
-ralt - return : open -na /Applications/iTerm.app || open -na /Applications/Utilities/Terminal.app
-ralt - 0x24   : open -na /Applications/iTerm.app || open -na /Applications/Utilities/Terminal.app
-alt - d      : open /System/Applications/Apps.app
-# Chrome focus is handled by Hammerspoon; skhd does not reliably capture alt+c
-# on all keyboard/input-source combinations.
-
-alt - 0x32 : osascript -e 'tell application "System Events" to key code 40 using {option down, shift down}'
-
-# Application quit is handled by Hammerspoon so alt+shift+q exits the
-# frontmost app instead of falling back to app-specific minimize behavior.
-alt - escape    : pmset displaysleepnow
-alt + shift - c : skhd --reload
-alt + shift - r : osascript -e 'tell application "Amethyst" to quit'; open -a Amethyst; skhd --reload
-
-alt - n : osascript -e 'tell application "System Events" to key code 123 using control down'
-alt - p : osascript -e 'tell application "System Events" to key code 124 using control down'
+# Keep this file empty so accidentally running skhd does not steal Option
+# shortcuts from Hammerspoon or tmux.

@@ -53,6 +53,7 @@ typeset -A CONFIG_ITEMS=(
 # Types: symlink, copy, generate, merge
 typeset -A SPECIAL_CONFIGS=(
     [lazygit]="symlink:lazygit/config.yml:$HOME/.config/lazygit/config.yml"
+    [herdr]="symlink:herdr/config.toml:$HOME/.config/herdr/config.toml"
     [tmux]="symlink:.tmux.conf:$HOME/.tmux.conf"
     [vimrc]="symlink:.vimrc:$HOME/.vimrc"
     [amethyst]="symlink:amethyst/amethyst.yml:$HOME/.amethyst.yml"
@@ -78,13 +79,13 @@ profile_contains() {
 
     case "$profile" in
         macos)
-            [[ " zsh nvim tmux vimrc yazi lazygit gitui kitty skhd hammerspoon amethyst " == *" $plugin "* ]]
+            [[ " zsh nvim tmux vimrc yazi lazygit gitui kitty herdr hammerspoon amethyst " == *" $plugin "* ]]
             ;;
         linux)
-            [[ " zsh nvim tmux vimrc yazi lazygit gitui kitty i3 i3status awesome polybar picom rofi dunst zathura ranger latexmk alacritty xprofile warpd scratchpad " == *" $plugin "* ]]
+            [[ " zsh nvim tmux vimrc yazi lazygit gitui kitty herdr i3 i3status awesome polybar picom rofi dunst zathura ranger latexmk alacritty xprofile warpd scratchpad " == *" $plugin "* ]]
             ;;
         common)
-            [[ " zsh nvim tmux vimrc yazi lazygit gitui kitty " == *" $plugin "* ]]
+            [[ " zsh nvim tmux vimrc yazi lazygit gitui kitty herdr " == *" $plugin "* ]]
             ;;
         all)
             return 0

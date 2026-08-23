@@ -38,7 +38,7 @@ brew install --cask kitty font-jetbrains-mono-nerd hammerspoon
 macOS profile 只会链接：
 
 ```text
-zsh nvim tmux vimrc yazi lazygit gitui kitty skhd hammerspoon amethyst
+zsh nvim tmux vimrc yazi lazygit gitui kitty herdr hammerspoon amethyst
 ```
 
 它会刻意跳过 `i3`、`awesome`、`polybar`、`picom`、`rofi`、`dunst`、
@@ -46,20 +46,18 @@ zsh nvim tmux vimrc yazi lazygit gitui kitty skhd hammerspoon amethyst
 
 ### macOS 窗口管理
 
-macOS 默认推荐 Amethyst 做平铺窗口管理，skhd 负责应用启动和 Space 切换，
-Hammerspoon 负责输入法和应用/窗口动作：
+macOS 默认推荐 Amethyst 做平铺窗口管理，Hammerspoon 负责全局快捷键、
+应用动作、Space 切换和输入法处理：
 
 ```sh
 brew install --cask amethyst
 brew install --cask hammerspoon
-brew install koekeishiya/formulae/skhd
-./auto_config.zsh -p amethyst -p skhd -p hammerspoon install
-skhd --start-service
+./auto_config.zsh -p amethyst -p hammerspoon install
 open -a Amethyst
 open -a Hammerspoon
 ```
 
-需要在系统设置里给 Amethyst、skhd 和 Hammerspoon 授予辅助功能权限。
+需要在系统设置里给 Amethyst 和 Hammerspoon 授予辅助功能权限。
 
 yabai 作为高级可选方案保留：
 
