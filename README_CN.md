@@ -26,7 +26,7 @@ brew install neovim tmux starship zoxide fd ripgrep fzf git-delta bat tree \
   yazi ffmpeg sevenzip poppler imagemagick chafa resvg jq \
   gitui lazygit lsd highlight atool w3m mediainfo exiftool mpv cmake go
 
-brew install --cask kitty font-jetbrains-mono-nerd hammerspoon
+brew install --cask ghostty kitty font-fira-code font-jetbrains-mono-nerd hammerspoon
 ```
 
 安装 macOS 默认配置：
@@ -38,7 +38,7 @@ brew install --cask kitty font-jetbrains-mono-nerd hammerspoon
 macOS profile 只会链接：
 
 ```text
-zsh nvim tmux vimrc yazi lazygit gitui kitty herdr hammerspoon amethyst
+zsh nvim tmux vimrc yazi lazygit gitui kitty ghostty herdr hammerspoon amethyst
 ```
 
 它会刻意跳过 `i3`、`awesome`、`polybar`、`picom`、`rofi`、`dunst`、

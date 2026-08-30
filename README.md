@@ -27,7 +27,7 @@ brew install neovim tmux starship zoxide fd ripgrep fzf git-delta bat tree \
   yazi ffmpeg sevenzip poppler imagemagick chafa resvg jq \
   gitui lazygit lsd highlight atool w3m mediainfo exiftool mpv cmake go
 
-brew install --cask kitty font-jetbrains-mono-nerd hammerspoon
+brew install --cask ghostty kitty font-fira-code font-jetbrains-mono-nerd hammerspoon
 ```
 
 Install the default macOS config profile:
@@ -39,7 +39,7 @@ Install the default macOS config profile:
 The macOS profile links only:
 
 ```text
-zsh nvim tmux vimrc yazi lazygit gitui kitty herdr hammerspoon amethyst
+zsh nvim tmux vimrc yazi lazygit gitui kitty ghostty herdr hammerspoon amethyst
 ```
 
 It intentionally skips Linux desktop configs such as `i3`, `awesome`, `polybar`,

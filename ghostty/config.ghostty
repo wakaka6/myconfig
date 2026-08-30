@@ -1,0 +1,9 @@
+theme = Dracula
+font-family = "Fira Code"
+font-size = 14
+background-opacity = 0.9
+
+mouse-hide-while-typing = true
+macos-option-as-alt = true
+
+keybind = super+shift+enter=new_window

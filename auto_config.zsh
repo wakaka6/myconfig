@@ -54,6 +54,7 @@ typeset -A CONFIG_ITEMS=(
 typeset -A SPECIAL_CONFIGS=(
     [lazygit]="symlink:lazygit/config.yml:$HOME/.config/lazygit/config.yml"
     [herdr]="symlink:herdr/config.toml:$HOME/.config/herdr/config.toml"
+    [ghostty]="symlink:ghostty/config.ghostty:$HOME/Library/Application Support/com.mitchellh.ghostty/config.ghostty"
     [tmux]="symlink:.tmux.conf:$HOME/.tmux.conf"
     [vimrc]="symlink:.vimrc:$HOME/.vimrc"
     [amethyst]="symlink:amethyst/amethyst.yml:$HOME/.amethyst.yml"
@@ -79,7 +80,7 @@ profile_contains() {
 
     case "$profile" in
         macos)
-            [[ " zsh nvim tmux vimrc yazi lazygit gitui kitty herdr hammerspoon amethyst " == *" $plugin "* ]]
+            [[ " zsh nvim tmux vimrc yazi lazygit gitui kitty ghostty herdr hammerspoon amethyst " == *" $plugin "* ]]
             ;;
         linux)
             [[ " zsh nvim tmux vimrc yazi lazygit gitui kitty herdr i3 i3status awesome polybar picom rofi dunst zathura ranger latexmk alacritty xprofile warpd scratchpad " == *" $plugin "* ]]
