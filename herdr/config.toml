@@ -19,3 +19,6 @@ resize_mode = "prefix+shift+r"
 
 [ui]
 agent_panel_sort = "spaces"
+
+[experimental]
+kitty_graphics = true
