@@ -187,6 +187,7 @@ save_to_clipboard = true
 semantic_escape_chars = ",│`|:\"' ()[]{}<>\t"
 
 [window]
+option_as_alt = "Both"
 opacity = 0.9
 
 [general]
