@@ -1,6 +1,7 @@
 local englishInputSource = "com.apple.keylayout.ABC"
 
 local terminalApps = {
+	["Ghostty"] = true,
 	["Alacritty"] = true,
 	["iTerm2"] = true,
 	["iTerm"] = true,
@@ -17,7 +18,7 @@ end
 
 local function openTerminal()
 	hs.execute(
-		"/usr/bin/open -na /Applications/Alacritty.app || /usr/bin/open -na /Applications/iTerm.app || /usr/bin/open -na /Applications/Utilities/Terminal.app",
+		"/usr/bin/open -na /Applications/Ghostty.app || /usr/bin/open -na /Applications/Alacritty.app || /usr/bin/open -na /Applications/iTerm.app || /usr/bin/open -na /Applications/Utilities/Terminal.app",
 		true
 	)
 end

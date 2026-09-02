@@ -1,3 +1,4 @@
+onboarding = false
 [keys]
 # Keep the same prefix and Vim-style pane navigation as tmux.
 prefix = "ctrl+b"

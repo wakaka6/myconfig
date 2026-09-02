@@ -2,8 +2,15 @@ theme = Dracula
 font-family = "Fira Code"
 font-size = 14
 background-opacity = 0.9
+confirm-close-surface = false
 
 mouse-hide-while-typing = true
 macos-option-as-alt = true
 
 keybind = super+shift+enter=new_window
+
+# Match the previous Alacritty scroll shortcuts.
+keybind = alt+k=scroll_page_lines:-1
+keybind = alt+j=scroll_page_lines:1
+keybind = ctrl+alt+k=scroll_page_fractional:-0.5
+keybind = ctrl+alt+j=scroll_page_fractional:0.5
