@@ -7,6 +7,7 @@ local awful = require("awful")
 local gears = require("gears")
 local naughty = require("naughty")
 local json = require("lib.dkjson")
+local env = require("envws.detect")
 
 local M = {}
 
@@ -259,6 +260,11 @@ function M.create_tag(name, s)
 		layout = awful.layout.suit.tile,
 	})
 	t.dynamic = true -- 标记为动态创建
+	if env.detect() == env.ENV_OFFICE and t.screen == screen.primary then
+		t.column_count = 2
+		t.master_width_factor = 1 / 3
+		t.master_count = 1
+	end
 	t:view_only()
 	M.save() -- 保存
 	return t

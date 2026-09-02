@@ -179,29 +179,13 @@ local temp_text = wibox.widget({
 
 local function update_temperature()
 	awful.spawn.easy_async_with_shell(
-		"cat /sys/class/thermal/thermal_zone*/temp 2>/dev/null | head -1",
+		"sensors 2>/dev/null | grep -oP 'Package.*?\\+\\K[0-9]+'| head -1",
 		function(stdout)
 			local temp = tonumber(stdout)
 			if not temp then
-				awful.spawn.easy_async_with_shell(
-					"sensors 2>/dev/null | grep -oP 'Package.*?\\+\\K[0-9]+'| head -1",
-					function(out)
-						local t = tonumber(out)
-						if t then
-							local color = colors.green
-							if t > 80 then
-								color = colors.red
-							elseif t > 60 then
-								color = colors.orange
-							end
-							temp_text:set_markup("<span foreground='" .. color .. "'>" .. t .. "°C</span>")
-						end
-					end
-				)
 				return
 			end
 
-			temp = math.floor(temp / 1000)
 			local color = colors.green
 			if temp > 80 then
 				color = colors.red

@@ -175,6 +175,8 @@ theme.prompt_fg_cursor = colors.bg
 
 -- Layout icons directory
 local layout_icon_path = gfs.get_themes_dir() .. "default/layouts/"
+local custom_layout_path = gfs.get_configuration_dir() .. "themes/dracula/layouts/"
+
 theme.layout_fairh = layout_icon_path .. "fairhw.png"
 theme.layout_fairv = layout_icon_path .. "fairvw.png"
 theme.layout_floating = layout_icon_path .. "floatingw.png"
@@ -191,6 +193,9 @@ theme.layout_cornernw = layout_icon_path .. "cornernww.png"
 theme.layout_cornerne = layout_icon_path .. "cornernew.png"
 theme.layout_cornersw = layout_icon_path .. "cornersww.png"
 theme.layout_cornerse = layout_icon_path .. "cornersew.png"
+
+-- Custom layouts
+theme.layout_center_master = custom_layout_path .. "center_masterw.png"
 
 -- Generate Awesome icon
 theme.awesome_icon = theme_assets.awesome_icon(dpi(24), colors.purple, colors.bg)

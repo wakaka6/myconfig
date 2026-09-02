@@ -361,7 +361,7 @@ M.globalkeys = gears.table.join(
 		local s = screen.primary
 		local x = s.geometry.x + s.geometry.width - 200 -- 距右边200px
 		local y = s.geometry.y + 100 -- 距顶部100px
-		awful.spawn.with_shell(string.format("xdotool mousemove %d %d click --clearmodifiers 1", x, y))
+		awful.spawn.with_shell(string.format("xdotool keyup shift super mousemove %d %d click 1", x, y))
 	end, { description = "click notification area", group = "mouse" }),
 	awful.key({ modkey, "Control" }, ".", function()
 		local warpd_notify = naughty.notify({
@@ -646,9 +646,9 @@ M.globalkeys = gears.table.join(
 	end, { description = "open chrome", group = "launcher" }),
 
 	-- Screenshot with flameshot (F1)
-	awful.key({}, "F1", function()
-		awful.spawn("flameshot gui")
-	end, { description = "screenshot", group = "launcher" }),
+	-- awful.key({}, "F1", function()
+	-- 	awful.spawn("flameshot gui")
+	-- end, { description = "screenshot", group = "launcher" }),
 	-- }}}
 
 	-- {{{ Scratchpads

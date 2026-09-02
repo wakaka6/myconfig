@@ -74,10 +74,30 @@ naughty.notify({
 	text = "Environment: " .. current_env .. " (" .. screen.count() .. " screens)",
 	timeout = 3,
 })
+
+local function apply_primary_three_columns(s)
+	if current_env ~= env.ENV_OFFICE then
+		return
+	end
+	if s ~= screen.primary then
+		return
+	end
+	if not s.tags then
+		return
+	end
+	for _, t in ipairs(s.tags) do
+		t.column_count = 2
+		t.master_width_factor = 1 / 3
+		t.master_count = 1
+	end
+end
 -- }}}
 
 -- {{{ Layouts
+local center_master = require("layouts.center_master")
+
 awful.layout.layouts = {
+	center_master,
 	awful.layout.suit.tile,
 	awful.layout.suit.tile.left,
 	awful.layout.suit.tile.bottom,
@@ -154,7 +174,13 @@ awful.screen.connect_for_each_screen(function(s)
 	local tags = env.get_tags(current_env, s, screen.count())
 	local default_layout = env.get_default_layout(current_env, s)
 
+	-- Office environment primary screen uses center_master layout
+	if current_env == env.ENV_OFFICE and s == screen.primary then
+		default_layout = center_master
+	end
+
 	awful.tag(tags, s, default_layout)
+	apply_primary_three_columns(s)
 
 	-- Create a promptbox
 	s.mypromptbox = awful.widget.prompt()
@@ -455,7 +481,15 @@ screen.connect_signal("added", function(s)
 	-- Re-detect environment
 	current_env = env.detect()
 	local tags = env.get_tags(current_env, s, screen.count())
-	awful.tag(tags, s, awful.layout.suit.tile)
+	local default_layout = awful.layout.suit.tile
+
+	-- Office environment primary screen uses center_master layout
+	if current_env == env.ENV_OFFICE and s == screen.primary then
+		default_layout = center_master
+	end
+
+	awful.tag(tags, s, default_layout)
+	apply_primary_three_columns(s)
 end)
 
 screen.connect_signal("removed", function(s)
@@ -484,6 +518,7 @@ tag_persist.init()
 
 -- Restore dynamic tags (必须同步执行，否则窗口会被分配到默认 tag)
 tag_persist.restore()
+apply_primary_three_columns(screen.primary)
 
 -- Run autostart applications
 autostart.run()

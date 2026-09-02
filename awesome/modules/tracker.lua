@@ -215,6 +215,21 @@ function M.register(pid, project, agent_type, metadata)
 		update_window_cache_for_pid(pid, function()
 			notify_subscribers()
 		end)
+
+		-- [核心改进] 启动进程退出监控，实现真正的事件驱动
+		-- tail --pid 会阻塞直到目标进程退出，然后触发回调
+		awful.spawn.easy_async_with_shell(
+			string.format("tail --pid=%d -f /dev/null 2>/dev/null", pid),
+			function()
+				-- 进程退出，立即清理会话
+				if sessions[pid] then
+					sessions[pid] = nil
+					window_cache[pid] = nil
+					save_sessions()
+					notify_subscribers()
+				end
+			end
+		)
 	end
 end
 
@@ -433,15 +448,23 @@ function M.init()
 		save_sessions()
 	end)
 
-	-- 定期清理无效会话并更新窗口缓存
+	-- [改进] 缩短兜底轮询间隔：30s -> 5s
+	-- 主要清理机制是 register() 中的 tail --pid 监控
+	-- 这里作为兜底，处理恢复的会话和异常情况
 	gears.timer({
-		timeout = 30,
+		timeout = 5,
 		autostart = true,
 		callback = function()
 			cleanup_invalid_sessions()
 			update_all_window_cache()
 		end,
 	})
+
+	-- [可选加速] 窗口关闭时触发立即检查
+	-- 不做复杂的 pid 反查，直接检查所有 session
+	client.connect_signal("unmanage", function()
+		cleanup_invalid_sessions()
+	end)
 end
 
 return M
