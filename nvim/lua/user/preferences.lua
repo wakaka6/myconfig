@@ -20,8 +20,14 @@ vim.opt.incsearch = true
 vim.opt.cursorline = true -- highlight current cursor line
 
 -- Indentation and Clipboard
+-- Indentation and Clipboard
 vim.opt.autoindent = true
 vim.opt.clipboard:append("unnamed")
+-- OSC 52 clipboard: yanks reach the local clipboard over SSH/tmux/herdr
+-- (kitty and herdr both forward OSC 52 writes).
+if vim.env.SSH_TTY or vim.env.SSH_CONNECTION then
+	vim.g.clipboard = "osc52"
+end
 vim.opt.ruler = true
 vim.opt.showcmd = true
 
