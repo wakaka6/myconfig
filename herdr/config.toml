@@ -15,8 +15,64 @@ split_horizontal = "prefix+="
 switch_tab = "alt+1..9"
 
 # tmux uses prefix+r to reload; keep resize mode on the shifted variant.
-reload_config = "prefix+r"
+
 resize_mode = "prefix+shift+r"
+
+# Mouse-wheel-style scrolling without entering copy mode.
+# Same chords as the Ghostty scroll bindings; ghostty uses `performable:`
+# so they fall through to Herdr while it owns the alt screen.
+[[keys.command]]
+key = "alt+k"
+type = "shell"
+command = "$HOME/.config/herdr/bin/scroll.sh 3"
+description = "scroll pane up 3 lines"
+
+[[keys.command]]
+key = "alt+j"
+type = "shell"
+command = "$HOME/.config/herdr/bin/scroll.sh -3"
+description = "scroll pane down 3 lines"
+
+[[keys.command]]
+key = "ctrl+alt+k"
+type = "shell"
+command = "$HOME/.config/herdr/bin/scroll.sh half"
+description = "scroll pane up half a page"
+
+[[keys.command]]
+key = "ctrl+alt+j"
+type = "shell"
+command = "$HOME/.config/herdr/bin/scroll.sh -half"
+description = "scroll pane down half a page"
+
+# Fallback chords in case a terminal swallows the alt variants.
+# Fallback chords: ghostty 1.3.1 consumes alt+j/k and ctrl+alt+j/k for its
+# own scroll actions even with performable: (ghostty issue 6765), so these
+# shifted variants are the reliable set inside Herdr.
+# shifted variants are the reliable set inside Herdr.
+[[keys.command]]
+key = "alt+shift+k"
+type = "shell"
+command = "$HOME/.config/herdr/bin/scroll.sh half"
+description = "scroll pane up half a page"
+
+[[keys.command]]
+key = "alt+shift+j"
+type = "shell"
+command = "$HOME/.config/herdr/bin/scroll.sh -half"
+description = "scroll pane down half a page"
+
+[[keys.command]]
+key = "ctrl+alt+shift+k"
+type = "shell"
+command = "$HOME/.config/herdr/bin/scroll.sh page"
+description = "scroll pane up a full page"
+
+[[keys.command]]
+key = "ctrl+alt+shift+j"
+type = "shell"
+command = "$HOME/.config/herdr/bin/scroll.sh -page"
+description = "scroll pane down a full page"
 
 [ui]
 agent_panel_sort = "spaces"

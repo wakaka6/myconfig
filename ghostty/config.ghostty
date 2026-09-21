@@ -1,6 +1,6 @@
 theme = Dracula
 font-family = "Fira Code"
-font-size = 14
+font-size = 13.8
 background-opacity = 0.9
 confirm-close-surface = false
 
@@ -10,7 +10,9 @@ macos-option-as-alt = true
 keybind = super+shift+enter=new_window
 
 # Match the previous Alacritty scroll shortcuts.
-keybind = alt+k=scroll_page_lines:-1
-keybind = alt+j=scroll_page_lines:1
-keybind = ctrl+alt+k=scroll_page_fractional:-0.5
-keybind = ctrl+alt+j=scroll_page_fractional:0.5
+# performable: lets the chord fall through to the app when ghostty cannot
+# scroll (e.g. inside Herdr's alt screen), so Herdr can bind the same keys.
+keybind = performable:alt+k=scroll_page_lines:-1
+keybind = performable:alt+j=scroll_page_lines:1
+keybind = performable:ctrl+alt+k=scroll_page_fractional:-0.5
+keybind = performable:ctrl+alt+j=scroll_page_fractional:0.5
