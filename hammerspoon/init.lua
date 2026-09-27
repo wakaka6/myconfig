@@ -1,4 +1,5 @@
 local englishInputSource = "com.apple.keylayout.ABC"
+require("hs.ipc")
 
 local terminalApps = {
 	["kitty"] = true,
@@ -132,6 +133,16 @@ local function switchToEnglishForTerminal(appName, eventType)
 
 	if terminalApps[appName] then
 		hs.keycodes.currentSourceID(englishInputSource)
+		-- macOS restores the app's remembered input source shortly after
+		-- activation, overriding the switch above; re-assert it.
+		for _, delay in ipairs({ 0.15, 0.5 }) do
+			hs.timer.doAfter(delay, function()
+				local frontmost = hs.application.frontmostApplication()
+				if frontmost and terminalApps[frontmost:name()] then
+					hs.keycodes.currentSourceID(englishInputSource)
+				end
+			end)
+		end
 	end
 end
 
