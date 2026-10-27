@@ -33,14 +33,6 @@ local function sleepDisplay()
 	hs.execute("/usr/bin/pmset displaysleepnow", true)
 end
 
-local function restartAmethyst()
-	hs.osascript.applescript('tell application "Amethyst" to quit')
-	hs.timer.doAfter(0.5, function()
-		hs.application.launchOrFocus("Amethyst")
-		hs.reload()
-	end)
-end
-
 local function sendOptionShiftK()
 	hs.eventtap.keyStroke({ "alt", "shift" }, "k", keyStrokeDelay)
 end
@@ -192,11 +184,6 @@ globalHotkeyTap = hs.eventtap.new({ hs.eventtap.event.types.keyDown }, function(
 
 	if isAltShift and keyCode == 12 then
 		quitFrontmostApplication()
-		return true
-	end
-
-	if isAltShift and keyCode == 15 then
-		restartAmethyst()
 		return true
 	end
 
